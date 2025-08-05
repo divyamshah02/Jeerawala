@@ -1,0 +1,639 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Fleet Management - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-car text-primary me-2"></i>
+                Fleet Management
+            </h2>
+            <p class="text-muted mb-0">Manage your vehicle fleet</p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCarModal">
+            <i class="fas fa-plus me-1"></i>
+            Add New Car
+        </button>
+    </div>
+</div>
+
+<!-- Cars Table -->
+<div class="table-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Car Name</th>
+                    <th>Registration</th>
+                    <th>Type</th>
+                    <th>Driver</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in cars %}
+                <tr>
+                    <td><strong>{{ car.1 }}</strong></td>  <!-- car.name -->
+                    <td><code>{{ car.2 }}</code></td>     <!-- car.registration_number -->
+                    <td>
+                        <span class="badge bg-secondary">{{ car.6 }}</span>  <!-- car_type_name -->
+                    </td>
+                    <td>{{ car.4|default:"-" }}</td>      <!-- car.driver_name -->
+                    <td>{{ car.5|default:"-" }}</td>      <!-- car.driver_contact -->
+                    <td>
+                        {% if car.3 %}  <!-- car.is_available -->
+                            <span class="badge bg-success">Available</span>
+                        {% else %}
+                            <span class="badge bg-danger">Busy</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary edit-car-btn" 
+                                data-car-id="{{ car.0 }}"
+                                data-car-name="{{ car.1 }}"
+                                data-car-registration="{{ car.2 }}"
+                                data-car-available="{{ car.3 }}"
+                                data-car-driver-name="{{ car.4|default:'' }}"
+                                data-car-driver-contact="{{ car.5|default:'' }}"
+                                data-car-type-id="{{ car.7 }}"
+                                data-car-type-name="{{ car.6 }}"
+                                title="Edit Car - Type ID: {{ car.7 }}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <i class="fas fa-car fa-2x text-muted mb-2"></i><br>
+                        <span class="text-muted">No cars found</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Car Modal -->
+<div class="modal fade" id="addCarModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Car</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_car">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Car Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Registration Number</label>
+                        <input type="text" name="registration_number" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Car Type</label>
+                        <select name="car_type" class="form-select" required>
+                            <option value="">Select car type...</option>
+                            {% for car_type in car_types %}
+                                <option value="{{ car_type.id }}">{{ car_type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Car Image</label>
+                        <input type="file" name="car_image" id="add_car_image" class="form-control" accept="image/*">
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Recommended dimensions: 800x600 pixels or 4:3 aspect ratio for best display
+                        </small>
+                        <!-- Image Preview Container for Add Modal -->
+                        <div id="add_image_preview_container" class="mt-3" style="display: none;">
+                            <small class="text-muted d-block mb-2">Preview:</small>
+                            <div class="image-preview-wrapper">
+                                <img id="add_image_preview" src="/placeholder.svg" alt="Car image preview" 
+                                     style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #e9ecef;">
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="add_remove_image">
+                                    <i class="fas fa-times me-1"></i>Remove Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Driver Name</label>
+                        <input type="text" name="driver_name" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Driver Contact</label>
+                        <input type="text" name="driver_contact" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Add Car
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Car Modal -->
+<div class="modal fade" id="editCarModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Car</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" id="editCarForm" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="action" value="edit_car">
+                <input type="hidden" name="car_id" id="edit_car_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Car Name *</label>
+                        <input type="text" name="name" id="edit_car_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Registration Number *</label>
+                        <input type="text" name="registration_number" id="edit_car_registration" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Car Type *</label>
+                        <select name="car_type_id" id="edit_car_type" class="form-select">
+                            <option value="">Select car type...</option>
+                            {% for car_type in car_types %}
+                                <option value="{{ car_type.id }}">{{ car_type.name }} (₹{{ car_type.rate_per_km }}/km)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Car Image</label>
+                        <input type="file" name="car_image" id="edit_car_image" class="form-control" accept="image/*">
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Recommended dimensions: 800x600 pixels or 4:3 aspect ratio. Upload a new image to replace the current one (optional)
+                        </small>
+                        
+                        <!-- Current Image Display -->
+                        <div id="current_image_section" class="mt-2">
+                            <small class="text-muted d-block mb-2">Current image:</small>
+                            <div id="current_image_display">
+                                <!-- This will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- New Image Preview Container for Edit Modal -->
+                        <div id="edit_image_preview_container" class="mt-3" style="display: none;">
+                            <small class="text-muted d-block mb-2">New image preview:</small>
+                            <div class="image-preview-wrapper">
+                                <img id="edit_image_preview" src="/placeholder.svg" alt="New car image preview" 
+                                     style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #28a745;">
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="edit_remove_image">
+                                    <i class="fas fa-times me-1"></i>Remove New Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="edit_car_available" name="is_available">
+                            <label class="form-check-label" for="edit_car_available">
+                                Car is Available
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Driver Name</label>
+                        <input type="text" name="driver_name" id="edit_driver_name" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Driver Contact</label>
+                        <input type="text" name="driver_contact" id="edit_driver_contact" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>
+                        Update Car
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // =====================================================
+    // SIMPLE IMAGE STORAGE SYSTEM
+    // =====================================================
+    
+    // Store uploaded images in localStorage for persistence
+    const CAR_IMAGES_KEY = 'car_images_storage';
+    
+    function getStoredImages() {
+        try {
+            return JSON.parse(localStorage.getItem(CAR_IMAGES_KEY)) || {};
+        } catch (e) {
+            return {};
+        }
+    }
+    
+    function storeCarImage(carId, imageDataUrl) {
+        try {
+            const images = getStoredImages();
+            images[carId] = imageDataUrl;
+            localStorage.setItem(CAR_IMAGES_KEY, JSON.stringify(images));
+            console.log('✅ Image stored for car ID:', carId);
+        } catch (e) {
+            console.error('❌ Failed to store image:', e);
+        }
+    }
+    
+    function getStoredCarImage(carId) {
+        const images = getStoredImages();
+        return images[carId] || null;
+    }
+    
+    // =====================================================
+    // IMAGE PREVIEW FUNCTIONALITY
+    // =====================================================
+    
+    function handleImagePreview(inputElement, previewElement, containerElement, removeButtonElement) {
+        inputElement.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file.');
+                    inputElement.value = '';
+                    containerElement.style.display = 'none';
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size should be less than 5MB.');
+                    inputElement.value = '';
+                    containerElement.style.display = 'none';
+                    return;
+                }
+                
+                // Create FileReader to read the file
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewElement.src = e.target.result;
+                    containerElement.style.display = 'block';
+                    
+                    // SPECIAL HANDLING FOR EDIT MODAL
+                    if (inputElement.id === 'edit_car_image') {
+                        const currentImageSection = document.getElementById('current_image_section');
+                        if (currentImageSection) {
+                            currentImageSection.style.display = 'none';
+                        }
+                        
+                        // Update preview text
+                        const previewLabel = containerElement.querySelector('small');
+                        if (previewLabel) {
+                            previewLabel.textContent = 'New image (will replace current):';
+                        }
+                        
+                        // Store the new image temporarily
+                        const carId = document.getElementById('edit_car_id').value;
+                        if (carId) {
+                            storeCarImage(carId, e.target.result);
+                        }
+                    }
+                    
+                    console.log('Image preview loaded:', file.name);
+                };
+                
+                reader.onerror = function() {
+                    alert('Error reading the image file.');
+                    containerElement.style.display = 'none';
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                // No file selected
+                containerElement.style.display = 'none';
+                previewElement.src = '';
+                
+                // Show current image back for edit modal
+                if (inputElement.id === 'edit_car_image') {
+                    const currentImageSection = document.getElementById('current_image_section');
+                    if (currentImageSection) {
+                        currentImageSection.style.display = 'block';
+                    }
+                    
+                    const previewLabel = containerElement.querySelector('small');
+                    if (previewLabel) {
+                        previewLabel.textContent = 'New image preview:';
+                    }
+                }
+            }
+        });
+        
+        // Handle remove image button
+        if (removeButtonElement) {
+            removeButtonElement.addEventListener('click', function() {
+                inputElement.value = '';
+                previewElement.src = '';
+                containerElement.style.display = 'none';
+                
+                // Show current image back for edit modal
+                if (inputElement.id === 'edit_car_image') {
+                    const currentImageSection = document.getElementById('current_image_section');
+                    if (currentImageSection) {
+                        currentImageSection.style.display = 'block';
+                    }
+                    
+                    const previewLabel = containerElement.querySelector('small');
+                    if (previewLabel) {
+                        previewLabel.textContent = 'New image preview:';
+                    }
+                }
+                
+                console.log('Image preview removed');
+            });
+        }
+    }
+    
+    // =====================================================
+    // DISPLAY CURRENT CAR IMAGE
+    // =====================================================
+    
+    function displayCurrentCarImage(carId) {
+        const currentImageDisplay = document.getElementById('current_image_display');
+        if (!currentImageDisplay || !carId) return;
+        
+        // Get stored image
+        const storedImage = getStoredCarImage(carId);
+        
+        if (storedImage) {
+            // Display stored image
+            currentImageDisplay.innerHTML = `
+                <img src="${storedImage}" alt="Current car image" 
+                     style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #6c757d; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            `;
+            console.log('✅ Displaying stored image for car ID:', carId);
+        } else {
+            // Show no image placeholder
+            currentImageDisplay.innerHTML = `
+                <div class="no-image-placeholder" style="display: flex; align-items: center; justify-content: center; width: 200px; height: 150px; border: 2px dashed #dee2e6; border-radius: 8px; background-color: #f8f9fa;">
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-image fa-2x text-muted mb-2"></i>
+                        <p class="text-muted mb-0" style="font-size: 14px;">No image uploaded</p>
+                    </div>
+                </div>
+            `;
+            console.log('ℹ️ No stored image found for car ID:', carId);
+        }
+    }
+    
+    // =====================================================
+    // FORM SUBMISSION HANDLING
+    // =====================================================
+    
+    // Handle Add Car form submission
+    const addCarModal = document.getElementById('addCarModal');
+    if (addCarModal) {
+        const addForm = addCarModal.querySelector('form');
+        if (addForm) {
+            addForm.addEventListener('submit', function(e) {
+                const fileInput = document.getElementById('add_car_image');
+                const file = fileInput.files[0];
+                
+                if (file) {
+                    // Store the image for the new car (we'll use a temporary ID)
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // We'll store with a temporary key and update after form submission
+                        const tempId = 'temp_' + Date.now();
+                        storeCarImage(tempId, e.target.result);
+                        
+                        // Store temp ID for later use
+                        sessionStorage.setItem('temp_car_image_id', tempId);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    }
+    
+    // Handle Edit Car form submission
+    const editForm = document.getElementById('editCarForm');
+    if (editForm) {
+        editForm.addEventListener('submit', function(e) {
+            const carId = document.getElementById('edit_car_id').value;
+            const fileInput = document.getElementById('edit_car_image');
+            const file = fileInput.files[0];
+            
+            if (file && carId) {
+                // Image is already stored in localStorage from the preview
+                console.log('✅ Image will be saved for car ID:', carId);
+            }
+        });
+    }
+    
+    // =====================================================
+    // INITIALIZE COMPONENTS
+    // =====================================================
+    
+    // Initialize image preview for Add Car Modal
+    const addImageInput = document.getElementById('add_car_image');
+    const addImagePreview = document.getElementById('add_image_preview');
+    const addImageContainer = document.getElementById('add_image_preview_container');
+    const addRemoveButton = document.getElementById('add_remove_image');
+    
+    if (addImageInput && addImagePreview && addImageContainer) {
+        handleImagePreview(addImageInput, addImagePreview, addImageContainer, addRemoveButton);
+        console.log('✅ Add car image preview initialized');
+    }
+    
+    // Initialize image preview for Edit Car Modal
+    const editImageInput = document.getElementById('edit_car_image');
+    const editImagePreview = document.getElementById('edit_image_preview');
+    const editImageContainer = document.getElementById('edit_image_preview_container');
+    const editRemoveButton = document.getElementById('edit_remove_image');
+    
+    if (editImageInput && editImagePreview && editImageContainer) {
+        handleImagePreview(editImageInput, editImagePreview, editImageContainer, editRemoveButton);
+        console.log('✅ Edit car image preview initialized');
+    }
+    
+    // =====================================================
+    // MODAL RESET FUNCTIONALITY
+    // =====================================================
+    
+    // Reset Add Car Modal when closed
+    if (addCarModal) {
+        addCarModal.addEventListener('hidden.bs.modal', function() {
+            const form = addCarModal.querySelector('form');
+            if (form) form.reset();
+            
+            if (addImageContainer) addImageContainer.style.display = 'none';
+            if (addImagePreview) addImagePreview.src = '';
+            
+            console.log('🔄 Add car modal reset');
+        });
+    }
+    
+    // Reset Edit Car Modal when closed
+    const editCarModal = document.getElementById('editCarModal');
+    if (editCarModal) {
+        editCarModal.addEventListener('hidden.bs.modal', function() {
+            if (editImageContainer) editImageContainer.style.display = 'none';
+            if (editImagePreview) editImagePreview.src = '';
+            if (editImageInput) editImageInput.value = '';
+            
+            const currentImageSection = document.getElementById('current_image_section');
+            if (currentImageSection) currentImageSection.style.display = 'block';
+            
+            const previewLabel = editImageContainer ? editImageContainer.querySelector('small') : null;
+            if (previewLabel) previewLabel.textContent = 'New image preview:';
+            
+            console.log('🔄 Edit car modal reset');
+        });
+    }
+    
+    // =====================================================
+    // EDIT CAR BUTTON FUNCTIONALITY
+    // =====================================================
+    
+    document.querySelectorAll('.edit-car-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const carId = this.getAttribute('data-car-id');
+            const carName = this.getAttribute('data-car-name');
+            const carRegistration = this.getAttribute('data-car-registration');
+            const carAvailable = this.getAttribute('data-car-available') === 'True';
+            const driverName = this.getAttribute('data-car-driver-name');
+            const driverContact = this.getAttribute('data-car-driver-contact');
+            const carTypeId = this.getAttribute('data-car-type-id');
+            
+            // Populate form fields
+            document.getElementById('edit_car_id').value = carId;
+            document.getElementById('edit_car_name').value = carName || '';
+            document.getElementById('edit_car_registration').value = carRegistration || '';
+            document.getElementById('edit_car_available').checked = carAvailable;
+            document.getElementById('edit_driver_name').value = driverName || '';
+            document.getElementById('edit_driver_contact').value = driverContact || '';
+            
+            // Set car type
+            const carTypeSelect = document.getElementById('edit_car_type');
+            if (carTypeId && carTypeId !== 'None' && carTypeId !== '' && carTypeId !== 'null') {
+                carTypeSelect.value = carTypeId;
+                if (carTypeSelect.value !== carTypeId) {
+                    for (let i = 0; i < carTypeSelect.options.length; i++) {
+                        if (carTypeSelect.options[i].value == carTypeId) {
+                            carTypeSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Reset image previews
+            if (editImageContainer) editImageContainer.style.display = 'none';
+            
+            // Display current car image
+            displayCurrentCarImage(carId);
+            
+            // Show modal
+            const editModal = new bootstrap.Modal(document.getElementById('editCarModal'));
+            editModal.show();
+            
+            console.log('📝 Edit modal opened for car ID:', carId);
+        });
+    });
+    
+    // Form validation
+    if (editForm) {
+        editForm.addEventListener('submit', function(e) {
+            const carTypeSelect = document.getElementById('edit_car_type');
+            if (!carTypeSelect.value || carTypeSelect.value === '') {
+                e.preventDefault();
+                alert('Please select a car type');
+                carTypeSelect.focus();
+                return false;
+            }
+            return true;
+        });
+    }
+    
+    console.log('🚗 Car management with localStorage image persistence initialized!');
+});
+</script>
+
+<!-- Additional CSS for better image preview styling -->
+<style>
+.image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.image-preview-wrapper img {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.image-preview-wrapper img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.image-preview-wrapper .btn {
+    transition: all 0.2s ease;
+}
+
+.image-preview-wrapper .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Current image display styling */
+#current_image_display img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* No image placeholder styling */
+.no-image-placeholder {
+    transition: all 0.3s ease;
+}
+
+.no-image-placeholder:hover {
+    background-color: #e9ecef !important;
+}
+
+/* Success state for new image in edit modal */
+#edit_image_preview {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .image-preview-wrapper img,
+    #current_image_display img,
+    .no-image-placeholder {
+        max-width: 150px;
+        max-height: 112px;
+    }
+}
+</style>
+{% endblock %}

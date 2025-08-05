@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <title>Jirawala Tours & Travels</title>
+    <!-- Google Fonts - Poppins for headings, Open Sans for body -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body id="page-top" data-bs-spy="scroll" data-bs-target=".main-navbar" data-bs-offset="130" tabindex="0">
+
+    <!-- Lottie Car Loader Overlay -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+    <div id="lottie-loader-overlay" class="lottie-loader-overlay">
+        <dotlottie-wc src="https://lottie.host/14ea0282-988b-4258-9417-be917be925ae/Kv843m643w.lottie"
+            style="width: 300px;height: 300px" speed="1" autoplay></dotlottie-wc>
+    </div>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <div class="logo-section">
+                <a href="#home" class="logo-link">
+                    <img src="{% static 'img/JiraWala1.png' %}" alt="Jirawala Tours & Travels Logo"
+                        class="logo img-fluid">
+                </a>
+            </div>
+            <div class="contact-info d-flex align-items-center">
+                <img src="{% static 'img/call-us-now.gif' %}" alt="Call Us Now" class="img-fluid">
+                <div>
+                    <small class="d-block">Call Us Now</small>
+                    <strong><a href="tel:+911234567891">+91-1234567890</a></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about-us">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#popular-routes">Popular Routes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/our-cars/">Our Cars</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#blogs">Our Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="#booking-form" class="btn btn-dark-cta">Book a Taxi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Invisible scroll anchor -->
+    <div id="home-anchor"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <img src="{% static 'img/hero-car-background.jpeg' %}" alt="Hero Background" class="hero-background-image">
+        <div class="container-xxl">
+            <div class="row justify-content-start">
+                <div class="col-lg-7 text-start">
+                    <div class="slider-img">
+                        <!-- The background image is now handled by the img element above -->
+                    </div>
+                    <p class="hero-subtitle">Your Journey, Our Wheels</p>
+                    <h1 class="hero-title">Interstate Car Rentals for Seamless Travel</h1>
+                    <p class="hero-description">Explore new destinations with our reliable and comfortable car rental
+                        services. Perfect for tours, business, and family trips across states.</p>
+                    <a href="#booking-form" class="btn btn-hero-cta">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about-us" class="section-padding bg-light-grey">
+        <div class="container">
+            <h2 class="section-title display-font fade-in">About Jirawala Tours & Travels</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <img src="{% static 'img/aboutus-car-background.png' %}" alt="Our Fleet"
+                        class="img-fluid rounded-lg shadow-sm mb-4 mb-md-0 rounded-4">
+                </div>
+                <div class="col-md-6">
+                    <p class="lead">Jirawala Tours & Travels is your premier partner for comfortable and reliable
+                        interstate car rental services. With a commitment to safety, luxury, and convenience, we ensure
+                        every journey is a memorable one.</p>
+                    <p>Our extensive fleet of well-maintained vehicles and professional drivers are dedicated to
+                        providing you with a seamless travel experience across states. Whether it's a business trip or a
+                        family vacation, we've got your transportation needs covered.</p>
+                    <p>We pride ourselves on transparent pricing, exceptional customer service, and a deep understanding
+                        of interstate travel requirements. Choose Jirawala for a stress-free and enjoyable ride.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title display-font fade-in">Why Choose Jirawala?</h2>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in">
+                        <span class="stat-number" data-count="50000">0</span>
+                        <span class="stat-label">Happy Customers</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in">
+                        <span class="stat-number" data-count="500">0</span>
+                        <span class="stat-label">Premium Vehicles</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in">
+                        <span class="stat-number" data-count="15">0</span>
+                        <span class="stat-label">Years Experience</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in">
+                        <span class="stat-number" data-count="100">0</span>
+                        <span class="stat-label">Cities Covered</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section (New) -->
+    <section id="services" class="section-padding">
+        <div class="container">
+            <h2 class="section-title display-font fade-in">Our Services</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="service-box">
+                        <img src="{% static 'img/car-rental.gif' %}" alt="Car Rental Image" class="img-fluid">
+                        <h3>Car Rentals</h3>
+                        <p>Wide range of vehicles for all your travel needs, from sedans to SUVs.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="service-box">
+                        <img src="{% static 'img/interstate-travel.gif' %}" alt="Interstate Travel Icon" height="70"
+                            width="70" class="img-fluid">
+                        <br>
+                        <h3>Interstate Travel</h3>
+                        <p>Seamless and comfortable journeys across state borders with professional drivers.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="service-box">
+                        <img src="{% static 'img/business-trips.gif' %}" alt="Business Trips Icon" height="70"
+                            width="70" class="img-fluid">
+                        <br>
+                        <h3>Business Trips</h3>
+                        <p>Reliable and punctual transportation solutions for corporate clients.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Routes Section with Dynamic Content - FIXED -->
+    <section id="popular-routes" class="popular-routes-section section-padding">
+        <div class="services-bg-overlay"></div>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title display-font fade-in">Popular Routes</h2>
+                <p class="section-subtitle fade-in">Explore our most requested intercity taxi services</p>
+            </div>
+
+            <div class="services-carousel-wrapper">
+                <div class="services-carousel swiper">
+                    <div class="swiper-wrapper">
+                        {% for route in routes %}
+                        <!-- Dynamic Route Slide with Fixed Template Variables -->
+                        <div class="swiper-slide" tabindex="0"
+                            aria-label="Service from {{ route.origin }} to {{ route.destination }}">
+                            <div class="enhanced-service-card fade-in" role="group"
+                                aria-describedby="desc-{{ route.id }}">
+                                <div class="service-image-container">
+                                    <!-- Dynamic city-based image with fallback -->
+                                    {% if route.origin|lower == 'ahmedabad' %}
+                                    <img src="/media/{{ route.image }}" 
+                                     alt="{{ route.origin }} to {{ route.destination }} route" 
+                                     class="service-image" />
+                                    {% elif route.origin|lower == 'bangalore' %}
+                                    <img src="/media/{{ route.image }}" 
+                                     alt="{{ route.origin }} to {{ route.destination }} route" 
+                                     class="service-image" />
+                                    {% elif route.origin|lower == 'chandigarh' %}
+                                    <img src="/media/{{ route.image }}" 
+                                     alt="{{ route.origin }} to {{ route.destination }} route" 
+                                     class="service-image" />
+                                    {% elif route.origin|lower == 'chennai' %}
+                                    <img src="/media/{{ route.image }}" 
+                                     alt="{{ route.origin }} to {{ route.destination }} route" 
+                                     class="service-image" />
+                                    {% elif route.origin|lower == 'coimbatore' %}
+                                    <img src="/media/{{ route.image }}" 
+                                     alt="{{ route.origin }} to {{ route.destination }} route" 
+                                     class="service-image" />
+                                    {% else %}
+                                    <img src="/media/{{ route.image }}" 
+                                     alt="{{ route.origin }} to {{ route.destination }} route" 
+                                     class="service-image" />
+                                    {% endif %}
+
+                                    <div class="service-overlay" aria-hidden="true">
+                                        <div class="service-icon">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-car-animation" aria-hidden="true">
+                                        <!-- Dynamic car image based on distance -->
+                                        {% if route.distance_km <= 200 %} <img src="{% static 'img/car-hatchback.png' %}" alt=""
+                                            class="floating-car" />
+                                        {% elif route.distance_km <= 500 %} <img src="{% static 'img/car-sedan.png' %}" alt=""
+                                            class="floating-car" />
+                                        {% else %}
+                                        <img src="{% static 'img/car-suv.png' %}" alt="" class="floating-car" />
+                                        {% endif %}
+                                    </div>
+                                    <div class="service-shape-wrap" aria-hidden="true">
+                                        <div class="service-shape"></div>
+                                    </div>
+                                </div>
+                                <div class="service-content">
+                                    <h3>{{ route.origin|upper }} ⇋ {{ route.destination|upper }}</h3>
+                                    <p id="desc-{{ route.id }}">
+                                        Starting from ₹{{ route.rate|floatformat:0 }} • {{ route.distance_km|floatformat:0 }} km •
+                                        Toll Tax & State Tax Extra • Parking Extra, if Applicable
+                                    </p>
+                                    <ul class="service-features">
+                                        <li><i class="bi bi-check-circle"></i>Professional Drivers</li>
+                                        <li><i class="bi bi-check-circle"></i>Well-maintained Vehicles</li>
+                                        <li><i class="bi bi-check-circle"></i>24/7 Service Available</li>
+                                    </ul>
+                                    <a href="#booking-form?origin={{ route.origin|urlencode }}&destination={{ route.destination|urlencode }}"
+                                        class="service-btn" role="button"
+                                        aria-label="Book {{ route.origin }} to {{ route.destination }} service">Book Now</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <!-- Fallback content when no routes available from backend -->
+                        <div class="swiper-slide">
+                            <div class="enhanced-service-card fade-in">
+                                <div class="service-image-container">
+                                    <img src="{% static 'img/cities/bangalore.jpg' %}" alt="Bangalore cityscape"
+                                        class="service-image" />
+                                    <div class="service-overlay">
+                                        <div class="service-icon">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-car-animation">
+                                        <img src="{% static 'img/car-sedan.png' %}" alt="" class="floating-car" />
+                                    </div>
+                                    <div class="service-shape-wrap">
+                                        <div class="service-shape"></div>
+                                    </div>
+                                </div>
+                                <div class="service-content">
+                                    <h3>BANGALORE ⇋ MYSORE</h3>
+                                    <p>Starting from ₹2800 • 150 km • Toll Tax & State Tax Extra • Parking Extra, if Applicable</p>
+                                    <ul class="service-features">
+                                        <li><i class="bi bi-check-circle"></i>Professional Drivers</li>
+                                        <li><i class="bi bi-check-circle"></i>Well-maintained Vehicles</li>
+                                        <li><i class="bi bi-check-circle"></i>24/7 Service Available</li>
+                                    </ul>
+                                    <a href="#booking-form?origin=Bangalore&destination=Mysore" class="service-btn">Book Now</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="enhanced-service-card fade-in">
+                                <div class="service-image-container">
+                                    <img src="{% static 'img/cities/chandigarh.jpg' %}" alt="Chandigarh cityscape"
+                                        class="service-image" />
+                                    <div class="service-overlay">
+                                        <div class="service-icon">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-car-animation">
+                                        <img src="{% static 'img/car-sedan.png' %}" alt="" class="floating-car" />
+                                    </div>
+                                    <div class="service-shape-wrap">
+                                        <div class="service-shape"></div>
+                                    </div>
+                                </div>
+                                <div class="service-content">
+                                    <h3>CHANDIGARH ⇋ SHIMLA</h3>
+                                    <p>Starting from ₹2800 • 115 km • Toll Tax & State Tax Extra • Parking Extra, if Applicable</p>
+                                    <ul class="service-features">
+                                        <li><i class="bi bi-check-circle"></i>Professional Drivers</li>
+                                        <li><i class="bi bi-check-circle"></i>Well-maintained Vehicles</li>
+                                        <li><i class="bi bi-check-circle"></i>24/7 Service Available</li>
+                                    </ul>
+                                    <a href="#booking-form?origin=Chandigarh&destination=Shimla" class="service-btn">Book Now</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="enhanced-service-card fade-in">
+                                <div class="service-image-container">
+                                    <img src="{% static 'img/cities/chennai.jpg' %}" alt="Chennai cityscape"
+                                        class="service-image" />
+                                    <div class="service-overlay">
+                                        <div class="service-icon">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-car-animation">
+                                        <img src="{% static 'img/car-sedan.png' %}" alt="" class="floating-car" />
+                                    </div>
+                                    <div class="service-shape-wrap">
+                                        <div class="service-shape"></div>
+                                    </div>
+                                </div>
+                                <div class="service-content">
+                                    <h3>CHENNAI ⇋ PONDICHERRY</h3>
+                                    <p>Starting from ₹2200 • 160 km • Toll Tax & State Tax Extra • Parking Extra, if Applicable</p>
+                                    <ul class="service-features">
+                                        <li><i class="bi bi-check-circle"></i>Professional Drivers</li>
+                                        <li><i class="bi bi-check-circle"></i>Well-maintained Vehicles</li>
+                                        <li><i class="bi bi-check-circle"></i>24/7 Service Available</li>
+                                    </ul>
+                                    <a href="#booking-form?origin=Chennai&destination=Pondicherry" class="service-btn">Book Now</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="swiper-pagination services-pagination"></div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="services-navigation">
+                    <div class="services-button-prev">
+                        <i class="bi bi-chevron-left"></i>
+                    </div>
+                    <div class="services-button-next">
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Replace your existing button with: -->
+            <div class="text-center mt-5">
+                <a href="/popular-routes/" class="enhanced-view-all-btn routes-btn">
+                    <div class="btn-content">
+                        <div class="btn-icon">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div class="btn-text">
+                            <span class="btn-main-text">View All Routes</span>
+                            <span class="btn-sub-text">Explore destinations</span>
+                        </div>
+                        <div class="btn-arrow">
+                            <i class="bi bi-arrow-right-circle"></i>
+                        </div>
+                    </div>
+                    <div class="btn-shine"></div>
+                </a>
+            </div>
+
+            <!-- Service Stats -->
+            <!-- <div class="service-stats-section mt-5">
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="service-stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>100% Safe</h4>
+                                <p>Verified drivers and vehicles</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="service-stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>24/7 Service</h4>
+                                <p>Available round the clock</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="service-stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>GPS Tracking</h4>
+                                <p>Real-time location updates</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="service-stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-currency-rupee"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Best Rates</h4>
+                                <p>Competitive and transparent pricing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Booking Form Section -->
+    <section id="booking-form" class="section-padding">
+        <div class="container">
+            <h2 class="section-title display-font fade-in">Book Your Ride Now</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="booking-form-card">
+                        <form id="bookingForm">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" name="name" class="form-control" id="name" required
+                                    aria-label="Full Name">
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" name="email" class="form-control" id="email" required
+                                        aria-label="Email Address">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" name="phone" class="form-control" id="phone" required
+                                        aria-label="Phone Number">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="tripType" class="form-label">Trip Type</label>
+                                    <div class="trip-type-toggle">
+                                        <button type="button" name="tripType" class="trip-type-option active"
+                                            data-trip="one-way">
+                                            <i class="bi bi-arrow-right me-2"></i>One Way
+                                        </button>
+                                        <button type="button" name="tripType" class="trip-type-option"
+                                            data-trip="round-trip">
+                                            <i class="bi bi-arrow-left-right me-2"></i>Round Trip
+                                        </button>
+                                    </div>
+                                    <input type="hidden" id="tripType" value="one-way" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="pickupLocation" class="form-label">Pick-up Location</label>
+                                    <input type="text" name="pickupLocation" class="form-control" id="pickupLocation"
+                                        required aria-label="Pick-up Location">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dropoffLocation" class="form-label">Drop-off Location</label>
+                                    <input type="text" name="dropoffLocation" class="form-control" id="dropoffLocation"
+                                        required aria-label="Drop-off Location">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="pickupDate" class="form-label">
+                                        <i class="bi bi-calendar-event me-2"></i>Pick-up Date & Time
+                                    </label>
+                                    <div class="enhanced-datetime-wrapper">
+                                        <div class="datetime-input-wrapper">
+                                            <input type="datetime-local" name="pickupDate"
+                                                class="form-control datetime-input" id="pickupDate" required
+                                                aria-label="Pick-up Date and Time">
+                                            <div class="datetime-icon">
+                                                <i class="bi bi-clock"></i>
+                                            </div>
+                                        </div>
+                                        <div class="datetime-quick-select">
+                                            <button type="button" class="quick-select-btn" data-hours="2">+2h</button>
+                                            <button type="button" class="quick-select-btn" data-hours="4">+4h</button>
+                                            <button type="button" class="quick-select-btn"
+                                                data-hours="24">Tomorrow</button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>Select your preferred pickup date and time
+                                    </small>
+                                </div>
+                                <div class="col-md-6 date-field-container" id="dropoffDateContainer">
+                                    <label for="dropoffDate" class="form-label">
+                                        <i class="bi bi-calendar-check me-2"></i>Drop-off Date & Time
+                                    </label>
+                                    <div class="enhanced-datetime-wrapper">
+                                        <div class="datetime-input-wrapper">
+                                            <input type="datetime-local" name="dropoffDate"
+                                                class="form-control datetime-input" id="dropoffDate" required
+                                                aria-label="Drop-off Date and Time">
+                                            <div class="datetime-icon">
+                                                <i class="bi bi-clock"></i>
+                                            </div>
+                                        </div>
+                                        <div class="datetime-quick-select">
+                                            <button type="button" class="quick-select-btn dropoff-quick"
+                                                data-days="1">+1 Day</button>
+                                            <button type="button" class="quick-select-btn dropoff-quick"
+                                                data-days="2">+2 Days</button>
+                                            <button type="button" class="quick-select-btn dropoff-quick"
+                                                data-days="7">+1 Week</button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>Select your return date and time
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="mb-3 text-center">
+                                <button type="button" class="btn btn-calculate-distance" id="calculateBtn">
+                                    <i class="bi bi-calculator"></i> Calculate Distance & Price
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Blogs Preview Section -->
+    <section id="blogs" class="section-padding bg-light-grey">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title display-font fade-in">Our Blog Posts</h2>
+                <p class="section-subtitle fade-in">Explore travel tips, destination ideas, and industry insights</p>
+            </div>
+            <div class="row g-4" id="blogGridPreview">
+                <!-- Blog Post 1 -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="travel-tips">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Travel Tips" class="blog-image">
+                            <div class="blog-category">Travel Tips</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 15, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 5 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="#">Essential Travel Tips for Interstate Road Trips</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Discover best practices for planning your interstate journey—from routes to safety tips
+                                for
+                                a smooth experience.
+                            </p>
+                            <a href="blog1.html" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Blog Post 2 -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="destinations">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Destination Guide" class="blog-image">
+                            <div class="blog-category">Destination Guide</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 12, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 7 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="#">Top 10 Must-Visit Destinations from Ahmedabad</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Explore beautiful destinations reachable from Ahmedabad with our rental service—hill
+                                stations, heritage sites, and more.
+                            </p>
+                            <a href="blog2.html" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Blog Post 3 -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="car-care">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/1118448/pexels-photo-1118448.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Car Care Tips" class="blog-image">
+                            <div class="blog-category">Car Care</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 10, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 4 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="#">How to Prepare Your Car for a Long Journey</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Simple maintenance tips and essential checks before hitting the road for a long
+                                interstate
+                                trip.
+                            </p>
+                            <a href="blog3.html" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <!-- Replace your existing button with: -->
+            <div class="text-center mt-4">
+                <a href="/blogs/" class="enhanced-view-all-btn blogs-btn">
+                    <div class="btn-content">
+                        <div class="btn-icon">
+                            <i class="bi bi-journal-text"></i>
+                        </div>
+                        <div class="btn-text">
+                            <span class="btn-main-text">View All Blogs</span>
+                            <span class="btn-sub-text">Latest travel insights</span>
+                        </div>
+                        <div class="btn-arrow">
+                            <i class="bi bi-arrow-right-circle"></i>
+                        </div>
+                    </div>
+                    <div class="btn-shine"></div>
+                </a>
+            </div>
+            </div>
+            </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title display-font fade-in">Customer Reviews</h2>
+                <h4>What Our Clients Say</h4>
+                <p class="section-subtitle fade-in">Read testimonials from our satisfied customers who have experienced
+                    our premium transportation services</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card fade-in">
+                        <div class="testimonial-text">
+                            Exceptional service! The driver was professional, the car was immaculate, and the journey
+                            was comfortable. Highly recommend Jeerawala Taxi for premium transportation.
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">RK</div>
+                            <div class="author-info">
+                                <h6>Rajesh Kumar</h6>
+                                <small>Business Executive</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card fade-in">
+                        <div class="testimonial-text">
+                            Used their airport transfer service multiple times. Always punctual, professional, and
+                            reliable. The booking process is seamless and customer service is excellent.
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">PS</div>
+                            <div class="author-info">
+                                <h6>Priya Shah</h6>
+                                <small>Frequent Traveler</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card fade-in">
+                        <div class="testimonial-text">
+                            Booked their SUV for a family trip to Rajasthan. The vehicle was luxurious, driver was
+                            courteous, and the entire experience was memorable. Will definitely use again.
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">AM</div>
+                            <div class="author-info">
+                                <h6>Amit Mehta</h6>
+                                <small>Family Traveler</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding bg-light-grey">
+        <div class="container">
+            <h2 class="section-title">Get in Touch</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <p class="lead mb-4">Have questions or need assistance? Feel free to reach out to us!</p>
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="contact-info-box">
+                                <img src="{% static 'img/contact-location-white.png' %}" alt="location"
+                                    class="img-fluid" height="40%" width="40%">
+                                <h4>Our Location</h4>
+                                <p>123 Travel Lane, Ahmedabad, India</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="contact-info-box">
+                                <img src="{% static 'img/contact-email-white.png' %}" alt="email" class="img-fluid"
+                                    height="40%" width="40%">
+                                <h4>Email Us</h4>
+                                <p><a href="mailto:info@jirawala.com">info@jirawala.com</a></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="contact-info-box">
+                                <img src="{% static 'img/contact-phone-white.png' %}" alt="phone" class="img-fluid"
+                                    height="40%" width="40%">
+                                <h4>Call Us</h4>
+                                <p><a href="tel:+911234567890">+91-1234567890</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-4">You can also use the booking form above for specific inquiries.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unique Animated Footer -->
+    <footer class="unique-footer">
+
+        <!-- Main Footer Content -->
+        <div class="footer-main">
+            <div class="container">
+                <div class="row gy-5">
+
+                    <!-- Company Info Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <img src="{% static 'img/JiraWala1-nobg-blue.png' %}" alt="Jirawala Logo"
+                                class="footer-logo mb-3"><br>
+                            <h4 class="brand-tagline">Your Journey, Our Wheels</h4>
+                            <p class="brand-description">
+                                Experience premium interstate car rentals with Jirawala Tours & Travels.
+                                Reliable, comfortable, and seamless transportation across India.
+                            </p>
+                            <div class="footer-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">15+</span>
+                                    <span class="stat-label">Years</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">50K+</span>
+                                    <span class="stat-label">Happy Customers</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">500+</span>
+                                    <span class="stat-label">Vehicles</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Column -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Quick Links</h5>
+                            <ul class="footer-menu">
+                                <li><a href="#home"><i class="bi bi-chevron-right"></i>Home</a></li>
+                                <li><a href="#about-us"><i class="bi bi-chevron-right"></i>About Us</a></li>
+                                <li><a href="#services"><i class="bi bi-chevron-right"></i>Services</a></li>
+                                <li><a href="/our-cars/"><i class="bi bi-chevron-right"></i>Our Fleet</a></li>
+                                <li><a href="#booking-form"><i class="bi bi-chevron-right"></i>Book Now</a></li>
+                                <li><a href="#testimonials"><i class="bi bi-chevron-right"></i>Reviews</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Services Column -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Our Services</h5>
+                            <ul class="footer-menu">
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Interstate Travel</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Business Trips</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Tour Packages</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-contact">
+                            <h5 class="footer-title">Get In Touch</h5>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Visit Us</h6>
+                                    <p>123 Travel Lane, Ahmedabad<br>Gujarat, India - 380001</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-telephone-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Call Us</h6>
+                                    <p><a href="tel:+911234567890">+91-1234567890</a><br>
+                                        <a href="tel:+911234567891">+91-1234567891</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Email Us</h6>
+                                    <p><a href="mailto:info@jirawala.com">info@jirawala.com</a><br>
+                                        <a href="mailto:booking@jirawala.com">booking@jirawala.com</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animated Cars Section -->
+        <div class="animated-cars-section">
+            <div class="road"></div>
+            <div class="car-animation">
+                <div class="car car-1">
+                    <div class="car-body"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-2">
+                    <div class="car-body sedan"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-3">
+                    <div class="car-body suv"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="copyright">
+                            <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="footer-social">
+                            <span>Follow Us:</span>
+                            <div class="social-links">
+                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-link facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="mailto:info@jirawala.com" class="social-link email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Call Button -->
+    <a href="tel:+911234567890" class="floating-btn call-btn" aria-label="Call Us">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-phone">
+            <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+    </a>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/+911234567890" target="_blank" class="floating-whatsapp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- Bootstrap JS CDN (Popper.js and Bootstrap Bundle) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/script.js' %}?v=5"></script>
+
+    <script>
+        document.getElementById('fareForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const rate = parseFloat(document.getElementById('carType').value);
+            const distance = parseFloat(document.getElementById('distance').value);
+            const total = rate * distance;
+            document.getElementById('fareResult').innerText =
+                isNaN(total) ? "Please enter valid input." : `Estimated Fare: ₹${total.toFixed(2)}`;
+        });
+    </script>
+
+    <!-- Distance & Price Calculation Modal -->
+    <div class="modal fade" id="distancePriceModal" tabindex="-1" aria-labelledby="distancePriceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="distancePriceModalLabel">
+                        <i class="bi bi-geo-alt-fill me-2"></i>Distance & Price Calculation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="route-info mb-4">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="location-card pickup-location">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <div>
+                                        <strong>Pickup Location</strong>
+                                        <p id="modalPickupLocation">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                                <div class="route-arrow">
+                                    <i class="bi bi-arrow-right"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="location-card dropoff-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <div>
+                                        <strong>Drop-off Location</strong>
+                                        <p id="modalDropoffLocation">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-distance-display mb-4">
+                        <div class="distance-header">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <h6>Route Information</h6>
+                        </div>
+                        <div class="distance-content">
+                            <div class="distance-main">
+                                <span class="distance-number" id="calculatedDistance">0 km</span>
+                                <span class="distance-label">Estimated Distance</span>
+                            </div>
+                            <div class="route-details">
+                                <div class="route-time">
+                                    <i class="bi bi-clock"></i>
+                                    <span id="estimatedDuration">Calculating...</span>
+                                </div>
+                                <div class="route-type">
+                                    <i class="bi bi-signpost-2"></i>
+                                    <span>Interstate Route</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pricing-options">
+                        <h6 class="mb-3">Select Your Car Type & View Pricing:</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="car-option" data-car-type="hatchback" data-rate="12">
+                                    <div class="car-icon">
+                                        <i class="bi bi-car-front-fill"></i>
+                                    </div>
+                                    <h6>Hatchback</h6>
+                                    <div class="rate">₹12/km</div>
+                                    <div class="total-price" id="hatchbackPrice">₹0</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="car-option" data-car-type="sedan" data-rate="15">
+                                    <div class="car-icon">
+                                        <i class="bi bi-car-front"></i>
+                                    </div>
+                                    <h6>Sedan</h6>
+                                    <div class="rate">₹15/km</div>
+                                    <div class="total-price" id="sedanPrice">₹0</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="car-option" data-car-type="suv" data-rate="18">
+                                    <div class="car-icon">
+                                        <i class="bi bi-truck"></i>
+                                    </div>
+                                    <h6>SUV</h6>
+                                    <div class="rate">₹18/km</div>
+                                    <div class="total-price" id="suvPrice">₹0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="selected-car-info mt-4" id="selectedCarInfo" style="display: none;">
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <strong>Selected:</strong> <span id="selectedCarType"></span> -
+                            <strong>Total Price:</strong> <span id="selectedPrice"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-4">
+                        <label for="modalSpecialRequests" class="form-label">Special Requests (Optional)</label>
+                        <textarea class="form-control" id="modalSpecialRequests" rows="3" aria-label="Special Requests"
+                            placeholder="Any special requirements for your trip..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="confirmSelection" disabled
+                        onclick="submitbookingRequest()">
+                        <i class="bi bi-check-circle-fill me-1"></i>Complete Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Car Selection Notification -->
+    <div id="carSelectionNotification" class="car-selection-notification">
+        <div class="notification-content">
+            <i class="bi bi-check-circle-fill"></i>
+            <span id="notificationText">Car selected! Scroll down to complete booking.</span>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Jirawala Tours & Travels</title>
+    
+    <!-- Google Fonts - Matching your website -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Your Website Color Palette */
+            --primary-teal: #2a9d8f;
+            --light-teal: #53c0cb;
+            --medium-blue: #33b3c6;
+            --dark-gray: #282727;
+            --beige: #dec18c;
+            --brown-gold: #9c6c2c;
+            --gray-blue: #75888a;
+            --dark-purple: #3c343c;
+            --hero-cta-gold: #d4af37;
+            
+            --primary-color: #2a9d8f;
+            --accent-color: #53c0cb;
+            --secondary-color: #33b3c6;
+            --dark-color: #282727;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-color) 0%, var(--dark-purple) 50%, var(--primary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Open Sans', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+        
+        .login-card {
+            /* background: white; */
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 40px 40px 20px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+        }
+        
+        .login-header i {
+            background: linear-gradient(135deg, var(--beige) 0%, var(--hero-cta-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .login-header h3 {
+            font-family: "Poppins", sans-serif;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .login-header p {
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .login-body {
+            padding: 50px 40px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+        
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+            font-family: "Open Sans", sans-serif;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(42, 157, 143, 0.25);
+            background: linear-gradient(135deg, rgba(42, 157, 143, 0.02) 0%, rgba(83, 192, 203, 0.02) 100%);
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: "Poppins", sans-serif;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+        }
+        
+        .btn-login::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn-login:hover::before {
+            left: 0;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(42, 157, 143, 0.4);
+            color: white;
+        }
+        
+        .input-group-text {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #e9ecef;
+            border-right: none;
+            border-radius: 15px 0 0 15px;
+            padding: 15px 20px;
+        }
+        
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 15px 15px 0;
+        }
+        
+        .input-group:focus-within .input-group-text {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(42, 157, 143, 0.1) 0%, rgba(83, 192, 203, 0.1) 100%);
+        }
+        
+        .input-group-text i {
+            color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .back-link {
+            color: var(--gray-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-color);
+            transform: translateX(-5px);
+        }
+        
+        .alert {
+            border-radius: 15px;
+            border: none;
+            padding: 15px 20px;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(231, 76, 60, 0.1) 100%);
+            color: #dc3545;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(42, 157, 143, 0.1) 0%, rgba(83, 192, 203, 0.1) 100%);
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .login-card {
+                margin: 20px;
+                max-width: none;
+            }
+            
+            .login-header {
+                padding: 40px 30px;
+            }
+            
+            .login-body {
+                padding: 40px 30px;
+            }
+            
+            .form-control, .input-group-text {
+                padding: 12px 15px;
+            }
+            
+            .btn-login {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+
+        .brand-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .brand-logo-img {
+            /* max-height: 80px; */
+            /* max-width: 200px; */
+            height: 80%;
+            width: 90%;
+            border-radius: 10px;
+            /* filter: brightness(0) invert(1); Makes logo white */
+            transition: all 0.3s ease;
+        }
+
+        .brand-logo-img:hover {
+            transform: scale(1.05);
+            filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.3));
+        }
+
+        /* If you have a white/light logo, use this instead */
+        .brand-logo-img.light-logo {
+            filter: none; /* Remove the white filter */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <div class="brand-logo-container mb-4">
+                <img src="/static/img/JiraWala1-white.png" alt="Jirawala Tours & Travels" class="brand-logo-img">
+            </div>
+            <h3 class="mb-2">Admin Panel</h3>
+            <!-- <p class="mb-0">Jirawala Tours & Travels</p> -->
+        </div>
+        
+        <div class="login-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" class="form-control" name="username" placeholder="Username" required>
+                    </div>
+                </div>
+                
+                <div class="mb-5">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-login w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Login to Admin Panel
+                </button>
+            </form>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Website
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

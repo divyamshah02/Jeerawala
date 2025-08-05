@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Jirawala Tours & Travels - Admin Panel{% endblock %}</title>
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts - Matching your website -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS - Adjustable Admin Panel -->
+    <style>
+        :root {
+            /* Your Website Color Palette */
+            --primary-teal: #2a9d8f;
+            --light-teal: #53c0cb;
+            --medium-blue: #33b3c6;
+            --dark-gray: #282727;
+            --beige: #dec18c;
+            --brown-gold: #9c6c2c;
+            --gray-blue: #75888a;
+            --dark-purple: #3c343c;
+            --hero-cta-gold: #d4af37;
+
+            /* Semantic assignments matching your site */
+            --primary-color: #2a9d8f;
+            --accent-color: #53c0cb;
+            --secondary-color: #33b3c6;
+            --dark-color: #282727;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-primary: #282727;
+            --text-secondary: #3c343c;
+            --text-muted: #75888a;
+            --border-color: #e2e8f0;
+            --success-color: #2a9d8f;
+            --warning-color: #9c6c2c;
+            --error-color: #dc3545;
+
+            /* Shadows matching your website */
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+            /* Transitions */
+            --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 0.15s ease-out;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light-bg) 0%, rgba(42, 157, 143, 0.05) 100%);
+            font-family: "Open Sans", sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Poppins", sans-serif;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        /* 🎯 SIDEBAR WIDTH - ADJUST THIS TO MAKE BIGGER/SMALLER */
+        .sidebar {
+            background: linear-gradient(135deg, var(--dark-color) 0%, var(--text-secondary) 100%);
+            min-height: 100vh;
+            height: 100%;
+            box-shadow: var(--shadow-xl);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 22%; /* 🔧 CHANGE THIS: 18%=very small, 22%=medium, 25%=large, 28%=extra large */
+            max-width: 280px; /* 🔧 CHANGE THIS: 220px=small, 280px=medium, 320px=large */
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-color), transparent);
+        }
+        
+        /* 🎯 NAVIGATION LINKS - ADJUST PADDING AND FONT SIZE */
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 10px 18px; /* 🔧 CHANGE THIS: 8px 15px=small, 10px 18px=medium, 12px 20px=large */
+            margin: 4px 12px; /* 🔧 CHANGE THIS: 3px 10px=small, 4px 12px=medium, 5px 15px=large */
+            border-radius: 8px;
+            transition: all var(--transition-base);
+            font-family: "Open Sans", sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem; /* 🔧 CHANGE THIS: 0.85rem=small, 0.9rem=medium, 0.95rem=large */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar .nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--beige);
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover::after,
+        .sidebar .nav-link.active::after {
+            width: 75%;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(4px);
+        }
+        
+        .sidebar .nav-link i {
+            width: 18px; /* 🔧 CHANGE THIS: 16px=small, 18px=medium, 20px=large */
+            margin-right: 10px; /* 🔧 CHANGE THIS: 8px=small, 10px=medium, 12px=large */
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.95rem; /* 🔧 CHANGE THIS: 0.9rem=small, 0.95rem=medium, 1rem=large */
+        }
+        
+        /* 🎯 MAIN CONTENT - ADJUST MARGIN TO MATCH SIDEBAR WIDTH */
+        .main-content {
+            padding: 18px; /* 🔧 CHANGE THIS: 15px=small, 18px=medium, 20px=large */
+            margin-left: 22%; /* 🔧 CHANGE THIS: Must match sidebar width above */
+            max-width: calc(100% - 22%); /* 🔧 CHANGE THIS: Must match sidebar width above */
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232a9d8f' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        /* 🎯 STATS CARDS - ADJUST PADDING */
+        .stats-card {
+            background: white;
+            border-radius: 16px; /* 🔧 CHANGE THIS: 15px=small, 16px=medium, 20px=large */
+            padding: 20px; /* 🔧 CHANGE THIS: 18px=small, 20px=medium, 25px=large */
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-base);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .stats-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+        
+        /* 🎯 STATS NUMBERS - ADJUST FONT SIZE */
+        .stats-number {
+            font-size: 2.2rem; /* 🔧 CHANGE THIS: 2rem=small, 2.2rem=medium, 2.5rem=large */
+            font-weight: 800;
+            color: var(--primary-color);
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stats-label {
+            color: var(--text-muted);
+            font-size: 0.85rem; /* 🔧 CHANGE THIS: 0.8rem=small, 0.85rem=medium, 0.9rem=large */
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            font-weight: 600;
+        }
+        
+        /* 🎯 PAGE HEADER - ADJUST PADDING */
+        .page-header {
+            background: white;
+            padding: 20px; /* 🔧 CHANGE THIS: 18px=small, 20px=medium, 25px=large */
+            border-radius: 16px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-color), transparent);
+        }
+        
+        /* 🎯 BUTTONS - ADJUST PADDING AND FONT SIZE */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border: none;
+            padding: 10px 18px; /* 🔧 CHANGE THIS: 8px 16px=small, 10px 18px=medium, 12px 25px=large */
+            font-size: 0.95rem; /* 🔧 CHANGE THIS: 0.9rem=small, 0.95rem=medium, 1rem=large */
+            border-radius: 8px;
+            transition: all var(--transition-base);
+            font-weight: 600;
+            font-family: "Poppins", sans-serif;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(42, 157, 143, 0.3);
+        }
+        
+        .btn-primary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn-primary:hover::before {
+            left: 0;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(42, 157, 143, 0.4);
+            color: white;
+        }
+        
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-base);
+        }
+        
+        .table-card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        
+        /* 🎯 STATUS BADGES - ADJUST PADDING AND FONT SIZE */
+        .status-badge {
+            padding: 4px 10px; /* 🔧 CHANGE THIS: 3px 8px=small, 4px 10px=medium, 5px 12px=large */
+            border-radius: 16px;
+            font-size: 0.75rem; /* 🔧 CHANGE THIS: 0.7rem=small, 0.75rem=medium, 0.8rem=large */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        
+        .status-pending { 
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: var(--warning-color);
+            border: 1px solid #f1c40f;
+        }
+        .status-confirmed { 
+            background: linear-gradient(135deg, #d1edff 0%, #74b9ff 100%);
+            color: #0c5460;
+            border: 1px solid var(--secondary-color);
+        }
+        .status-in_progress { 
+            background: linear-gradient(135deg, #cff4fc 0%, var(--light-teal) 100%);
+            color: #055160;
+            border: 1px solid var(--accent-color);
+        }
+        .status-completed { 
+            background: linear-gradient(135deg, #d1e7dd 0%, #00b894 100%);
+            color: #0f5132;
+            border: 1px solid var(--success-color);
+        }
+        .status-cancelled { 
+            background: linear-gradient(135deg, #f8d7da 0%, #e17055 100%);
+            color: #721c24;
+            border: 1px solid var(--error-color);
+        }
+        
+        /* 🎯 BRAND LOGO - ADJUST SIZE */
+        .brand-logo {
+            color: white;
+            font-size: 1.1rem; /* 🔧 CHANGE THIS: 1rem=small, 1.1rem=medium, 1.2rem=large */
+            font-weight: 700;
+            text-decoration: none;
+            padding: 18px; /* 🔧 CHANGE THIS: 15px=small, 18px=medium, 25px=large */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 18px;
+            font-family: "Poppins", sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logo {
+            max-height: 100px; /* 🔧 CHANGE THIS: 80px=small, 100px=medium, 150px=large */
+            max-width: 200px; /* 🔧 CHANGE THIS: 180px=small, 200px=medium, 250px=large */
+            height: auto;
+            width: auto;
+            margin-bottom: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .brand-text {
+            background: linear-gradient(135deg, var(--beige) 0%, var(--hero-cta-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.1rem; /* 🔧 CHANGE THIS: 1rem=small, 1.1rem=medium, 1.4rem=large */
+            font-weight: 600;
+        }
+
+        .brand-logo:hover .sidebar-logo {
+            transform: scale(1.05);
+            filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255,255,255,0.3));
+        }
+
+        .brand-logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .sidebar-logo.light-logo {
+            filter: none;
+        }
+        
+        /* 🎯 USER INFO - ADJUST PADDING */
+        .user-info {
+            background: rgba(255,255,255,0.1);
+            padding: 14px; /* 🔧 CHANGE THIS: 12px=small, 14px=medium, 20px=large */
+            margin: 12px; /* 🔧 CHANGE THIS: 10px=small, 12px=medium, 15px=large */
+            border-radius: 12px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem; /* 🔧 CHANGE THIS: 0.85rem=small, 0.9rem=medium, 1rem=large */
+        }
+        
+        /* 🎯 FORM ELEMENTS - ADJUST PADDING AND FONT SIZE */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 14px; /* 🔧 CHANGE THIS: 8px 12px=small, 10px 14px=medium, 12px 15px=large */
+            border: 2px solid var(--border-color);
+            transition: all var(--transition-base);
+            font-family: "Open Sans", sans-serif;
+            font-size: 0.95rem; /* 🔧 CHANGE THIS: 0.9rem=small, 0.95rem=medium, 1rem=large */
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(42, 157, 143, 0.25);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 7px;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.95rem; /* 🔧 CHANGE THIS: 0.9rem=small, 0.95rem=medium, 1rem=large */
+        }
+        
+        .card {
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--light-bg) 0%, rgba(42, 157, 143, 0.05) 100%);
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 16px 16px 0 0 !important;
+            padding: 18px; /* 🔧 CHANGE THIS: 15px=small, 18px=medium, 20px=large */
+        }
+        
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 12px 18px; /* 🔧 CHANGE THIS: 10px 15px=small, 12px 18px=medium, 15px 20px=large */
+            font-weight: 500;
+            font-size: 0.95rem; /* 🔧 CHANGE THIS: 0.9rem=small, 0.95rem=medium, 1rem=large */
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(42, 157, 143, 0.1) 0%, rgba(83, 192, 203, 0.1) 100%);
+            color: var(--success-color);
+            border-left: 3px solid var(--success-color);
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(231, 76, 60, 0.1) 100%);
+            color: var(--error-color);
+            border-left: 3px solid var(--error-color);
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(156, 108, 44, 0.1) 0%, rgba(241, 196, 15, 0.1) 100%);
+            color: var(--warning-color);
+            border-left: 3px solid var(--warning-color);
+        }
+        
+        .badge {
+            font-weight: 600;
+            padding: 5px 10px; /* 🔧 CHANGE THIS: 4px 8px=small, 5px 10px=medium, 8px 12px=large */
+            border-radius: 16px;
+            font-size: 0.75rem; /* 🔧 CHANGE THIS: 0.7rem=small, 0.75rem=medium, 0.8rem=large */
+        }
+        
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, var(--gray-blue) 0%, var(--text-muted) 100%) !important;
+        }
+        
+        .badge.bg-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 100%) !important;
+        }
+        
+        .badge.bg-danger {
+            background: linear-gradient(135deg, var(--error-color) 0%, #e17055 100%) !important;
+        }
+        
+        /* 🎯 TABLE - ADJUST PADDING AND FONT SIZE */
+        .table {
+            font-family: "Open Sans", sans-serif;
+            font-size: 0.9rem; /* 🔧 CHANGE THIS: 0.85rem=small, 0.9rem=medium, 1rem=large */
+        }
+        
+        .table th {
+            font-family: "Poppins", sans-serif;
+            font-weight: 600;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--border-color);
+            padding: 12px; /* 🔧 CHANGE THIS: 10px=small, 12px=medium, 15px=large */
+            font-size: 0.9rem; /* 🔧 CHANGE THIS: 0.85rem=small, 0.9rem=medium, 1rem=large */
+        }
+        
+        .table td {
+            padding: 12px; /* 🔧 CHANGE THIS: 10px=small, 12px=medium, 15px=large */
+            vertical-align: middle;
+            font-size: 0.85rem; /* 🔧 CHANGE THIS: 0.8rem=small, 0.85rem=medium, 0.95rem=large */
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(42, 157, 143, 0.05);
+        }
+        
+        .pagination .page-link {
+            border-radius: 8px;
+            margin: 0 2px;
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            padding: 8px 12px; /* 🔧 CHANGE THIS: 6px 10px=small, 8px 12px=medium, 10px 15px=large */
+            transition: all var(--transition-base);
+            font-size: 0.9rem; /* 🔧 CHANGE THIS: 0.85rem=small, 0.9rem=medium, 1rem=large */
+        }
+        
+        .pagination .page-link:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border-color: var(--primary-color);
+        }
+        
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            border-bottom: none;
+            padding: 18px 22px; /* 🔧 CHANGE THIS: 15px 20px=small, 18px 22px=medium, 20px 25px=large */
+        }
+        
+        .modal-title {
+            font-family: "Poppins", sans-serif;
+            font-weight: 700;
+            font-size: 1.15rem; /* 🔧 CHANGE THIS: 1.1rem=small, 1.15rem=medium, 1.3rem=large */
+        }
+        
+        .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            padding: 7px 14px; /* 🔧 CHANGE THIS: 6px 12px=small, 7px 14px=medium, 8px 15px=large */
+            transition: all var(--transition-base);
+            font-weight: 600;
+            font-size: 0.9rem; /* 🔧 CHANGE THIS: 0.85rem=small, 0.9rem=medium, 1rem=large */
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(42, 157, 143, 0.3);
+        }
+        
+        .btn-outline-secondary {
+            border: 2px solid var(--gray-blue);
+            color: var(--gray-blue);
+            border-radius: 8px;
+            padding: 7px 14px;
+            transition: all var(--transition-base);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: var(--gray-blue);
+            border-color: var(--gray-blue);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-weight: 600;
+            transition: all var(--transition-base);
+            font-size: 0.9rem;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.4);
+        }
+        
+        .btn-sm {
+            padding: 5px 10px; /* 🔧 CHANGE THIS: 4px 8px=small, 5px 10px=medium, 6px 12px=large */
+            font-size: 0.8rem; /* 🔧 CHANGE THIS: 0.75rem=small, 0.8rem=medium, 0.85rem=large */
+            border-radius: 6px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                width: 280px;
+                transition: left 0.3s ease;
+                z-index: 1050;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 15px;
+            }
+            
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1040;
+                display: none;
+            }
+            
+            .sidebar-overlay.show {
+                display: block;
+            }
+            
+            .stats-card {
+                margin-bottom: 18px;
+                padding: 18px;
+            }
+            
+            .page-header {
+                padding: 18px;
+                margin-bottom: 18px;
+            }
+            
+            .stats-number {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            
+            .brand-logo {
+                font-size: 1rem;
+                padding: 15px;
+            }
+            
+            .user-info {
+                padding: 12px;
+                margin: 10px;
+                font-size: 0.85rem;
+            }
+            
+            .sidebar .nav-link {
+                padding: 8px 15px;
+                margin: 3px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .stats-number {
+                font-size: 1.8rem;
+            }
+            
+            .stats-label {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Adjustable Sidebar -->
+        <div class="sidebar">
+            <a href="{% url 'custom_admin_dashboard' %}" class="brand-logo">
+                <img src="/static/img/JiraWala1-nobg-blue.png" alt="Jirawala Tours & Travels" class="sidebar-logo">
+                <span class="brand-text">Admin Panel</span>
+            </a>
+            
+            {% if user.is_authenticated %}
+            <div class="user-info">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-circle fa-lg me-2"></i>
+                    <div>
+                        <div class="fw-bold">{{ user.first_name|default:user.username }}</div>
+                        <small class="opacity-75">{{ user.email }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <nav class="nav flex-column">
+                <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_dashboard' %}active{% endif %}" 
+                   href="{% url 'custom_admin_dashboard' %}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a class="nav-link {% if 'booking' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'custom_admin_bookings' %}">
+                    <i class="fas fa-calendar-check"></i> Bookings
+                </a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_cars' %}active{% endif %}" 
+                   href="{% url 'custom_admin_cars' %}">
+                    <i class="fas fa-car"></i> Fleet Management
+                </a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_routes' %}active{% endif %}" 
+                   href="{% url 'custom_admin_routes' %}">
+                    <i class="fas fa-route"></i> Popular Routes
+                </a>
+                <hr class="text-white-50 mx-3">
+                <a class="nav-link" href="{% url 'home' %}" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View Website
+                </a>
+                <a class="nav-link" href="/admin/" target="_blank">
+                    <i class="fas fa-cog"></i> Django Admin
+                </a>
+                <a class="nav-link" href="{% url 'custom_admin_logout' %}">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content flex-grow-1">
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- Mobile sidebar overlay -->
+    <div class="sidebar-overlay d-md-none" id="sidebarOverlay"></div>
+
+    <!-- Mobile sidebar toggle button -->
+    <button class="btn btn-primary d-md-none position-fixed" 
+            style="top: 20px; left: 20px; z-index: 1060;" 
+            id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}
+    {% endblock %}
+
+    <script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (sidebarToggle && sidebar && overlay) {
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            });
+            
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            });
+        }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <title>Our Cars - Jirawala Tours & Travels</title>
+    <!-- Google Fonts - Poppins for headings, Open Sans for body -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- Lottie Car Loader Overlay -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+    <div id="lottie-loader-overlay" class="lottie-loader-overlay">
+        <dotlottie-wc src="https://lottie.host/14ea0282-988b-4258-9417-be917be925ae/Kv843m643w.lottie"
+            style="width: 300px;height: 300px" speed="1" autoplay></dotlottie-wc>
+    </div>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <div class="logo-section">
+                <a href="/" class="logo-link">
+                    <img src="{% static 'img/JiraWala1.png' %}" alt="Jirawala Tours & Travels Logo"
+                        class="logo img-fluid">
+                </a>
+            </div>
+            <div class="contact-info d-flex align-items-center">
+                <img src="{% static 'img/call-us-now.gif' %}" alt="Call Us Now" class="img-fluid">
+                <div>
+                    <small class="d-block">Call Us Now</small>
+                    <strong>+91 1234567890</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#about-us">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/popular-routes/">Popular Routes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/our-cars/">Our Cars</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blogs/">Our Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="/#booking-form" class="btn btn-dark-cta">Book a Taxi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Enhanced Page Header -->
+    <section class="enhanced-page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="enhanced-page-title">Our Fleet</h1>
+                    <p class="enhanced-page-subtitle">Choose from our diverse range of well-maintained, luxury vehicles
+                        designed for comfort and style</p>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Our Cars</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Our Cars Section -->
+    <section id="our-cars" class="enhanced-fleet-section">
+        <div class="container">
+            <!-- Filter Section -->
+            <div class="text-center mb-5">
+                <h2 class="enhanced-section-title">Choose Your Ride</h2>
+                <p class="enhanced-section-subtitle" id="car-count">
+                    {% if cars %}
+                    {{ cars|length }} premium vehicles available for your comfort and convenience
+                    {% else %}
+                    6 premium vehicles available for your comfort and convenience
+                    {% endif %}
+                </p>
+
+                <!-- Car Type Filters -->
+                <div class="enhanced-filter-buttons mb-4">
+                    <button class="enhanced-filter-btn active" data-filter="all">All</button>
+                    <button class="enhanced-filter-btn" data-filter="hatchback">Hatchback</button>
+                    <button class="enhanced-filter-btn" data-filter="sedan">Sedan</button>
+                    <button class="enhanced-filter-btn" data-filter="suv">SUV</button>
+                </div>
+            </div>
+
+            <!-- Enhanced Cars Grid - MADE MORE COMPACT -->
+            <div class="enhanced-cars-grid compact-grid" id="cars-grid">
+                {% for car in cars %}
+                <div class="enhanced-car-card compact-card" data-car-type="{{ car.car_type.name|lower }}" data-car-id="{{ car.id }}">
+                    <!-- Availability Badge -->
+                    <div class="enhanced-availability-badge">
+                        <span class="badge-available">Available</span>
+                    </div>
+
+                    <!-- Car Image with localStorage Integration - REDUCED HEIGHT -->
+                    <div class="enhanced-car-image compact-image">
+                        <img src="{% if car.image %}{{ car.image.url }}{% else %}{% if car.car_type.name|lower == 'hatchback' %}{% static 'img/car-hatchback.png' %}{% elif car.car_type.name|lower == 'sedan' %}{% static 'img/car-sedan.png' %}{% elif car.car_type.name|lower == 'suv' %}{% static 'img/car-suv.png' %}{% else %}{% static 'img/car-sedan.png' %}{% endif %}{% endif %}" 
+                             alt="{{ car.name }}" 
+                             class="car-img frontend-car-image" 
+                             data-car-id="{{ car.id }}"
+                             data-fallback-src="{% if car.car_type.name|lower == 'hatchback' %}{% static 'img/car-hatchback.png' %}{% elif car.car_type.name|lower == 'sedan' %}{% static 'img/car-sedan.png' %}{% elif car.car_type.name|lower == 'suv' %}{% static 'img/car-suv.png' %}{% else %}{% static 'img/car-sedan.png' %}{% endif %}">
+                        <div class="enhanced-image-overlay"></div>
+                    </div>
+
+                    <!-- Car Details - MADE MORE COMPACT -->
+                    <div class="enhanced-car-content compact-content">
+                        <!-- Header - REDUCED SPACING -->
+                        <div class="enhanced-car-header compact-header">
+                            <div class="enhanced-car-title-section">
+                                <h3 class="enhanced-car-name compact-name">{{ car.name }}</h3>
+                                <span class="enhanced-car-type-badge">{{ car.car_type.name }}</span>
+                            </div>
+                            <div class="enhanced-car-rating compact-rating">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span class="rating-value">4.5</span>
+                                </div>
+                                <p class="trip-count">150 trips</p>
+                            </div>
+                        </div>
+
+                        <!-- Car Info - REDUCED -->
+                        {% if car.registration_number or car.driver_name %}
+                        <div class="enhanced-car-info compact-info">
+                            {% if car.registration_number %}
+                            <div class="info-item">
+                                <i class="bi bi-car-front"></i>
+                                <span>{{ car.registration_number }}</span>
+                            </div>
+                            {% endif %}
+                            {% if car.driver_name %}
+                            <div class="info-item">
+                                <i class="bi bi-person"></i>
+                                <span>{{ car.driver_name }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Specifications - MADE MORE COMPACT -->
+                        <div class="enhanced-car-specs compact-specs">
+                            <div class="spec-item">
+                                <i class="bi bi-people"></i>
+                                <span>4 Seats</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-suitcase"></i>
+                                <span>2 Bags</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-fuel-pump"></i>
+                                <span>Petrol</span>
+                            </div>
+                        </div>
+
+                        <!-- Features - REDUCED TO ESSENTIAL ONLY -->
+                        <div class="enhanced-car-features compact-features">
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>AC & Professional Driver</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span class="text-success">Available Now</span>
+                            </div>
+                        </div>
+
+                        <!-- Price and Book Button -->
+                        <div class="enhanced-price-booking compact-booking">
+                            <div class="enhanced-price">
+                                {% if car.car_type.rate_per_km %}
+                                <span class="price-amount">₹{{ car.car_type.rate_per_km }}</span>
+                                <span class="price-unit">per km</span>
+                                {% else %}
+                                <span class="price-amount">₹15</span>
+                                <span class="price-unit">per km</span>
+                                {% endif %}
+                            </div>
+                            <button class="enhanced-book-btn car-book-now-btn" 
+                                data-car-type="{{ car.car_type.name|lower }}" 
+                                data-car-name="{{ car.name }}"
+                                data-car-id="{{ car.id }}">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hover Effect Overlay -->
+                    <div class="enhanced-hover-overlay"></div>
+                </div>
+                {% empty %}
+                <!-- Fallback cars if no dynamic cars available -->
+                <div class="enhanced-car-card compact-card" data-car-type="hatchback" data-car-id="fallback-1">
+                    <div class="enhanced-availability-badge">
+                        <span class="badge-available">Available</span>
+                    </div>
+                    <div class="enhanced-car-image compact-image">
+                        <img src="{% static 'img/car-hatchback.png' %}" alt="Hatchback" class="car-img frontend-car-image" data-car-id="fallback-1" data-fallback-src="{% static 'img/car-hatchback.png' %}">
+                        <div class="enhanced-image-overlay"></div>
+                    </div>
+                    <div class="enhanced-car-content compact-content">
+                        <div class="enhanced-car-header compact-header">
+                            <div class="enhanced-car-title-section">
+                                <h3 class="enhanced-car-name compact-name">Hatchback</h3>
+                                <span class="enhanced-car-type-badge">Hatchback</span>
+                            </div>
+                            <div class="enhanced-car-rating compact-rating">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span class="rating-value">4.5</span>
+                                </div>
+                                <p class="trip-count">150 trips</p>
+                            </div>
+                        </div>
+                        <div class="enhanced-car-specs compact-specs">
+                            <div class="spec-item">
+                                <i class="bi bi-people"></i>
+                                <span>4 Seats</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-suitcase"></i>
+                                <span>1 Bag</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-fuel-pump"></i>
+                                <span>Petrol</span>
+                            </div>
+                        </div>
+                        <div class="enhanced-car-features compact-features">
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>AC & Professional Driver</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>City rides, Budget trips</span>
+                            </div>
+                        </div>
+                        <div class="enhanced-price-booking compact-booking">
+                            <div class="enhanced-price">
+                                <span class="price-amount">₹12</span>
+                                <span class="price-unit">per km</span>
+                            </div>
+                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="hatchback">Book Now</button>
+                        </div>
+                    </div>
+                    <div class="enhanced-hover-overlay"></div>
+                </div>
+
+                <!-- Add more fallback cars for Sedan and SUV -->
+                <div class="enhanced-car-card compact-card" data-car-type="sedan" data-car-id="fallback-2">
+                    <div class="enhanced-availability-badge">
+                        <span class="badge-available">Available</span>
+                    </div>
+                    <div class="enhanced-car-image compact-image">
+                        <img src="{% static 'img/car-sedan.png' %}" alt="Sedan" class="car-img frontend-car-image" data-car-id="fallback-2" data-fallback-src="{% static 'img/car-sedan.png' %}">
+                        <div class="enhanced-image-overlay"></div>
+                    </div>
+                    <div class="enhanced-car-content compact-content">
+                        <div class="enhanced-car-header compact-header">
+                            <div class="enhanced-car-title-section">
+                                <h3 class="enhanced-car-name compact-name">Sedan</h3>
+                                <span class="enhanced-car-type-badge">Sedan</span>
+                            </div>
+                            <div class="enhanced-car-rating compact-rating">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span class="rating-value">4.7</span>
+                                </div>
+                                <p class="trip-count">200 trips</p>
+                            </div>
+                        </div>
+                        <div class="enhanced-car-specs compact-specs">
+                            <div class="spec-item">
+                                <i class="bi bi-people"></i>
+                                <span>4 Seats</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-suitcase"></i>
+                                <span>3 Bags</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-fuel-pump"></i>
+                                <span>Petrol</span>
+                            </div>
+                        </div>
+                        <div class="enhanced-car-features compact-features">
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Premium Interior & Driver</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Outstation, Family trips</span>
+                            </div>
+                        </div>
+                        <div class="enhanced-price-booking compact-booking">
+                            <div class="enhanced-price">
+                                <span class="price-amount">₹15</span>
+                                <span class="price-unit">per km</span>
+                            </div>
+                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="sedan">Book Now</button>
+                        </div>
+                    </div>
+                    <div class="enhanced-hover-overlay"></div>
+                </div>
+
+                <div class="enhanced-car-card compact-card" data-car-type="suv" data-car-id="fallback-3">
+                    <div class="enhanced-availability-badge">
+                        <span class="badge-available">Available</span>
+                    </div>
+                    <div class="enhanced-car-image compact-image">
+                        <img src="{% static 'img/car-suv.png' %}" alt="SUV" class="car-img frontend-car-image" data-car-id="fallback-3" data-fallback-src="{% static 'img/car-suv.png' %}">
+                        <div class="enhanced-image-overlay"></div>
+                    </div>
+                    <div class="enhanced-car-content compact-content">
+                        <div class="enhanced-car-header compact-header">
+                            <div class="enhanced-car-title-section">
+                                <h3 class="enhanced-car-name compact-name">SUV</h3>
+                                <span class="enhanced-car-type-badge">SUV</span>
+                            </div>
+                            <div class="enhanced-car-rating compact-rating">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span class="rating-value">4.6</span>
+                                </div>
+                                <p class="trip-count">180 trips</p>
+                            </div>
+                        </div>
+                        <div class="enhanced-car-specs compact-specs">
+                            <div class="spec-item">
+                                <i class="bi bi-people"></i>
+                                <span>7 Seats</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-suitcase"></i>
+                                <span>5 Bags</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="bi bi-fuel-pump"></i>
+                                <span>Diesel</span>
+                            </div>
+                        </div>
+                        <div class="enhanced-car-features compact-features">
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Group Travel & Driver</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Group travel, Hill stations</span>
+                            </div>
+                        </div>
+                        <div class="enhanced-price-booking compact-booking">
+                            <div class="enhanced-price">
+                                <span class="price-amount">₹18</span>
+                                <span class="price-unit">per km</span>
+                            </div>
+                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="suv">Book Now</button>
+                        </div>
+                    </div>
+                    <div class="enhanced-hover-overlay"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Our Fleet Section -->
+    <section class="enhanced-why-choose-section">
+        <div class="container">
+            <div class="enhanced-why-choose-content">
+                <div class="enhanced-why-choose-text">
+                    <h2 class="enhanced-section-title text-start">Why Choose Our Fleet?</h2>
+                    <p class="lead">Experience premium comfort and reliability with our carefully selected and maintained vehicle fleet.</p>
+                    <div class="enhanced-feature-list">
+                        <div class="enhanced-feature-item">
+                            <div class="feature-icon">
+                                <i class="bi bi-shield-check-fill"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h5>Fully Insured Vehicles</h5>
+                                <p>All our vehicles are comprehensively insured for your complete peace of mind.</p>
+                            </div>
+                        </div>
+
+                        <div class="enhanced-feature-item">
+                            <div class="feature-icon">
+                                <i class="bi bi-tools"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h5>Regular Maintenance</h5>
+                                <p>Our vehicles undergo regular servicing and safety checks to ensure optimal
+                                    performance.</p>
+                            </div>
+                        </div>
+
+                        <div class="enhanced-feature-item">
+                            <div class="feature-icon">
+                                <i class="bi bi-person-check-fill"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h5>Professional Drivers</h5>
+                                <p>Experienced and licensed drivers who know the routes and prioritize your safety.</p>
+                            </div>
+                        </div>
+
+                        <div class="enhanced-feature-item">
+                            <div class="feature-icon">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h5>GPS Tracking</h5>
+                                <p>Real-time tracking for enhanced security and route optimization.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="/#booking-form" class="enhanced-cta-btn">Book Your Ride</a>
+                </div>
+                <div class="enhanced-why-choose-image">
+                    <img src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=800"
+                        alt="Premium fleet vehicles" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Keep your existing footer and other sections -->
+    <!-- ... (rest of your existing HTML) ... -->
+    <!-- Unique Animated Footer -->
+    <footer class="unique-footer">
+        <!-- Main Footer Content -->
+        <div class="footer-main">
+            <div class="container">
+                <div class="row gy-5">
+                    <!-- Company Info Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <img src="{% static 'img/JiraWala1-nobg-blue.png' %}" alt="Jirawala Logo"
+                                class="footer-logo mb-3"><br>
+                            <h4 class="brand-tagline">Your Journey, Our Wheels</h4>
+                            <p class="brand-description">
+                                Experience premium interstate car rentals with Jirawala Tours & Travels.
+                                Reliable, comfortable, and seamless transportation across India.
+                            </p>
+                            <div class="footer-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">15+</span>
+                                    <span class="stat-label">Years</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">50K+</span>
+                                    <span class="stat-label">Happy Customers</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">500+</span>
+                                    <span class="stat-label">Vehicles</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Column -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Quick Links</h5>
+                            <ul class="footer-menu">
+                                <li><a href="/"><i class="bi bi-chevron-right"></i>Home</a></li>
+                                <li><a href="/#about-us"><i class="bi bi-chevron-right"></i>About Us</a></li>
+                                <li><a href="/#services"><i class="bi bi-chevron-right"></i>Services</a></li>
+                                <li><a href="/our-cars/"><i class="bi bi-chevron-right"></i>Our Fleet</a></li>
+                                <li><a href="/#booking-form"><i class="bi bi-chevron-right"></i>Book Now</a></li>
+                                <li><a href="/#testimonials"><i class="bi bi-chevron-right"></i>Reviews</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Services Column -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Our Services</h5>
+                            <ul class="footer-menu">
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Interstate Travel</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Business Trips</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Tour Packages</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-contact">
+                            <h5 class="footer-title">Get In Touch</h5>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Visit Us</h6>
+                                    <p>123 Travel Lane, Ahmedabad<br>Gujarat, India - 380001</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-telephone-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Call Us</h6>
+                                    <p><a href="tel:+911234567890">+91-1234567890</a><br>
+                                        <a href="tel:+911234567891">+91-1234567891</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Email Us</h6>
+                                    <p><a href="mailto:info@jirawala.com">info@jirawala.com</a><br>
+                                        <a href="mailto:booking@jirawala.com">booking@jirawala.com</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animated Cars Section -->
+        <div class="animated-cars-section">
+            <div class="road"></div>
+            <div class="car-animation">
+                <div class="car car-1">
+                    <div class="car-body"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-2">
+                    <div class="car-body sedan"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-3">
+                    <div class="car-body suv"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="copyright">
+                            <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="footer-social">
+                            <span>Follow Us:</span>
+                            <div class="social-links">
+                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-link facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="mailto:info@jirawala.com" class="social-link email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Call Button -->
+    <a href="tel:+911234567890" class="floating-btn call-btn" aria-label="Call Us">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-phone">
+            <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+    </a>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/+911234567890" target="_blank" class="floating-whatsapp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- Bootstrap JS CDN (Popper.js and Bootstrap Bundle) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <!-- Car Selection Notification -->
+    <div id="carSelectionNotification" class="car-selection-notification">
+        <div class="notification-content">
+            <i class="bi bi-check-circle-fill"></i>
+            <span id="notificationText">Car selected! Redirecting to booking form...</span>
+        </div>
+    </div>
+
+    <!-- ✅ UPDATED: Frontend localStorage Image Integration Script - NO VISUAL INDICATORS -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚗 Initializing frontend car image integration...');
+        
+        // =====================================================
+        // FRONTEND LOCALSTORAGE IMAGE INTEGRATION - CLEAN VERSION
+        // =====================================================
+        
+        const CAR_IMAGES_KEY = 'car_images_storage';
+        
+        function getStoredImages() {
+            try {
+                return JSON.parse(localStorage.getItem(CAR_IMAGES_KEY)) || {};
+            } catch (e) {
+                console.warn('Error reading stored images:', e);
+                return {};
+            }
+        }
+        
+        function loadFrontendCarImages() {
+            const storedImages = getStoredImages();
+            const carImages = document.querySelectorAll('.frontend-car-image');
+            
+            console.log('📸 Found', carImages.length, 'car images to process');
+            console.log('💾 Stored images:', Object.keys(storedImages));
+            
+            carImages.forEach(img => {
+                const carId = img.getAttribute('data-car-id');
+                const fallbackSrc = img.getAttribute('data-fallback-src');
+                
+                if (carId && storedImages[carId]) {
+                    // Load image from localStorage - NO VISUAL INDICATORS
+                    img.src = storedImages[carId];
+                    console.log('✅ Loaded stored image for car ID:', carId);
+                } else if (fallbackSrc) {
+                    // Use fallback image
+                    img.src = fallbackSrc;
+                    console.log('📷 Using fallback image for car ID:', carId);
+                } else {
+                    console.log('ℹ️ No stored or fallback image for car ID:', carId);
+                }
+                
+                // Handle image load errors
+                img.addEventListener('error', function() {
+                    if (fallbackSrc && this.src !== fallbackSrc) {
+                        console.log('⚠️ Image failed to load, using fallback for car ID:', carId);
+                        this.src = fallbackSrc;
+                    }
+                });
+                
+                // Add smooth loading effect
+                img.addEventListener('load', function() {
+                    this.style.opacity = '0';
+                    this.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => {
+                        this.style.opacity = '1';
+                    }, 100);
+                });
+            });
+        }
+    
+    // =====================================================
+    // 🆕 NEW: BOOK NOW FUNCTIONALITY FOR OUR CARS PAGE
+    // =====================================================
+    
+    function initializeOurCarsBookingButtons() {
+        console.log('🚗 Initializing Our Cars page booking buttons...');
+        
+        // Handle car booking buttons on our-cars.html page
+        const carBookNowButtons = document.querySelectorAll('.car-book-now-btn');
+        
+        carBookNowButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('🚗 Car Book Now button clicked');
+                
+                const carType = this.getAttribute('data-car-type');
+                const carName = this.getAttribute('data-car-name') || carType;
+                const carId = this.getAttribute('data-car-id');
+                
+                console.log('📋 Car details:', { carType, carName, carId });
+                
+                // Show notification
+                showCarBookingNotification(carName, carType);
+                
+                // Redirect to homepage booking form after a short delay
+                setTimeout(() => {
+                    console.log('🔄 Redirecting to homepage booking form...');
+                    window.location.href = '/#booking-form';
+                }, 1500);
+            });
+        });
+        
+        console.log(`✅ Initialized ${carBookNowButtons.length} car booking buttons`);
+    }
+    
+    // Show car booking notification for Our Cars page
+    function showCarBookingNotification(carName, carType) {
+        const notification = document.getElementById('carSelectionNotification');
+        const notificationText = document.getElementById('notificationText');
+        
+        if (notification && notificationText) {
+            notificationText.textContent = `${carName} selected! Redirecting to booking form...`;
+            notification.classList.add('show');
+            
+            // Hide notification after redirect
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        } else {
+            // Create notification if it doesn't exist
+            const newNotification = document.createElement('div');
+            newNotification.className = 'car-selection-notification show';
+            newNotification.innerHTML = `
+                <div class="notification-content">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>${carName} selected! Redirecting to booking form...</span>
+                </div>
+            `;
+            
+            document.body.appendChild(newNotification);
+            
+            // Remove notification after redirect
+            setTimeout(() => {
+                if (newNotification.parentNode) {
+                    newNotification.parentNode.removeChild(newNotification);
+                }
+            }, 2000);
+        }
+    }
+    
+    // =====================================================
+    // 🆕 NEW: CAR FILTERING FUNCTIONALITY
+    // =====================================================
+    
+    function initializeCarFiltering() {
+        console.log('🔍 Initializing car filtering...');
+        
+        const filterButtons = document.querySelectorAll('.enhanced-filter-btn');
+        const carCards = document.querySelectorAll('.enhanced-car-card');
+        
+        if (filterButtons.length === 0) {
+            console.log('ℹ️ No filter buttons found');
+            return;
+        }
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const filterValue = this.getAttribute('data-filter');
+                console.log('🔍 Filter clicked:', filterValue);
+                
+                // Remove active from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active to clicked button
+                this.classList.add('active');
+                
+                let visibleCount = 0;
+                
+                // Filter car items
+                carCards.forEach(item => {
+                    const carType = item.getAttribute('data-car-type');
+                    const shouldShow = filterValue === 'all' || carType === filterValue;
+                    
+                    if (shouldShow) {
+                        item.style.display = 'block';
+                        item.style.opacity = '1';
+                        item.style.transform = 'scale(1)';
+                        visibleCount++;
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                
+                console.log(`✅ Filtered: ${visibleCount} cars visible`);
+                
+                // Update car count
+                const carCountElement = document.getElementById('car-count');
+                if (carCountElement) {
+                    const totalText = filterValue === 'all' ? 
+                        `${visibleCount} premium vehicles available for your comfort and convenience` :
+                        `${visibleCount} ${filterValue} vehicles available`;
+                    carCountElement.textContent = totalText;
+                }
+            });
+        });
+        
+        // Auto-click "All" button
+        const allButton = Array.from(filterButtons).find(btn => btn.getAttribute('data-filter') === 'all');
+        if (allButton) {
+            setTimeout(() => {
+                allButton.click();
+            }, 500);
+        }
+        
+        console.log(`✅ Initialized filtering for ${filterButtons.length} buttons and ${carCards.length} cars`);
+    }
+    
+    // =====================================================
+    // INITIALIZE ON PAGE LOAD
+    // =====================================================
+    
+    // Load images immediately
+    loadFrontendCarImages();
+    
+    // Initialize Book Now functionality
+    initializeOurCarsBookingButtons();
+    
+    // Initialize car filtering
+    initializeCarFiltering();
+    
+    // Also load images after a short delay to ensure DOM is fully ready
+    setTimeout(loadFrontendCarImages, 500);
+    
+    // Listen for storage changes (if admin updates images in another tab)
+    window.addEventListener('storage', function(e) {
+        if (e.key === CAR_IMAGES_KEY) {
+            console.log('🔄 Storage updated, reloading car images...');
+            setTimeout(loadFrontendCarImages, 100);
+        }
+    });
+    
+    console.log('✅ Frontend car image integration and booking functionality initialized successfully!');
+});
+</script>
+
+<!-- 🆕 NEW: Additional CSS for Our Cars Page Functionality -->
+<style>
+/* Car Selection Notification Styles */
+.car-selection-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #2a9d8f 0%, #53c0cb 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+    z-index: 1050;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 300px;
+}
+
+.car-selection-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.notification-content i {
+    font-size: 1.2rem;
+    animation: checkPulse 1.5s ease-out;
+}
+
+@keyframes checkPulse {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Enhanced Filter Button Animations */
+.enhanced-filter-btn {
+    transition: all 0.3s ease;
+}
+
+.enhanced-filter-btn.active {
+    background-color: #2a9d8f !important;
+    color: white !important;
+    border-color: #2a9d8f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+}
+
+/* Smooth Car Card Transitions */
+.enhanced-car-card {
+    transition: all 0.3s ease;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .car-selection-notification {
+        right: 10px;
+        top: 10px;
+        max-width: 250px;
+    }
+    
+    .notification-content {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .car-selection-notification {
+        right: 5px;
+        top: 5px;
+        max-width: 200px;
+        padding: 10px 15px;
+    }
+    
+    .notification-content {
+        font-size: 0.75rem;
+    }
+}
+</style>
+
+</body>
+
+</html>

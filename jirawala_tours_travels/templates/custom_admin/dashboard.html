@@ -1,0 +1,232 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Dashboard - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid #3b82f6;
+    }
+    .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #1f2937;
+    }
+    .stats-label {
+        color: #6b7280;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .recent-bookings {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .booking-row {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem;
+        transition: background-color 0.2s;
+    }
+    .booking-row:hover {
+        background-color: #f9fafb;
+    }
+    .booking-row:last-child {
+        border-bottom: none;
+    }
+    .booking-id-link {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+    .booking-id-link:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    .status-confirmed {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    .status-completed {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    .status-cancelled {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                Dashboard
+            </h2>
+            <p class="text-muted mb-0">Welcome back, {{ user.first_name|default:user.username }}!</p>
+        </div>
+        <div class="text-muted">
+            <i class="fas fa-calendar me-1"></i>
+            {{ "now"|date:"F d, Y" }}
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stats-number">{{ total_bookings }}</div>
+                    <div class="stats-label">Total Bookings</div>
+                </div>
+                <div class="text-primary">
+                    <i class="fas fa-calendar-check fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stats-number text-warning">{{ pending_bookings }}</div>
+                    <div class="stats-label">Pending</div>
+                </div>
+                <div class="text-warning">
+                    <i class="fas fa-clock fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stats-number text-success">{{ confirmed_bookings }}</div>
+                    <div class="stats-label">Confirmed</div>
+                </div>
+                <div class="text-success">
+                    <i class="fas fa-check-circle fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stats-number text-info">₹ {{ monthly_revenue|floatformat:0 }}</div>
+                    <div class="stats-label">This Month Revenue</div>
+                </div>
+                <!-- <div class="text-info">
+                    <i class="fas fa-rupee-sign fa-2x"></i>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Bookings -->
+<div class="table-card">
+    <div class="card-header bg-white border-0 p-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>
+                Recent Bookings
+            </h5>
+            <a href="{% url 'custom_admin_bookings' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-eye me-1"></i>
+                View All
+            </a>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer</th>
+                    <th>Route</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in recent_bookings %}
+                <tr>
+                    <td>
+                        <strong class="text-primary">{{ booking.booking_id }}</strong>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>{{ booking.name }}</strong><br>
+                            <small class="text-muted">{{ booking.email }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>{{ booking.origin }}</strong><br>
+                            <small class="text-muted">→ {{ booking.destination }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>{{ booking.datetime|date:"M d, Y" }}</strong><br>
+                            <small class="text-muted">{{ booking.datetime|time:"H:i" }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge status-{{ booking.status }}">
+                            {{ booking.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <strong>₹{{ booking.price|floatformat:0 }}</strong>
+                    </td>
+                    <td>
+                        <a href="{% url 'custom_admin_booking_detail' booking.id %}" 
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <i class="fas fa-inbox fa-2x text-muted mb-2"></i><br>
+                        <span class="text-muted">No bookings found</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
