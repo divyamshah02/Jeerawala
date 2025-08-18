@@ -27,7 +27,7 @@ from .models import Inquiry, CarType, Car, PopularRoute, BookingStatusHistory, G
 from .serializers import InquirySerializer, BookingCreateSerializer, CarSerializer
 
 logger = logging.getLogger(__name__)
-
+# hello
 def is_admin_user(user):
     """Check if user is admin (superuser or staff)"""
     return user.is_authenticated and (user.is_superuser or user.is_staff)
