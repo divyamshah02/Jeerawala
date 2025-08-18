@@ -3,6 +3,64 @@
 {% block title %}Fleet Management - Admin Panel{% endblock %}
 
 {% block content %}
+
+<!-- Additional CSS for better image preview styling -->
+<style>
+.image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.image-preview-wrapper img {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.image-preview-wrapper img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.image-preview-wrapper .btn {
+    transition: all 0.2s ease;
+}
+
+.image-preview-wrapper .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Current image display styling */
+#current_image_display img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* No image placeholder styling */
+.no-image-placeholder {
+    transition: all 0.3s ease;
+}
+
+.no-image-placeholder:hover {
+    background-color: #e9ecef !important;
+}
+
+/* Success state for new image in edit modal */
+#edit_image_preview {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .image-preview-wrapper img,
+    #current_image_display img,
+    .no-image-placeholder {
+        max-width: 150px;
+        max-height: 112px;
+    }
+}
+</style>
+
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-center">
         <div>
@@ -25,11 +83,9 @@
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>
+                    <th>Image</th>
                     <th>Car Name</th>
-                    <th>Registration</th>
                     <th>Type</th>
-                    <th>Driver</th>
-                    <th>Contact</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -37,38 +93,46 @@
             <tbody>
                 {% for car in cars %}
                 <tr>
-                    <td><strong>{{ car.1 }}</strong></td>  <!-- car.name -->
-                    <td><code>{{ car.2 }}</code></td>     <!-- car.registration_number -->
                     <td>
-                        <span class="badge bg-secondary">{{ car.6 }}</span>  <!-- car_type_name -->
+                        {% if car.6 %}
+                            {% if car.5 %}
+                                <img src="{{ car.5 }}" alt="{{ car.1 }}" 
+                                     style="width: 50px; height: 35px; object-fit: cover; border-radius: 4px;">
+                            {% else %}
+                                <span class="text-muted">No image</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">No image</span>
+                        {% endif %}
                     </td>
-                    <td>{{ car.4|default:"-" }}</td>      <!-- car.driver_name -->
-                    <td>{{ car.5|default:"-" }}</td>      <!-- car.driver_contact -->
+                    <td><strong>{{ car.1 }}</strong></td>  <!-- car.name -->
                     <td>
-                        {% if car.3 %}  <!-- car.is_available -->
+                        <span class="badge bg-secondary">{{ car.3 }}</span>  <!-- car_type_name -->
+                    </td>
+                    <td>
+                        {% if car.2 %}  <!-- car.is_available -->
                             <span class="badge bg-success">Available</span>
                         {% else %}
                             <span class="badge bg-danger">Busy</span>
                         {% endif %}
                     </td>
                     <td>
+                        <!-- Removed data attributes for registration, driver name, and driver contact -->
                         <button class="btn btn-sm btn-outline-primary edit-car-btn" 
                                 data-car-id="{{ car.0 }}"
                                 data-car-name="{{ car.1 }}"
-                                data-car-registration="{{ car.2 }}"
-                                data-car-available="{{ car.3 }}"
-                                data-car-driver-name="{{ car.4|default:'' }}"
-                                data-car-driver-contact="{{ car.5|default:'' }}"
-                                data-car-type-id="{{ car.7 }}"
-                                data-car-type-name="{{ car.6 }}"
-                                title="Edit Car - Type ID: {{ car.7 }}">
+                                data-car-available="{{ car.2 }}"
+                                data-car-type-id="{{ car.4 }}"
+                                data-car-type-name="{{ car.3 }}"
+                                data-car-image="{{ car.5 }}"
+                                title="Edit Car - Type ID: {{ car.4 }}">
                             <i class="fas fa-edit"></i>
                         </button>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center py-4">
+                    <td colspan="5" class="text-center py-4">
                         <i class="fas fa-car fa-2x text-muted mb-2"></i><br>
                         <span class="text-muted">No cars found</span>
                     </td>
@@ -95,10 +159,7 @@
                         <label class="form-label">Car Name</label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Registration Number</label>
-                        <input type="text" name="registration_number" class="form-control" required>
-                    </div>
+                    <!-- Removed Registration Number field -->
                     <div class="mb-3">
                         <label class="form-label">Car Type</label>
                         <select name="car_type" class="form-select" required>
@@ -127,14 +188,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Driver Name</label>
-                        <input type="text" name="driver_name" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Driver Contact</label>
-                        <input type="text" name="driver_contact" class="form-control">
-                    </div>
+                    <!-- Removed Driver Name and Driver Contact fields -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -165,10 +219,7 @@
                         <label class="form-label">Car Name *</label>
                         <input type="text" name="name" id="edit_car_name" class="form-control" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Registration Number *</label>
-                        <input type="text" name="registration_number" id="edit_car_registration" class="form-control" required>
-                    </div>
+                    <!-- Removed Registration Number field -->
                     <div class="mb-3">
                         <label class="form-label">Car Type *</label>
                         <select name="car_type_id" id="edit_car_type" class="form-select">
@@ -214,23 +265,49 @@
                             </label>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Driver Name</label>
-                        <input type="text" name="driver_name" id="edit_driver_name" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Driver Contact</label>
-                        <input type="text" name="driver_contact" id="edit_driver_contact" class="form-control">
-                    </div>
+                    <!-- Removed Driver Name and Driver Contact fields -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger me-auto" id="deleteCarBtn">
+                        <i class="fas fa-trash me-1"></i>
+                        Delete
+                    </button>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save me-1"></i>
                         Update Car
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Car Confirmation Modal -->
+<div class="modal fade" id="deleteCarModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this car?</p>
+                <p><strong><span id="deleteCarInfo"></span></strong></p>
+                <p class="text-danger">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" id="deleteCarForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_car">
+                    <input type="hidden" name="car_id" id="delete_car_id">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>
+                        Delete Car
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -379,19 +456,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // =====================================================
     
     function displayCurrentCarImage(carId) {
-        const currentImageDisplay = document.getElementById('current_image_display');
-        if (!currentImageDisplay || !carId) return;
+    const currentImageDisplay = document.getElementById('current_image_display');
+    if (!currentImageDisplay || !carId) return;
+    
+    // Get stored image
+    const storedImage = getStoredCarImage(carId);
+    
+    if (storedImage) {
+        // Display stored image
+        currentImageDisplay.innerHTML = `
+            <img src="${storedImage}" alt="Current car image" 
+                 style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #6c757d; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        `;
+        console.log('✅ Displaying stored image for car ID:', carId);
+    } else {
+        // Check if car has an image URL from the server
+        const editButton = document.querySelector(`[data-car-id="${carId}"]`);
+        const carImageUrl = editButton ? editButton.getAttribute('data-car-image') : null;
         
-        // Get stored image
-        const storedImage = getStoredCarImage(carId);
-        
-        if (storedImage) {
-            // Display stored image
+        if (carImageUrl && carImageUrl !== 'None' && carImageUrl !== '') {
+            // Display server image
             currentImageDisplay.innerHTML = `
-                <img src="${storedImage}" alt="Current car image" 
+                <img src="${carImageUrl}" alt="Current car image" 
                      style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #6c757d; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
             `;
-            console.log('✅ Displaying stored image for car ID:', carId);
+            console.log('✅ Displaying server image for car ID:', carId);
         } else {
             // Show no image placeholder
             currentImageDisplay.innerHTML = `
@@ -402,9 +491,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
-            console.log('ℹ️ No stored image found for car ID:', carId);
+            console.log('ℹ️ No image found for car ID:', carId);
         }
     }
+}
     
     // =====================================================
     // FORM SUBMISSION HANDLING
@@ -520,19 +610,13 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const carId = this.getAttribute('data-car-id');
             const carName = this.getAttribute('data-car-name');
-            const carRegistration = this.getAttribute('data-car-registration');
             const carAvailable = this.getAttribute('data-car-available') === 'True';
-            const driverName = this.getAttribute('data-car-driver-name');
-            const driverContact = this.getAttribute('data-car-driver-contact');
             const carTypeId = this.getAttribute('data-car-type-id');
             
             // Populate form fields
             document.getElementById('edit_car_id').value = carId;
             document.getElementById('edit_car_name').value = carName || '';
-            document.getElementById('edit_car_registration').value = carRegistration || '';
             document.getElementById('edit_car_available').checked = carAvailable;
-            document.getElementById('edit_driver_name').value = driverName || '';
-            document.getElementById('edit_driver_contact').value = driverContact || '';
             
             // Set car type
             const carTypeSelect = document.getElementById('edit_car_type');
@@ -562,6 +646,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // =====================================================
+    // DELETE CAR FUNCTIONALITY
+    // =====================================================
+    
+    // Handle delete button in edit modal
+    document.getElementById('deleteCarBtn').addEventListener('click', function() {
+        const carId = document.getElementById('edit_car_id').value;
+        const carName = document.getElementById('edit_car_name').value;
+        
+        // Set delete modal data
+        document.getElementById('delete_car_id').value = carId;
+        document.getElementById('deleteCarInfo').textContent = carName;
+        
+        // Hide edit modal and show delete modal
+        const editModal = bootstrap.Modal.getInstance(document.getElementById('editCarModal'));
+        editModal.hide();
+        
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteCarModal'));
+        deleteModal.show();
+    });
+    
     // Form validation
     if (editForm) {
         editForm.addEventListener('submit', function(e) {
@@ -580,60 +685,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Additional CSS for better image preview styling -->
-<style>
-.image-preview-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.image-preview-wrapper img {
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.image-preview-wrapper img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.image-preview-wrapper .btn {
-    transition: all 0.2s ease;
-}
-
-.image-preview-wrapper .btn:hover {
-    transform: translateY(-1px);
-}
-
-/* Current image display styling */
-#current_image_display img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-/* No image placeholder styling */
-.no-image-placeholder {
-    transition: all 0.3s ease;
-}
-
-.no-image-placeholder:hover {
-    background-color: #e9ecef !important;
-}
-
-/* Success state for new image in edit modal */
-#edit_image_preview {
-    border-color: #28a745 !important;
-    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
-
-/* Responsive adjustments */
-@media (max-width: 576px) {
-    .image-preview-wrapper img,
-    #current_image_display img,
-    .no-image-placeholder {
-        max-width: 150px;
-        max-height: 112px;
-    }
-}
-</style>
 {% endblock %}

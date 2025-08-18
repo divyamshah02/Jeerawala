@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <!-- Added CSRF token for consistency with other pages -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <title>Gallery - Jirawala Tours & Travels</title>
+    <meta name="description" content="Explore our collection of travel moments and beautiful destinations captured during our taxi services">
+    
+    <!-- Updated Google Fonts to match other pages - Poppins for headings, Open Sans for body -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <!-- Updated Bootstrap CSS CDN to match other pages -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- FancyBox CSS for image gallery -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css"/>
+
+    <!-- Added phone link styling to match other pages -->
+    <style>
+        .top-header .contact-info strong a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+        .top-header .contact-info strong a:hover {
+            text-decoration: underline !important;
+        }
+        /* Added fade-out class for Lottie loader */
+        .fade-out {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .enhanced-cta-btn {
+            display: inline-block;
+            background: #C29E2E;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+            margin-top: 1rem;
+        }
+
+        .enhanced-cta-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 157, 143, 0.4);
+        }
+
+        /* ---- Gallery: unified, responsive grid ---- */
+        #galleryGrid.jg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            #galleryGrid.jg-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 12px;
+            }
+        }
+
+        /* Card */
+        .jg-item {
+            list-style: none;
+        }
+        
+        .jg-card {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(0,0,0,.06);
+        transition: transform .2s ease, box-shadow .2s ease;
+        }
+        
+        .jg-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0,0,0,.10);
+        }
+
+        /* Thumbnail with fixed aspect ratio for uniform heights */
+        .jg-thumb {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #f8f9fa;
+            position: relative;
+        }
+        .jg-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Overlay */
+        .jg-overlay {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        padding: 10px 12px;
+        color: #fff;
+        background: linear-gradient(transparent, rgba(0,0,0,.65));
+        transform: translateY(100%);
+        transition: transform .25s ease;
+        }
+        
+        .jg-card:hover .jg-overlay {
+            transform: translateY(0);
+        }
+        .jg-title {
+            margin: 0 0 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .jg-desc {
+            margin: 0;
+            font-size: 12px;
+            opacity: .9;
+        }
+
+        /* Filters / utility */
+        .gallery-filter-btn.active {
+            background: #147a7e;
+            color: #fff;
+        }
+
+        /* Loading / error helpers (kept from your fallback) */
+        .gallery-image {
+            background-color: #f8f9fa;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gallery-image.loading {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='%23ddd'%3E%3Cpath d='M20 0a20 20 0 1 1 0 40 20 20 0 0 1 0-40zm0 4a16 16 0 1 0 0 32 16 16 0 0 0 0-32z'/%3E%3Cpath d='M20 8a12 12 0 1 1 0 24 12 12 0 0 1 0-24zm0 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .gallery-image.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-size: 14px;
+        }
+        .gallery-image.error::before {
+            content: "⚠️ Image not available";
+        }
+
+        /* Optional grid-span helpers if you ever want them */
+        #galleryGrid .grid-span-1 {
+            grid-row: span 1;
+            grid-column: span 1;
+        }
+        #galleryGrid .grid-span-2 {
+            grid-row: span 2;
+            grid-column: span 1;
+        }
+        #galleryGrid .grid-span-wide {
+            grid-row: span 1;
+            grid-column: span 2;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Lottie Car Loader Overlay -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+    <div id="lottie-loader-overlay" class="lottie-loader-overlay">
+        <dotlottie-wc src="https://lottie.host/14ea0282-988b-4258-9417-be917be925ae/Kv843m643w.lottie"
+            style="width: 300px;height: 300px" speed="1" autoplay></dotlottie-wc>
+    </div>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <div class="logo-section">
+                <a href="/" class="logo-link">
+                    <img src="{% static 'img/JiraWala1.png' %}" alt="Jirawala Tours & Travels Logo"
+                        class="logo img-fluid">
+                </a>
+            </div>
+            <div class="contact-info d-flex align-items-center">
+                <img src="{% static 'img/call-us-now.gif' %}" alt="Call Us Now" class="img-fluid">
+                <div>
+                    <small class="d-block">Call Us Now</small>
+                    <strong><a href="tel:+911234567890">+91 1234567890</a></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#about-us">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/popular-routes/">Popular Routes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/our-cars/">Our Cars</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/gallery/">Gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="/#booking-form" class="btn btn-dark-cta">Book a Taxi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="page-title display-font">Gallery</h1>
+                    <p class="gallery-page-subtitle">Discover the beautiful moments and destinations captured during our premium taxi services. From scenic routes to memorable journeys, explore the experiences that make Jirawala Tours & Travels special</p>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="/gallery/">Gallery</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Grid Section -->
+    <section class="gallery-section section-padding">
+        <div class="container">
+    
+            <!-- Filters -->
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <div class="gallery-filters">
+                        <button class="btn gallery-filter-btn active" data-filter="all">All Images</button>
+                        <button class="btn gallery-filter-btn" data-filter="destinations">Destinations</button>
+                        <button class="btn gallery-filter-btn" data-filter="vehicles">Our Fleet</button>
+                        <button class="btn gallery-filter-btn" data-filter="journeys">Journeys</button>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Loading (kept OUTSIDE the grid) -->
+            <div id="galleryLoading" class="text-center mb-4">
+                <div class="gallery-loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading gallery…</span>
+                    </div>
+                    <p class="mt-3">Loading our beautiful gallery.</p>
+                </div>
+            </div>
+    
+            <!-- The grid -->
+            <div id="galleryGrid" class="jg-grid"></div>
+    
+            <!-- Empty state -->
+            <div id="galleryEmpty" class="text-center py-5" style="display:none;">
+                <i class="bi bi-images" style="font-size: 4rem; color: var(--text-muted);"></i>
+                <h3 class="mt-3">No Images Found</h3>
+                <p class="text-muted">We're working on adding beautiful images to our gallery. Please check back soon!</p>
+            </div>
+    
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section section-padding">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h2 class="display-font mb-3">Ready to Create Your Own Journey?</h2>
+                    <p class="lead mb-4">Book your premium taxi service today and experience the comfort and reliability that our customers love.</p>
+                    <a href="/#booking-form" class="enhanced-cta-btn">Book Your Ride Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Footer Content -->
+    <footer class="unique-footer">
+        <div class="footer-main">
+            <div class="container">
+                <div class="row gy-5">
+                    <!-- Company Info Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <img src="{% static 'img/JiraWala1-nobg-blue.png' %}" alt="Jirawala Logo"
+                                class="footer-logo mb-3"><br>
+                            <h4 class="brand-tagline">Your Journey, Our Wheels</h4>
+                            <p class="brand-description">
+                                Experience premium interstate car rentals with Jirawala Tours & Travels.
+                                Reliable, comfortable, and seamless transportation across India.
+                            </p>
+                            <div class="footer-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">15+</span>
+                                    <span class="stat-label">Years</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">50K+</span>
+                                    <span class="stat-label">Happy Customers</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">500+</span>
+                                    <span class="stat-label">Vehicles</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Column -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Quick Links</h5>
+                            <ul class="footer-menu">
+                                <li><a href="/"><i class="bi bi-chevron-right"></i>Home</a></li>
+                                <li><a href="/#about-us"><i class="bi bi-chevron-right"></i>About Us</a></li>
+                                <li><a href="/#services"><i class="bi bi-chevron-right"></i>Services</a></li>
+                                <li><a href="/our-cars/"><i class="bi bi-chevron-right"></i>Our Fleet</a></li>
+                                <li><a href="/#booking-form"><i class="bi bi-chevron-right"></i>Book Now</a></li>
+                                <li><a href="/#testimonials"><i class="bi bi-chevron-right"></i>Reviews</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Services Column -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Our Services</h5>
+                            <ul class="footer-menu">
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Interstate Travel</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Business Trips</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Tour Packages</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-contact">
+                            <h5 class="footer-title">Get In Touch</h5>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Visit Us</h6>
+                                    <p>123 Travel Lane, Ahmedabad<br>Gujarat, India - 380001</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-telephone-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Call Us</h6>
+                                    <p><a href="tel:+911234567890">+91-1234567890</a><br>
+                                        <a href="tel:+911234567891">+91-1234567891</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Email Us</h6>
+                                    <p><a href="mailto:info@jirawala.com">info@jirawala.com</a><br>
+                                        <a href="mailto:booking@jirawala.com">booking@jirawala.com</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Follow Us -->
+                            <h5 class="footer-title">Follow Us</h5>
+                            <div class="social-links">
+                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-link facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="mailto:info@jirawala.com" class="social-link email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animated Cars Section -->
+        <div class="animated-cars-section">
+            <div class="road"></div>
+            <div class="car-animation">
+                <div class="car car-1">
+                    <div class="car-body"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-2">
+                    <div class="car-body sedan"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-3">
+                    <div class="car-body suv"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="copyright">
+                            <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
+                        </div>
+                    </div>
+
+                    <!-- Developer Credit Column -->
+                    <div class="col-lg-6 col-md-6 text-center text-md-end">
+                        <div class="developer-credit">
+                            <p>Developed & Managed by <a href="https://www.dynamiclabz.net/" target="_blank"
+                                    style="color: #53c0cb; text-decoration: none;">Dynamic Labz</a></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Added jQuery before FancyBox -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+    <!-- Load main JS (defines functions) -->
+    <script src="{% static 'js/script.js' %}"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            let galleryLoaded = false;
+
+            try {
+                // ✅ Just wait a bit until gallery items exist, then apply filters
+                const waitForGallery = setInterval(() => {
+                    const grid = document.getElementById("galleryGrid");
+                    if (grid && grid.querySelectorAll(".gallery-item").length > 0) {
+                        setupGalleryFilters();
+                        clearInterval(waitForGallery);
+                        galleryLoaded = true;
+                    }
+                }, 200);
+
+            } catch (err) {
+                console.error("❌ Error while setting up gallery filters:", err);
+            } finally {
+                hideLottieLoader();
+            }
+
+            // Safety fallback so loader never hangs
+            setTimeout(() => {
+                if (!galleryLoaded) {
+                    console.warn("⚠️ Forcing Lottie loader to hide due to timeout");
+                    hideLottieLoader();
+                }
+            }, 5000);
+        });
+    </script>
+
+</body>
+</html>

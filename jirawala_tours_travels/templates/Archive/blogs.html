@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <title>Our Blogs - Jirawala Tours & Travels</title>
+     <!-- Google Fonts  -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+     <!-- Bootstrap CSS  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Custom CSS  -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+     <!-- Phone Link Styling  -->
+    <style>
+        .top-header .contact-info strong a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+        .top-header .contact-info strong a:hover {
+            text-decoration: underline !important;
+        }
+    </style>
+</head>
+
+<body>
+     <!-- Lottie Car Loader Overlay  -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+    <div id="lottie-loader-overlay" class="lottie-loader-overlay">
+        <dotlottie-wc src="https://lottie.host/14ea0282-988b-4258-9417-be917be925ae/Kv843m643w.lottie"
+        style="width: 300px;height: 300px" speed="1" autoplay></dotlottie-wc>
+    </div>
+
+     <!-- Top Header  -->
+    <div class="top-header">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <div class="logo-section">
+                <a href="/" class="logo-link">
+                    <img src="{% static 'img/JiraWala1.png' %}" alt="Jirawala Tours & Travels Logo" class="logo img-fluid">
+                </a>
+            </div>
+            <div class="contact-info d-flex align-items-center">
+                <img src="{% static 'img/call-us-now.gif' %}" alt="Call Us Now" class="img-fluid">
+                <div>
+                    <small class="d-block">Call Us Now</small>
+                    <strong><a href="tel:+911234567890">+91 1234567890</a></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Main Navigation Bar  -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#about-us">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/popular-routes/">Popular Routes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/our-cars/">Our Cars</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/blogs/">Our Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="/#booking-form" class="btn btn-dark-cta">Book a Taxi</a>
+            </div>
+        </div>
+    </nav>
+
+     <!-- Page Header  -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">{{ page_title|default:"Our Blogs" }}</h1>
+            <p class="page-subtitle">{{ page_description|default:"Read our latest travel tips, destination guides, and industry insights" }}</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Our Blogs</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Blog Filter Section  -->
+    <section class="blog-filter-section section-padding">
+        <div class="container">
+            <!-- Filter Section  -->
+            <div class="text-center mb-5">
+                <h2 class="enhanced-section-title">Explore Our Content</h2>
+                <p class="enhanced-section-subtitle" id="blog-count">
+                    6 articles available for your reading pleasure
+                </p>
+        
+                <!-- Blog Category Filters -->
+                <div class="enhanced-filter-buttons mb-4">
+                    <button class="enhanced-filter-btn active" data-filter="all">All Posts</button>
+                    <button class="enhanced-filter-btn" data-filter="travel-tips">Travel Tips</button>
+                    <button class="enhanced-filter-btn" data-filter="destinations">Destinations</button>
+                    <button class="enhanced-filter-btn" data-filter="car-care">Car Care</button>
+                    <button class="enhanced-filter-btn" data-filter="industry-news">Industry News</button>
+                </div>
+            </div>
+
+             <!-- Blog Grid  -->
+            <div class="row g-4" id="blogGrid">
+                 <!-- Blog Post 1  -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="travel-tips">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Travel Tips" class="blog-image">
+                            <div class="blog-category">Travel Tips</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 15, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 5 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="{% url 'blog1' %}">Essential Travel Tips for Interstate Road Trips</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Discover best practices for planning your interstate journey—from routes to safety tips for a smooth experience.
+                            </p>
+                            <a href="{% url 'blog1' %}" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Blog Post 2  -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="destinations">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Destination Guide" class="blog-image">
+                            <div class="blog-category">Destination Guide</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 12, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 7 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="{% url 'blog2' %}">Top 10 Must-Visit Destinations from Ahmedabad</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Explore beautiful destinations reachable from Ahmedabad with our rental service—hill stations, heritage sites, and more.
+                            </p>
+                            <a href="{% url 'blog2' %}" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                 <!-- Blog Post 3  -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="car-care">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/1118448/pexels-photo-1118448.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Car Care Tips" class="blog-image">
+                            <div class="blog-category">Car Care</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 10, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 4 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="{% url 'blog3' %}">How to Prepare Your Car for a Long Journey</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Simple maintenance tips and essential checks before hitting the road for a long interstate trip.
+                            </p>
+                            <a href="{% url 'blog3' %}" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                 <!-- Blog Post 4  -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="destinations">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Weekend Getaways" class="blog-image">
+                            <div class="blog-category">Destination Guide</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 8, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 6 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="{% url 'blog4' %}">Perfect Weekend Getaways from Gujarat</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Discover amazing weekend destinations within driving distance from Gujarat's major cities.
+                            </p>
+                            <a href="{% url 'blog4' %}" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                 <!-- Blog Post 5  -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="travel-tips">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Budget Travel" class="blog-image">
+                            <div class="blog-category">Travel Tips</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 5, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 5 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="{% url 'blog5' %}">Budget-Friendly Travel Tips for Families</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Learn how to plan affordable family trips without compromising on comfort and safety.
+                            </p>
+                            <a href="{% url 'blog5' %}" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                 <!-- Blog Post 6  -->
+                <div class="col-lg-4 col-md-6 blog-item" data-category="industry-news">
+                    <article class="blog-card fade-in">
+                        <div class="blog-image-container">
+                            <img src="https://images.pexels.com/photos/1592384/pexels-photo-1592384.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Industry News" class="blog-image">
+                            <div class="blog-category">Industry News</div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="blog-date">
+                                    <i class="bi bi-calendar3"></i> January 3, 2025
+                                </span>
+                                <span class="blog-read-time">
+                                    <i class="bi bi-clock"></i> 3 min read
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="{% url 'blog6' %}">Latest Updates in Interstate Travel Regulations</a>
+                            </h3>
+                            <p class="blog-excerpt">
+                                Stay informed about the latest changes in interstate travel rules and regulations.
+                            </p>
+                            <a href="{% url 'blog6' %}" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+             <!-- Load More Button  -->
+            <div class="text-center mt-5">
+                <button class="btn btn-outline-primary btn-lg" id="loadMoreBtn">
+                    Load More Posts <i class="bi bi-arrow-down"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+     <!-- Newsletter Section  -->
+    <section class="newsletter-section section-padding bg-light-grey">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="section-title">Stay Updated</h2>
+                    <p class="lead mb-4">Subscribe to our newsletter for the latest travel tips, destination guides, and exclusive offers.</p>
+                    <form class="newsletter-form">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Enter your email address" required>
+                            <button class="btn btn-primary" type="submit">
+                                Subscribe <i class="bi bi-send"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unique Animated Footer  -->
+    <footer class="unique-footer">
+         <!-- Main Footer Content  -->
+        <div class="footer-main">
+            <div class="container">
+                <div class="row gy-5">
+                     <!-- Company Info Column  -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <img src="{% static 'img/JiraWala1-nobg-blue.png' %}" alt="Jirawala Logo"
+                                class="footer-logo mb-3"><br>
+                            <h4 class="brand-tagline">Your Journey, Our Wheels</h4>
+                            <p class="brand-description">
+                                Experience premium interstate car rentals with Jirawala Tours & Travels.
+                                Reliable, comfortable, and seamless transportation across India.
+                            </p>
+                            <div class="footer-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">15+</span>
+                                    <span class="stat-label">Years</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">50K+</span>
+                                    <span class="stat-label">Happy Customers</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">500+</span>
+                                    <span class="stat-label">Vehicles</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Quick Links Column  -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Quick Links</h5>
+                            <ul class="footer-menu">
+                                <li><a href="/"><i class="bi bi-chevron-right"></i>Home</a></li>
+                                <li><a href="/#about-us"><i class="bi bi-chevron-right"></i>About Us</a></li>
+                                <li><a href="/#services"><i class="bi bi-chevron-right"></i>Services</a></li>
+                                <li><a href="/our-cars/"><i class="bi bi-chevron-right"></i>Our Fleet</a></li>
+                                <li><a href="/#booking-form"><i class="bi bi-chevron-right"></i>Book Now</a></li>
+                                <li><a href="/#testimonials"><i class="bi bi-chevron-right"></i>Reviews</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                     <!-- Services Column  -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5 class="footer-title">Our Services</h5>
+                            <ul class="footer-menu">
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Interstate Travel</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Business Trips</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Tour Packages</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                     <!-- Contact Info Column  -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-contact">
+                            <h5 class="footer-title">Get In Touch</h5>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Visit Us</h6>
+                                    <p>123 Travel Lane, Ahmedabad<br>Gujarat, India - 380001</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-telephone-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Call Us</h6>
+                                    <p><a href="tel:+911234567890">+91-1234567890</a><br>
+                                        <a href="tel:+911234567891">+91-1234567891</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6>Email Us</h6>
+                                    <p><a href="mailto:info@jirawala.com">info@jirawala.com</a><br>
+                                        <a href="mailto:booking@jirawala.com">booking@jirawala.com</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Follow Us -->
+                            <h5 class="footer-title">Follow Us</h5>
+                            <div class="social-links">
+                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-link facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="mailto:info@jirawala.com" class="social-link email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Animated Cars Section  -->
+        <div class="animated-cars-section">
+            <div class="road"></div>
+            <div class="car-animation">
+                <div class="car car-1">
+                    <div class="car-body"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-2">
+                    <div class="car-body sedan"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-3">
+                    <div class="car-body suv"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom  -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="copyright">
+                            <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
+                        </div>
+                    </div>
+
+                    <!-- Developer Credit Column  -->
+                    <div class="col-lg-6 col-md-6 text-center text-md-end">
+                        <div class="developer-credit">
+                            <p>Developed & Managed by <a href="https://www.dynamiclabz.net/" target="_blank" style="color: #53c0cb; text-decoration: none;">Dynamic Labz</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+     <!-- Floating Call Button  -->
+    <a href="tel:+911234567890" class="floating-btn call-btn" aria-label="Call Us">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-phone">
+            <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+    </a>
+
+     <!-- Floating WhatsApp Button  -->
+    <a href="https://wa.me/+911234567890" target="_blank" class="floating-whatsapp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+     <!-- Bootstrap JS CDN (Popper.js and Bootstrap Bundle)  -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+     <!-- Custom JavaScript  -->
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

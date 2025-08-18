@@ -704,17 +704,24 @@
                    href="{% url 'custom_admin_cars' %}">
                     <i class="fas fa-car"></i> Fleet Management
                 </a>
+                <a class="nav-link" href="{% url 'custom_admin_car_types' %}">
+                    <i class="fas fa-tags"></i> Car Types
+                </a>
                 <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_routes' %}active{% endif %}" 
                    href="{% url 'custom_admin_routes' %}">
                     <i class="fas fa-route"></i> Popular Routes
+                </a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_gallery' %}active{% endif %}" 
+                   href="{% url 'custom_admin_gallery' %}">
+                    <i class="fas fa-images"></i> Gallery
                 </a>
                 <hr class="text-white-50 mx-3">
                 <a class="nav-link" href="{% url 'home' %}" target="_blank">
                     <i class="fas fa-external-link-alt"></i> View Website
                 </a>
-                <a class="nav-link" href="/admin/" target="_blank">
+                <!-- <a class="nav-link" href="/admin/" target="_blank">
                     <i class="fas fa-cog"></i> Django Admin
-                </a>
+                </a> -->
                 <a class="nav-link" href="{% url 'custom_admin_logout' %}">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>

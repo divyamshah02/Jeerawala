@@ -1,8 +1,5 @@
-// js/script.js - UPDATED WITH CAR BOOKING REDIRECTION
-
 // =====================================================
 // TAXI BOOKING SYSTEM - FRONTEND JAVASCRIPT
-// Restructured by Frontend Responsibilities
 // =====================================================
 
 // =====================================================
@@ -10,78 +7,96 @@
 // =====================================================
 /*
 ┌─────────────────────────────────────────────────────────────────┐
-│                    🚖 TAXI BOOKING SYSTEM                      │
-│                     JavaScript Index                           │
+│                    🚖TAXI BOOKING SYSTEM                        │
+│                     JavaScript Index                            │
 └─────────────────────────────────────────────────────────────────┘
 
 📍 SECTION 1: GLOBAL VARIABLES & CONFIGURATION (Line ~50)
    ├── Booking state management variables
    ├── API configuration constants
+   ├── Dynamic car types storage
    └── System-wide settings
 
 📍 SECTION 2: UTILITY FUNCTIONS (Line ~65)
    ├── easeOutQuart() - Animation easing function
    ├── formatDateTimeLocal() - Date formatting helper
    ├── getCSRFToken() - Security token retrieval
-   └── 🆕 getURLParameters() - URL parameter parsing
+   └── getURLParameters() - URL parameter parsing
 
-📍 SECTION 3: ANIMATION & VISUAL EFFECTS (Line ~90)
+📍 SECTION 2.1: TOOLTIP INITIALIZATION
+   ├── initCarTypeTooltips() - Initialize tooltips for car types
+
+📍 SECTION 3: DYNAMIC CAR TYPES MANAGEMENT (Line ~90)
+   ├── loadDynamicCarTypes() - Fetch car types from API
+   ├── getCarTypeRate() - Get current rate for car type
+   ├── updateCarTypePricing() - Update UI with dynamic rates
+   ├── refreshCarTypesForModal() - Refresh modal car types
+   └── loadFallbackCarTypes() - Fallback to hardcoded rates
+
+📍 SECTION 4: ANIMATION & VISUAL EFFECTS (Line ~180)
    ├── animateCounters() - Stats counter animations
    ├── initializeScrollAnimations() - Scroll-based animations
    └── initializeEnhancedCarAnimations() - Car card animations
 
-📍 SECTION 4: NAVIGATION & SCROLLING (Line ~180)
+📍 SECTION 5: NAVIGATION & SCROLLING (Line ~280)
    ├── initializeNavigation() - Smooth scrolling setup
    └── initializeBreadcrumbs() - Breadcrumb navigation
 
-📍 SECTION 5: FORM HANDLING & VALIDATION (Line ~240)
+📍 SECTION 6: FORM HANDLING & VALIDATION (Line ~340)
    ├── initializeTripTypeToggle() - Trip type selection
    ├── initializeQuickSelect() - Quick date selection
    ├── validateBookingForm() - Form validation logic
-   └── 🆕 initializeBookingFormPrefill() - Pre-fill form from URL params
+   └── initializeBookingFormPrefill() - Pre-fill form from URL params
 
-📍 SECTION 6: DISTANCE CALCULATION & API INTEGRATION (Line ~380)
+📍 SECTION 7: ENHANCED DISTANCE CALCULATION & ROUTE INFO (Line ~480)
    ├── calculateDistanceMatrix() - Primary API distance calculation
    ├── calculateDistancePlaceholder() - Fallback distance calculation
-   └── updateCarPrices() - Price updates based on distance
+   ├── updateRouteInformation() - ENHANCED: Dynamic route info display
+   ├── calculateEstimatedDuration() - NEW: Travel time estimation
+   └── updateCarPrices() - UPDATED: Price updates with dynamic rates
 
-📍 SECTION 7: BOOKING SYSTEM & MODAL MANAGEMENT (Line ~520)
+📍 SECTION 8: BOOKING SYSTEM & MODAL MANAGEMENT (Line ~620)
    ├── initializeDistanceCalculation() - Distance calculation setup
    ├── handleBookingConfirmation() - Booking confirmation logic
    └── handleModalClose() - Modal cleanup
 
-📍 SECTION 8: BACKEND API COMMUNICATION (Line ~720)
+📍 SECTION 9: BACKEND API COMMUNICATION (Line ~820)
    ├── submitBookingRequest() - Backend booking submission
    └── checkBookingStatus() - Booking status verification
 
-📍 SECTION 9: UI COMPONENTS & INTERACTIONS (Line ~820)
+📍 SECTION 10: UI COMPONENTS & INTERACTIONS (Line ~920)
    ├── initializeCarBookingButtons() - Car selection buttons
-   ├── initializeFilteringSystem() - 🆕 BRAND NEW FILTERING SYSTEM
+   ├── initializeFilteringSystem() - BRAND NEW FILTERING SYSTEM
    ├── initializeEnhancedCarBooking() - Enhanced car booking
-   ├── 🆕 initializeRouteBookingButtons() - Route booking with prefill
-   └── 🆕 initializeOurCarsBookingButtons() - NEW: Our Cars page booking
+   ├── initializeRouteBookingButtons() - Route booking with prefill
+   └── initializeOurCarsBookingButtons() - NEW: Our Cars page booking
 
-📍 SECTION 10: SUCCESS NOTIFICATIONS & FEEDBACK (Line ~950)
+📍 SECTION 11: GALLERY FUNCTIONS
+   ├── initializeGallery() - Gallery initialization
+   ├── filterGalleryItems() - Gallery filtering logic
+   └── openGalleryItem() - Open selected gallery item
+
+📍 SECTION 12: SUCCESS NOTIFICATIONS & FEEDBACK (Line ~1050)
    └── showEnhancedBookingSuccess() - Success modal display
 
-📍 SECTION 11: CAROUSEL & INTERACTIVE COMPONENTS (Line ~1050)
-   └── initializeServicesCarousel() - 🔧 FIXED Swiper carousel setup
+📍 SECTION 13: CAROUSEL & INTERACTIVE COMPONENTS (Line ~1150)
+   └── initializeServicesCarousel() - FIXED Swiper carousel setup
 
-📍 SECTION 12: FORM UTILITIES & HELPERS (Line ~1150)
+📍 SECTION 14: FORM UTILITIES & HELPERS (Line ~1250)
    ├── initializeBookingForm() - Form initialization
    └── resetBookingForm() - Form reset functionality
 
-📍 SECTION 13: RESPONSIVE & ACCESSIBILITY UTILITIES (Line ~1180)
+📍 SECTION 15: RESPONSIVE & ACCESSIBILITY UTILITIES (Line ~1280)
    ├── handleEnhancedResponsiveChanges() - Mobile responsiveness
    └── addKeyboardSupport() - Keyboard navigation
 
-📍 SECTION 14: INITIALIZATION & EVENT LISTENERS (Line ~1220)
+📍 SECTION 16: INITIALIZATION & EVENT LISTENERS (Line ~1320)
    └── Main DOM Content Loaded Event - System startup
 
-📍 SECTION 15: CSS INJECTION FOR ANIMATIONS (Line ~1280)
+📍 SECTION 17: CSS INJECTION FOR ANIMATIONS (Line ~1380)
    └── Dynamic CSS injection for animations
 
-📍 SECTION 16: EXPORT UTILITIES (Line ~1350)
+📍 SECTION 18: EXPORT UTILITIES (Line ~1450)
    └── Public API exports for external use
 
 */
@@ -95,6 +110,10 @@ let isBookingInProgress = false
 let currentModal = null
 let selectedCar = null
 let calculatedDistance = 0
+
+// ✅ NEW: Dynamic car types storage
+let dynamicCarTypes = {}
+let isCarTypesLoaded = false
 
 // API Configuration
 const DISTANCE_MATRIX_API_KEY = "9rmBnCVMJAN8qPoxHROmBoNpXm4qQHPL5b6ttlnQbEzziHh28SSdBJ6zmNEZP1DI"
@@ -165,7 +184,383 @@ function getURLParameters() {
 }
 
 // =====================================================
-// 3. ANIMATION & VISUAL EFFECTS
+// 📍 SECTION 2.1: TOOLTIP INITIALIZATION
+// =====================================================
+
+function initCarTypeTooltips() {
+  fetch("/api/available-cars-by-type/")
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+
+        // 🧹 Remove any old tooltip DOM elements
+        document.querySelectorAll('.tooltip').forEach(tip => tip.remove());
+
+        document.querySelectorAll('.car-option').forEach(option => {
+          const type = option.querySelector('h6')?.textContent.trim();
+          const cars = data.data[type] || [];
+
+          // Simple tooltip text
+          let tooltipText = "Available Car's :<br>";
+          tooltipText += cars.length > 0 ? cars.join('<br>') : 'No cars available';
+
+          option.removeAttribute('title');
+          option.setAttribute('data-bs-original-title', tooltipText);
+          option.setAttribute('data-bs-html', 'true');
+        });
+
+        // Initialize Bootstrap tooltips (HTML enabled)
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('.car-option'));
+        tooltipTriggerList.map(el => new bootstrap.Tooltip(el, { html: true }));
+      }
+    })
+    .catch(err => console.error('Error fetching available cars:', err));
+}
+
+
+// =====================================================
+// 3. 🆕 DYNAMIC CAR TYPES MANAGEMENT - UPDATED WITH MIN/MAX RATES
+// =====================================================
+
+// ✅ UPDATED: FUNCTION TO FETCH DYNAMIC CAR TYPES FROM API WITH MIN/MAX RATES
+async function loadDynamicCarTypes() {
+  try {
+    console.log("🚗 Loading dynamic car types from API...")
+
+    const timestamp = new Date().getTime()
+    const cacheBuster = Math.random().toString(36).substring(7)
+    const url = `/api/car-types/?t=${timestamp}&cb=${cacheBuster}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    })
+
+    const data = await response.json()
+
+    if (data.success && data.car_types) {
+      // Store car types in global variable
+      dynamicCarTypes = {}
+      data.car_types.forEach((carType) => {
+        dynamicCarTypes[carType.name] = {
+          id: carType.id,
+          name: carType.name,
+          display_name: carType.display_name,
+          rate_per_km: carType.rate_per_km,
+          minimum_rate_per_km: carType.minimum_rate_per_km, // ✅ NEW
+          maximum_rate_per_km: carType.maximum_rate_per_km, // ✅ NEW
+          minimum_distance_cap: carType.minimum_distance_cap,
+          is_active: carType.is_active,
+        }
+      })
+
+      isCarTypesLoaded = true
+      console.log("✅ Dynamic car types loaded:", dynamicCarTypes)
+      console.log("📊 API Response timestamp:", data.timestamp)
+
+      return dynamicCarTypes
+    } else {
+      console.error("❌ Failed to load car types:", data.error || "Unknown error")
+      loadFallbackCarTypes()
+      return null
+    }
+  } catch (error) {
+    console.error("❌ Error fetching car types:", error)
+    loadFallbackCarTypes()
+    return null
+  }
+}
+
+// ✅ UPDATED: FALLBACK FUNCTION WITH MIN/MAX RATES
+function loadFallbackCarTypes() {
+  console.log("⚠️ Using fallback car types with hardcoded rates")
+  dynamicCarTypes = {
+    hatchback: {
+      id: 1,
+      name: "hatchback",
+      display_name: "Hatchback",
+      rate_per_km: 12,
+      minimum_rate_per_km: 10,
+      maximum_rate_per_km: 14,
+      minimum_distance_cap: 0,
+      is_active: true,
+    },
+    sedan: {
+      id: 2,
+      name: "sedan",
+      display_name: "Sedan",
+      rate_per_km: 15,
+      minimum_rate_per_km: 13,
+      maximum_rate_per_km: 17,
+      minimum_distance_cap: 0,
+      is_active: true,
+    },
+    suv: {
+      id: 3,
+      name: "suv",
+      display_name: "SUV",
+      rate_per_km: 18,
+      minimum_rate_per_km: 16,
+      maximum_rate_per_km: 20,
+      minimum_distance_cap: 0,
+      is_active: true,
+    },
+  }
+  isCarTypesLoaded = true
+}
+
+// ✅ NEW: Function to get min/max rates for round-trip pricing
+function getCarTypeRates(carTypeName) {
+  const normalizedName = carTypeName.toLowerCase()
+  if (dynamicCarTypes[normalizedName]) {
+    return {
+      oneWayRate: dynamicCarTypes[normalizedName].rate_per_km,
+      minRate: dynamicCarTypes[normalizedName].minimum_rate_per_km,
+      maxRate: dynamicCarTypes[normalizedName].maximum_rate_per_km,
+    }
+  }
+
+  // Fallback rates if not found
+  const fallbackRates = {
+    hatchback: { oneWayRate: 12, minRate: 10, maxRate: 14 },
+    sedan: { oneWayRate: 15, minRate: 13, maxRate: 17 },
+    suv: { oneWayRate: 18, minRate: 16, maxRate: 20 },
+  }
+
+  return fallbackRates[normalizedName] || { oneWayRate: 15, minRate: 13, maxRate: 17 }
+}
+
+// ✅ NEW: Function to refresh car types in modal
+async function refreshCarTypesForModal() {
+  console.log("🔄 Refreshing car types for modal...")
+
+  // Show loading state
+  const pricingOptions = document.querySelector(".pricing-options")
+  if (pricingOptions) {
+    pricingOptions.innerHTML = `
+      <h6 class="mb-3">Loading car types...</h6>
+      <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    `
+  }
+
+  // Load fresh car types
+  await loadDynamicCarTypes()
+
+  // Rebuild the car options UI
+  buildDynamicCarOptions()
+
+  // Update prices with current distance
+  if (calculatedDistance > 0) {
+    updateCarPrices(calculatedDistance)
+  }
+}
+
+// ✅ NEW: Function to build dynamic car options in modal
+function buildDynamicCarOptions() {
+  const pricingOptions = document.querySelector(".pricing-options")
+  if (!pricingOptions) return
+
+  const tripType = document.getElementById("tripType")?.value || "one-way"
+
+  // Get active car types
+  const activeCarTypes = Object.values(dynamicCarTypes).filter((carType) => carType.is_active)
+
+  if (activeCarTypes.length === 0) {
+    pricingOptions.innerHTML = `
+      <h6 class="mb-3">No car types available</h6>
+      <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        No active car types found. Please contact support.
+      </div>
+    `
+    return
+  }
+
+  // Build car options HTML
+  let carOptionsHTML = `<h6 class="mb-3">Select Your Car Type & View Pricing:</h6><div class="row g-3">`
+
+  activeCarTypes.forEach((carType, index) => {
+    const iconClass = getCarTypeIcon(carType.name)
+
+    carOptionsHTML += `
+      <div class="col-md-4">
+        <div class="car-option" data-car-type="${carType.name}" data-rate="${carType.rate_per_km}">
+          <div class="car-icon">
+            <i class="${iconClass}"></i>
+          </div>
+          <h6>${carType.display_name}</h6>
+          ${tripType === "round-trip" ? `
+            <div class="total-price mt-0">₹${carType.rate_per_km}/km</div>
+            <div class="total-price" id="${carType.name}Price" style="display:none;">₹0</div>
+            ` : `
+            <div class="rate" style="display:none;">₹${carType.rate_per_km}/km</div>
+            <div class="total-price mt-0" id="${carType.name}Price">₹0</div>
+          `}
+        </div>
+      </div>
+    `
+  })
+
+  carOptionsHTML += `</div>`
+  pricingOptions.innerHTML = carOptionsHTML
+  initCarTypeTooltips();
+
+
+  // 🔹 Fetch available cars from backend & set tooltips dynamically
+  fetch("/api/available-cars-by-type/")
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      document.querySelectorAll('.car-option').forEach(option => {
+        const type = option.querySelector('h6')?.textContent.trim();
+        const cars = data.data[type] || [];
+
+        // Create tooltip text with new lines
+        let tooltipText = "Available Car's :<br>";
+        tooltipText += cars.length > 0 ? cars.join('<br>') : 'No cars available';
+
+        // Set HTML tooltip content for Bootstrap
+        option.setAttribute('data-bs-original-title', tooltipText);
+        option.removeAttribute('title');
+      });
+
+      // Initialize Bootstrap tooltips with HTML enabled
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('.car-option'));
+      tooltipTriggerList.map(el => new bootstrap.Tooltip(el, { html: true }));
+    }
+  })
+  .catch(err => console.error('Error fetching available cars:', err));
+
+
+
+  // Re-attach event listeners to new car options
+  attachCarOptionListeners()
+
+  console.log(`✅ Built ${activeCarTypes.length} dynamic car options for ${tripType}`)
+}
+
+// ✅ NEW: Function to get appropriate icon for car type
+function getCarTypeIcon(carTypeName) {
+  const iconMap = {
+    hatchback: "bi bi-car-front-fill",
+    sedan: "bi bi-car-front",
+    suv: "bi bi-truck",
+    luxury: "bi bi-car-front",
+    minivan: "bi bi-truck",
+    compact: "bi bi-car-front-fill",
+    muv: "bi bi-truck",
+  }
+
+  return iconMap[carTypeName.toLowerCase()] || "bi bi-car-front"
+}
+
+// ✅ NEW: Function to attach event listeners to car options
+function attachCarOptionListeners() {
+  const carOptions = document.querySelectorAll(".car-option")
+  const confirmBtn = document.getElementById("confirmSelection")
+
+  carOptions.forEach((option) => {
+    option.addEventListener("click", function () {
+      console.log("🚗 Car selected:", this.dataset.carType)
+
+      carOptions.forEach((opt) => opt.classList.remove("selected"))
+      this.classList.add("selected")
+
+      const carType = this.dataset.carType
+      const tripType = document.getElementById("tripType")?.value || "one-way"
+
+      let selectedCarData
+
+      if (tripType === "one-way") {
+        const rate = Number.parseFloat(this.dataset.rate) || getCarTypeRates(carType).oneWayRate
+        const totalPrice = calculatedDistance * rate
+
+        selectedCarData = {
+          type: carType,
+          rate: rate,
+          totalPrice: totalPrice,
+          distance: calculatedDistance,
+          tripType: "one-way",
+        }
+      } else if (tripType === "round-trip") {
+        const minPrice = Number.parseFloat(this.dataset.minPrice) || 0
+        const maxPrice = Number.parseFloat(this.dataset.maxPrice) || 0
+        const rateRange = this.dataset.rate || "0-0"
+
+        selectedCarData = {
+          type: carType,
+          rateRange: rateRange,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+          distance: calculatedDistance,
+          tripType: "round-trip",
+        }
+      }
+
+      selectedCar = selectedCarData
+
+      const selectedCarType = document.getElementById("selectedCarType")
+      const selectedPrice = document.getElementById("selectedPrice")
+      const selectedCarInfo = document.getElementById("selectedCarInfo")
+
+      if (selectedCarType) selectedCarType.textContent = carType.charAt(0).toUpperCase() + carType.slice(1)
+
+      if (selectedPrice) {
+        if (tripType === "one-way") {
+          document.getElementById("selectedCarPriceEle").style.display = "";          
+          selectedPrice.innerHTML = `   
+          ₹${selectedCarData.totalPrice.toLocaleString()}         
+            <div class="mt-1">              
+              <strong class="allowance-text">Toll tax & Parking as per actual</strong>
+            </div>
+          `;
+        } else {
+          // compute numberOfDays & driverAllowance for the alert
+          let numberOfDays = 1;
+          const pickupDate = document.getElementById("pickupDate")?.value;
+          const dropoffDate = document.getElementById("dropoffDate")?.value;
+          if (pickupDate && dropoffDate) {
+            const pickup = new Date(pickupDate);
+            const dropoff = new Date(dropoffDate);
+            numberOfDays = Math.max(1, Math.ceil((dropoff - pickup) / (1000 * 60 * 60 * 24)));
+          }
+          const driverAllowance = numberOfDays * 300;
+          document.getElementById("selectedCarPriceEle").style.display = "none";
+          selectedPrice.innerHTML = `            
+            <div class="enhanced-driver-allowance">
+              <strong class="allowance-text">Includes driver allowance (₹300/- per day): </strong>
+              <span class="allowance-details">
+                <small>
+                  <img width="28" height="28" src="https://img.icons8.com/windows/32/baby-calendar.png" alt="calendar"/>
+                  ${numberOfDays} day${numberOfDays > 1 ? "s" : ""} • <i class="bi bi-currency-rupee"></i>${driverAllowance}
+                </small><br>                
+              </span>
+
+              </div>
+              <strong class="allowance-text">Toll tax & Parking as per actual</strong>
+          `;
+        }
+      }
+
+      if (selectedCarInfo) selectedCarInfo.style.display = "block"
+
+      if (confirmBtn) confirmBtn.disabled = false
+
+      console.log(`✅ Selected ${carType} for ${tripType}:`, selectedCarData)
+    })
+  })
+}
+
+// =====================================================
+// 4. ANIMATION & VISUAL EFFECTS
 // =====================================================
 
 // Counter animation functionality
@@ -285,71 +680,36 @@ function initializeEnhancedCarAnimations() {
 
 // Enhanced Lottie loader hiding function
 function hideLottieLoader() {
-  const lottieLoaderOverlay = document.getElementById("lottie-loader-overlay")
+    const lottieLoaderOverlay = document.getElementById("lottie-loader-overlay");
 
-  if (lottieLoaderOverlay) {
-    console.log("🎬 Hiding Lottie loader...")
-
-    // Check if already hidden
-    if (lottieLoaderOverlay.style.display === "none" || lottieLoaderOverlay.classList.contains("fade-out")) {
-      console.log("ℹ️ Lottie loader already hidden")
-      return
+    if (!lottieLoaderOverlay) {
+        console.log("ℹ️ Lottie loader element not found");
+        return;
     }
+
+    console.log("🎬 Hiding Lottie loader...");
 
     // Add fade-out class
-    lottieLoaderOverlay.classList.add("fade-out")
+    lottieLoaderOverlay.classList.add("fade-out");
 
-    // Hide after transition completes
-    const handleTransitionEnd = () => {
-      lottieLoaderOverlay.style.display = "none"
-      console.log("✅ Lottie loader hidden successfully")
-    }
+    // Ensure it's hidden after the transition
+    lottieLoaderOverlay.addEventListener("transitionend", () => {
+        lottieLoaderOverlay.style.display = "none";
+        console.log("✅ Lottie loader hidden successfully");
+    }, { once: true });
 
-    lottieLoaderOverlay.addEventListener("transitionend", handleTransitionEnd, { once: true })
-
-    // Fallback: Force hide after 1 second if transition doesn't fire
+    // Fallback in case transitionend doesn't fire
     setTimeout(() => {
-      if (lottieLoaderOverlay.style.display !== "none") {
-        lottieLoaderOverlay.style.display = "none"
-        console.log("⚠️ Lottie loader force-hidden (fallback)")
-      }
-    }, 1000)
-  } else {
-    console.log("ℹ️ Lottie loader element not found")
-  }
+        if (lottieLoaderOverlay.style.display !== "none") {
+            lottieLoaderOverlay.style.display = "none";
+            console.log("⚠️ Lottie loader force-hidden (fallback)");
+        }
+    }, 1500);
 }
 
-// Initialize Lottie loader management with multiple triggers
-function initializeLottieLoader() {
-  console.log("🎬 Initializing Lottie loader management...")
-
-  // Primary trigger: Hide after DOM is ready
-  setTimeout(hideLottieLoader, 2000)
-
-  // Secondary trigger: Hide on window load
-  window.addEventListener("load", () => {
-    setTimeout(hideLottieLoader, 500)
-  })
-
-  // Emergency fallback: Force hide after 5 seconds regardless
-  setTimeout(() => {
-    const lottieLoaderOverlay = document.getElementById("lottie-loader-overlay")
-    if (lottieLoaderOverlay && lottieLoaderOverlay.style.display !== "none") {
-      lottieLoaderOverlay.style.display = "none"
-      console.log("🚨 Emergency: Lottie loader force-hidden")
-    }
-  }, 5000)
-
-  // Additional trigger for pages that might load slowly
-  document.addEventListener("readystatechange", () => {
-    if (document.readyState === "complete") {
-      setTimeout(hideLottieLoader, 1000)
-    }
-  })
-}
 
 // =====================================================
-// 4. NAVIGATION & SCROLLING
+// 5. NAVIGATION & SCROLLING
 // =====================================================
 
 // Enhanced smooth scrolling for navigation
@@ -427,15 +787,16 @@ function initializeBreadcrumbs() {
 }
 
 // =====================================================
-// 5. FORM HANDLING & VALIDATION
+// 6. FORM HANDLING & VALIDATION - UPDATED FOR ROUND-TRIP
 // =====================================================
 
-// Trip type toggle functionality
+// ✅ UPDATED: Trip type toggle functionality with date-only for round-trip
 function initializeTripTypeToggle() {
   const tripTypeButtons = document.querySelectorAll(".trip-type-option")
   const tripTypeInput = document.getElementById("tripType")
   const dropoffDateContainer = document.getElementById("dropoffDateContainer")
   const dropoffDateInput = document.getElementById("dropoffDate")
+  const pickupDateInput = document.getElementById("pickupDate")
 
   tripTypeButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -444,16 +805,47 @@ function initializeTripTypeToggle() {
 
       const tripType = button.getAttribute("data-trip")
       tripTypeInput.value = tripType
+      // ADD THIS LINE HERE:
+      // document.querySelector('#distancePriceModal').classList.toggle('one-way-trip', tripType === 'one-way')
+      document.querySelector('#distancePriceModal').classList.toggle('round-trip-trip', tripType === 'round-trip')
 
       if (tripType === "one-way") {
         dropoffDateContainer.classList.remove("visible")
         dropoffDateContainer.classList.add("hidden")
         dropoffDateInput.removeAttribute("required")
         dropoffDateInput.value = ""
-      } else {
+
+        // ✅ RESTORE: Show time selection for one-way
+        if (pickupDateInput) {
+          pickupDateInput.type = "datetime-local"
+        }
+      } else if (tripType === "round-trip") {
         dropoffDateContainer.classList.remove("hidden")
         dropoffDateContainer.classList.add("visible")
         dropoffDateInput.setAttribute("required", "required")
+
+        // ✅ NEW: Remove time selection for round-trip (date only)
+        if (pickupDateInput) {
+          pickupDateInput.type = "date"
+          // Clear time part if it exists
+          if (pickupDateInput.value) {
+            const dateOnly = pickupDateInput.value.split("T")[0]
+            pickupDateInput.value = dateOnly
+          }
+        }
+        if (dropoffDateInput) {
+          dropoffDateInput.type = "date"
+          // Clear time part if it exists
+          if (dropoffDateInput.value) {
+            const dateOnly = dropoffDateInput.value.split("T")[0]
+            dropoffDateInput.value = dateOnly
+          }
+        }
+      }
+
+      // ✅ NEW: Refresh car pricing when trip type changes
+      if (calculatedDistance > 0) {
+        updateCarPrices(calculatedDistance)
       }
     })
   })
@@ -674,7 +1066,7 @@ function showRoutePrefilledNotification(origin, destination) {
 }
 
 // =====================================================
-// 6. DISTANCE CALCULATION & API INTEGRATION
+// 7. 🔄 ENHANCED DISTANCE CALCULATION & ROUTE INFO
 // =====================================================
 
 // Distance calculation using DistanceMatrix API
@@ -713,7 +1105,14 @@ async function calculateDistanceMatrix(origin, destination) {
     ) {
       const distanceInMeters = data.rows[0].elements[0].distance.value
       const distanceKm = distanceInMeters / 1000
+      const durationInSeconds = data.rows[0].elements[0].duration.value
+
       console.log("✅ Distance (km):", distanceKm)
+      console.log("✅ Duration (seconds):", durationInSeconds)
+
+      // ✅ NEW: Update route information with duration
+      updateRouteInformation(distanceKm, durationInSeconds)
+
       return distanceKm
     } else {
       console.warn("⚠️ DistanceMatrix response error:", data)
@@ -877,31 +1276,187 @@ function calculateDistancePlaceholder(pickup, dropoff) {
     "-" +
     pickup.toLowerCase().replace(/\s+/g, "").replace(/,.*/, "")
 
-  return cityDistances[key1] || cityDistances[key2] || Math.floor(Math.random() * 600) + 100
+  const distance = cityDistances[key1] || cityDistances[key2] || Math.floor(Math.random() * 600) + 100
+
+  // ✅ NEW: Calculate estimated duration for fallback (assuming 60 km/h average speed)
+  const estimatedDurationSeconds = (distance / 60) * 3600
+  updateRouteInformation(distance, estimatedDurationSeconds)
+
+  return distance
 }
 
-// Update car prices based on distance
-function updateCarPrices(distance) {
-  const rates = { hatchback: 12, sedan: 15, suv: 18 }
+// ✅ NEW: Update route information display with dynamic content
+function updateRouteInformation(distanceKm, durationSeconds = null) {
+  console.log("🗺️ Updating route information:", { distanceKm, durationSeconds })
 
-  Object.keys(rates).forEach((carType) => {
-    const price = distance * rates[carType]
-    const priceElement = document.getElementById(carType + "Price")
-    if (priceElement) {
-      priceElement.textContent = "₹" + price.toLocaleString()
+  // Update distance display
+  const distanceElement = document.getElementById("calculatedDistance")
+  if (distanceElement) {
+    distanceElement.textContent = `${distanceKm.toFixed(1)} km`
+  }
+
+  // Update duration display
+  const durationElement = document.getElementById("estimatedDuration")
+  if (durationElement) {
+    if (durationSeconds) {
+      const formattedDuration = formatDuration(durationSeconds)
+      durationElement.innerHTML = `<i class="bi bi-clock me-1"></i>${formattedDuration}`
+      durationElement.classList.remove("calculating")
+    } else {
+      // Show calculating state
+      durationElement.innerHTML = `<i class="bi bi-hourglass-split me-1"></i>Calculating...`
+      durationElement.classList.add("calculating")
+
+      // ✅ NEW: Calculate estimated duration based on distance
+      setTimeout(() => {
+        const estimatedDuration = calculateEstimatedDuration(distanceKm)
+        const formattedDuration = formatDuration(estimatedDuration)
+        durationElement.innerHTML = `<i class="bi bi-clock me-1"></i>~${formattedDuration}`
+        durationElement.classList.remove("calculating")
+      }, 1500)
+    }
+  }
+
+  // Update route type based on distance
+  const routeTypeElement = document.getElementById("routeType")
+  if (routeTypeElement) {
+    let routeType = "Interstate Route"
+    if (distanceKm < 100) {
+      routeType = "Local Route"
+    } else if (distanceKm < 300) {
+      routeType = "Regional Route"
+    } else {
+      routeType = "Long Distance Route"
+    }
+    routeTypeElement.innerHTML = `<i class="bi bi-signpost-2 me-1"></i>${routeType}`
+  }
+
+  console.log("✅ Route information updated successfully")
+}
+
+// ✅ NEW: Calculate estimated duration based on distance
+function calculateEstimatedDuration(distanceKm) {
+  // Estimate based on different road types and traffic conditions
+  let averageSpeed = 60 // km/h base speed
+
+  if (distanceKm < 50) {
+    averageSpeed = 45 // City/local roads
+  } else if (distanceKm < 200) {
+    averageSpeed = 55 // State highways
+  } else {
+    averageSpeed = 65 // National highways
+  }
+
+  // Add buffer time for breaks, traffic, etc.
+  const baseTimeHours = distanceKm / averageSpeed
+  const bufferTime = Math.min(baseTimeHours * 0.2, 2) // 20% buffer, max 2 hours
+  const totalTimeHours = baseTimeHours + bufferTime
+
+  return totalTimeHours * 3600 // Convert to seconds
+}
+
+// ✅ NEW: Format duration from seconds to human readable format
+function formatDuration(seconds) {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+
+  if (hours === 0) {
+    return `${minutes} min`
+  } else if (minutes === 0) {
+    return `${hours}h`
+  } else {
+    return `${hours}h ${minutes}m`
+  }
+}
+
+// ✅ UPDATED: Update car prices based on distance and trip type
+function updateCarPrices(distance) {
+  console.log("💰 Updating car prices with distance:", distance, "km")
+
+  // Wait for car types to be loaded
+  if (!isCarTypesLoaded) {
+    console.log("⏳ Car types not loaded yet, waiting...")
+    setTimeout(() => updateCarPrices(distance), 500)
+    return
+  }
+
+  // Get trip type
+  const tripType = document.getElementById("tripType")?.value || "one-way"
+
+  // Get number of days for round-trip
+  let numberOfDays = 1
+  if (tripType === "round-trip") {
+    const pickupDate = document.getElementById("pickupDate")?.value
+    const dropoffDate = document.getElementById("dropoffDate")?.value
+
+    if (pickupDate && dropoffDate) {
+      const pickup = new Date(pickupDate)
+      const dropoff = new Date(dropoffDate)
+      numberOfDays = Math.max(1, Math.ceil((dropoff - pickup) / (1000 * 60 * 60 * 24)))
+    }
+  }
+
+  // Update each car option with dynamic rates
+  const carOptions = document.querySelectorAll(".car-option")
+  carOptions.forEach((option) => {
+    const carType = option.getAttribute("data-car-type")
+    const rates = getCarTypeRates(carType)
+
+    if (tripType === "one-way") {
+      // ✅ ONE-WAY: Show fixed price
+      const totalPrice = distance * rates.oneWayRate
+      const roundedPrice = Math.round(totalPrice / 25) * 25;
+
+      option.setAttribute("data-rate", rates.oneWayRate)
+
+      const rateElement = option.querySelector(".rate")
+      if (rateElement) {
+        rateElement.textContent = `₹${rates.oneWayRate}/km`
+      }
+
+      const priceElement = option.querySelector(".total-price")
+      if (priceElement) {
+        priceElement.innerHTML = `₹${roundedPrice.toLocaleString()}`
+      }
+
+      console.log(`💰 One-way ${carType}: ₹${rates.oneWayRate}/km × ${distance}km = ₹${roundedPrice.toLocaleString()}`)
+    } else if (tripType === "round-trip") {
+      // ✅ ROUND-TRIP: Show price range with enhanced driver allowance
+      const driverAllowance = numberOfDays * 300 // ₹300 per day
+      const minTotalPrice = distance * rates.minRate + driverAllowance
+      const maxTotalPrice = distance * rates.maxRate + driverAllowance
+
+      option.setAttribute("data-rate", `${rates.minRate}-${rates.maxRate}`)
+      option.setAttribute("data-min-price", minTotalPrice)
+      option.setAttribute("data-max-price", maxTotalPrice)
+
+      const rateElement = option.querySelector(".total-price")
+      if (rateElement) {
+        rateElement.textContent = `₹${rates.minRate}-₹${rates.maxRate}/km`
+      }
+
+  //     const priceElement = option.querySelector(".total-price")
+  //     if (priceElement) {
+  //       priceElement.innerHTML = `
+  //   <div class="price-range">₹${minTotalPrice.toLocaleString()} – ₹${maxTotalPrice.toLocaleString()}</div>
+  // `
+  //     }
+
+      console.log(
+        `💰 Round-trip ${carType}: ₹${rates.minRate}-₹${rates.maxRate}/km × ${distance}km + ₹${driverAllowance} = ₹${minTotalPrice.toLocaleString()}-₹${maxTotalPrice.toLocaleString()}`,
+      )
     }
   })
 }
 
 // =====================================================
-// 7. BOOKING SYSTEM & MODAL MANAGEMENT
+// 8. BOOKING SYSTEM & MODAL MANAGEMENT - UPDATED WITH ROUND-TRIP SUPPORT
 // =====================================================
 
-// Initialize distance calculation functionality
+// ✅ UPDATED: Car option selection with round-trip pricing support
 function initializeDistanceCalculation() {
   const calculateBtn = document.getElementById("calculateBtn")
   const modalElement = document.getElementById("distancePriceModal")
-  const carOptions = document.querySelectorAll(".car-option")
   const confirmBtn = document.getElementById("confirmSelection")
 
   if (!calculateBtn || !modalElement || !confirmBtn) {
@@ -915,6 +1470,11 @@ function initializeDistanceCalculation() {
   })
 
   console.log("✅ Distance calculation initialized")
+
+  modalElement.addEventListener("shown.bs.modal", async () => {
+    console.log("🔄 Modal opened, refreshing car types...")
+    await refreshCarTypesForModal()
+  })
 
   // Calculate distance button click
   calculateBtn.addEventListener("click", async (e) => {
@@ -934,12 +1494,32 @@ function initializeDistanceCalculation() {
       return
     }
 
+    const pickupDate = document.getElementById("pickupDate")?.value?.trim()
+    const dropoffDate = document.getElementById("dropoffDate")?.value?.trim()
+
+    const tripTypeValidate = document.getElementById("tripType")?.value || "one-way"
+    if (tripTypeValidate === "one-way") {
+      if (!pickupDate) {
+        alert("Please enter both pickup time.")
+        return
+      }
+      
+    } else if (tripTypeValidate === "round-trip") {
+      if (!pickupDate || !dropoffDate) {
+        alert("Please enter both pickup time and drop-off time.")
+        return
+      }
+    }
+
     calculateBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Calculating Distance...'
     calculateBtn.disabled = true
 
     try {
       console.log("🔄 Starting distance calculation...")
       let distanceKm
+
+      // ✅ NEW: Reset route information to calculating state
+      updateRouteInformation(0, null)
 
       try {
         distanceKm = await calculateDistanceMatrix(pickupLocation, dropoffLocation)
@@ -953,14 +1533,15 @@ function initializeDistanceCalculation() {
       if (distanceKm && distanceKm > 0) {
         const modalPickup = document.getElementById("modalPickupLocation")
         const modalDropoff = document.getElementById("modalDropoffLocation")
-        const modalDistance = document.getElementById("calculatedDistance")
 
         if (modalPickup) modalPickup.textContent = pickupLocation
         if (modalDropoff) modalDropoff.textContent = dropoffLocation
-        if (modalDistance) modalDistance.textContent = `${distanceKm.toFixed(1)} km`
 
         calculatedDistance = distanceKm
-        updateCarPrices(distanceKm)
+
+        console.log("🔄 Refreshing car types before showing modal...")
+        await refreshCarTypesForModal()
+
         console.log("✅ Showing modal...")
         currentModal.show()
       } else {
@@ -986,42 +1567,11 @@ function initializeDistanceCalculation() {
     }
   })
 
-  // Car option selection
-  carOptions.forEach((option) => {
-    option.addEventListener("click", function () {
-      console.log("🚗 Car selected:", this.dataset.carType)
-
-      carOptions.forEach((opt) => opt.classList.remove("selected"))
-      this.classList.add("selected")
-
-      const carType = this.dataset.carType
-      const rate = Number.parseInt(this.dataset.rate)
-      const totalPrice = calculatedDistance * rate
-
-      selectedCar = {
-        type: carType,
-        rate: rate,
-        totalPrice: totalPrice,
-        distance: calculatedDistance,
-      }
-
-      const selectedCarType = document.getElementById("selectedCarType")
-      const selectedPrice = document.getElementById("selectedPrice")
-      const selectedCarInfo = document.getElementById("selectedCarInfo")
-
-      if (selectedCarType) selectedCarType.textContent = carType.charAt(0).toUpperCase() + carType.slice(1)
-      if (selectedPrice) selectedPrice.textContent = "₹" + totalPrice.toLocaleString()
-      if (selectedCarInfo) selectedCarInfo.style.display = "block"
-
-      confirmBtn.disabled = false
-    })
-  })
-
   confirmBtn.addEventListener("click", handleBookingConfirmation)
   modalElement.addEventListener("hidden.bs.modal", handleModalClose)
 }
 
-// Handle booking confirmation
+// ✅ UPDATED: Handle booking confirmation with round-trip support
 async function handleBookingConfirmation() {
   console.log("✅ Confirm booking clicked")
 
@@ -1033,17 +1583,27 @@ async function handleBookingConfirmation() {
   isBookingInProgress = true
   const confirmBtn = document.getElementById("confirmSelection")
 
+  const tripType = document.getElementById("tripType")?.value || "one-way"
+  let finalPrice = 0
+
+  if (tripType === "one-way") {
+    finalPrice = selectedCar.totalPrice || 0
+  } else if (tripType === "round-trip") {
+    // For round-trip, use average of min and max for booking
+    finalPrice = ((selectedCar.minPrice || 0) + (selectedCar.maxPrice || 0)) / 2
+  }
+
   const formData = {
     name: document.getElementById("name")?.value?.trim() || "",
     email: document.getElementById("email")?.value?.trim() || "",
     phone: document.getElementById("phone")?.value?.trim() || "",
-    tripType: document.getElementById("tripType")?.value || "one-way",
+    tripType: tripType,
     pickupLocation: document.getElementById("pickupLocation")?.value?.trim() || "",
     dropoffLocation: document.getElementById("dropoffLocation")?.value?.trim() || "",
     pickupDate: document.getElementById("pickupDate")?.value || "",
     dropoffDate: document.getElementById("dropoffDate")?.value || "",
     carType: selectedCar?.type || "",
-    totalPrice: selectedCar?.totalPrice || 0,
+    totalPrice: finalPrice,
     distance: selectedCar?.distance || 0,
     specialRequests: document.getElementById("modalSpecialRequests")?.value?.trim() || "",
     timestamp: new Date().toISOString(),
@@ -1117,7 +1677,7 @@ function handleModalClose() {
 }
 
 // =====================================================
-// 8. BACKEND API COMMUNICATION
+// 9. BACKEND API COMMUNICATION
 // =====================================================
 
 // Submit booking request to backend
@@ -1204,7 +1764,7 @@ async function checkBookingStatus(bookingId) {
 }
 
 // =====================================================
-// 9. UI COMPONENTS & INTERACTIONS
+// 10. UI COMPONENTS & INTERACTIONS
 // =====================================================
 
 // Car booking buttons functionality
@@ -1501,7 +2061,263 @@ function showCarBookingNotification(carName, carType) {
 })()
 
 // =====================================================
-// 10. SUCCESS NOTIFICATIONS & FEEDBACK
+// 11: GALLERY FUNCTIONS
+// =====================================================
+
+async function loadGalleryForIndex() {
+  try {
+    console.log("🖼️ Loading gallery images for index page...")
+
+    const response = await fetch("/api/gallery-data/")
+    const data = await response.json()
+
+    if (data.status === "success" && data.data && data.data.length > 0) {
+      const galleryGrid = document.getElementById("galleryGrid")
+      const loadingText = document.querySelector(".gallery-loading")
+
+      if (galleryGrid && loadingText) {
+        // Hide loading text
+        loadingText.style.display = "none"
+
+        galleryGrid.style.cssText = `
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          grid-auto-rows: 250px;
+          gap: 15px;
+          padding: 0;
+          max-width: 1200px;
+          margin: 0 auto;
+        `
+
+        const imagesToShow = data.data.slice(0, 6)
+
+        galleryGrid.innerHTML = imagesToShow
+          .map((item, index) => {
+            const spanClass = getGridSpanClass(index, imagesToShow.length)
+
+            return `
+              <div class="gallery-item ${spanClass}" style="
+                position: relative;
+                overflow: hidden;
+                border-radius: 8px;
+                cursor: pointer;
+                background-color: #f8f9fa;
+                transition: all 0.3s ease;
+              " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.15)'" 
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <img src="${item.image_url}" alt="${item.title}" loading="lazy" 
+                     data-gallery-id="${item.id}"
+                     style="
+                       width: 100%;
+                       height: 100%;
+                       object-fit: cover;
+                       transition: transform 0.3s ease;
+                       border-radius: 8px;
+                     " 
+                     onload="handleImageLoad(this)"
+                     onmouseover="this.style.transform='scale(1.05)'" 
+                     onmouseout="this.style.transform='scale(1)'" />
+                <div class="gallery-overlay" style="
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+                  color: white;
+                  padding: 15px;
+                  transform: translateY(100%);
+                  transition: transform 0.3s ease;
+                  border-radius: 0 0 8px 8px;
+                " onmouseover="this.style.transform='translateY(0)'" 
+                   onmouseout="this.style.transform='translateY(100%)'">
+                  <h3 style="margin: 0 0 5px 0; font-size: 14px; font-weight: 600;">${item.title}</h3>
+                  ${item.description ? `<p style="margin: 0; font-size: 12px; opacity: 0.9;">${item.description}</p>` : ""}
+                </div>
+              </div>
+            `
+          })
+          .join("")
+
+        const mediaQuery = window.matchMedia("(max-width: 768px)")
+        const handleMobileLayout = (e) => {
+          if (e.matches) {
+            galleryGrid.style.gridTemplateColumns = "repeat(auto-fit, minmax(250px, 1fr))"
+            galleryGrid.style.gap = "10px"
+          } else {
+            galleryGrid.style.gridTemplateColumns = "repeat(auto-fit, minmax(300px, 1fr))"
+            galleryGrid.style.gap = "15px"
+          }
+        }
+        mediaQuery.addListener(handleMobileLayout)
+        handleMobileLayout(mediaQuery)
+
+        console.log(`✅ Loaded ${imagesToShow.length} gallery images on index page`)
+      }
+    } else {
+      console.log("ℹ️ No gallery images found for index page")
+    }
+  } catch (error) {
+    console.error("❌ Error loading gallery for index:", error)
+    const galleryGrid = document.getElementById("galleryGrid")
+    const loadingText = document.querySelector(".gallery-loading")
+
+    if (galleryGrid && loadingText) {
+      loadingText.innerHTML = `
+        <div class="text-center py-4">
+          <p class="text-muted">Unable to load gallery images at the moment.</p>
+        </div>
+      `
+    }
+  }
+}
+
+// ==== FULL GALLERY (Gallery page) ====
+
+function setupGalleryFilters() {
+    const filterButtons = document.querySelectorAll('.gallery-filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter').toLowerCase().trim();
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter gallery items
+            galleryItems.forEach(item => {
+                const category = (item.getAttribute('data-category') || '').toLowerCase().trim();
+                if (filter === 'all' || category === filter) {
+                    item.style.display = 'block';
+                    item.classList.add('fade-in');
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+async function loadGalleryForGalleryPage() {
+  const grid = document.getElementById("galleryGrid");
+  const loading = document.getElementById("galleryLoading");
+  const empty = document.getElementById("galleryEmpty");
+  if (!grid) return;
+
+  // ensure correct base layout
+  grid.classList.add("jg-grid");
+  if (loading) loading.style.display = "block";
+  if (empty) empty.style.display = "none";
+  grid.innerHTML = "";
+
+  try {
+    const res = await fetch("/api/gallery-data/");
+    const data = await res.json();
+
+    const items = (data && data.status === "success" && Array.isArray(data.data)) ? data.data : [];
+
+    if (!items.length) {
+      if (loading) loading.style.display = "none";
+      if (empty) empty.style.display = "block";
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+
+    items.forEach((item) => {
+      const wrap = document.createElement("div");
+      wrap.className = "jg-item";
+      wrap.setAttribute("data-category", item.category || "all");
+
+      // build card
+      wrap.innerHTML = `
+        <a href="${item.image_url}" data-fancybox="gallery" data-caption="${item.title || ""}">
+          <article class="jg-card">
+            <div class="jg-thumb">
+              <img
+                src="${item.image_url}"
+                alt="${item.title ? item.title.replace(/"/g, "&quot;") : "Gallery image"}"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='/static/img/placeholder.svg'; this.closest('.jg-thumb').classList.add('error');"
+              />
+            </div>
+            <div class="jg-overlay">
+              <h6 class="jg-title">${item.title || ""}</h6>
+              ${item.description ? `<p class="jg-desc">${item.description}</p>` : ""}
+            </div>
+          </article>
+        </a>
+      `;
+      frag.appendChild(wrap);
+    });
+
+    grid.appendChild(frag);
+
+    if (loading) loading.style.display = "none";
+    if (empty) empty.style.display = "none";
+
+    // (re)bind filters after DOM is ready
+    setupGalleryFilters();
+
+  } catch (err) {
+    console.error("Gallery load failed:", err);
+    if (loading) loading.style.display = "none";
+    if (empty) empty.style.display = "block";
+  }
+}
+
+
+function handleImageLoad(img) {
+  try {
+    const aspectRatio = img.naturalWidth / img.naturalHeight
+
+    if (aspectRatio < 1.0) {
+      // Tall images - dramatic zoom out
+      const scale = Math.max(0.5, aspectRatio * 0.8)
+      img.style.transform = `scale(${scale})`
+      img.style.objectFit = "contain"
+      img.style.backgroundColor = "#f8f9fa"
+    } else if (aspectRatio < 1.3) {
+      // Slightly wide images - minor zoom out
+      img.style.transform = "scale(0.9)"
+      img.style.objectFit = "cover"
+    } else {
+      // Wide images - normal size
+      img.style.transform = "scale(1)"
+      img.style.objectFit = "cover"
+    }
+
+    // Update hover effects to work with applied scale
+    const currentScale = Number.parseFloat(img.style.transform.match(/scale$$([^)]+)$$/)?.[1] || 1)
+    const hoverScale = currentScale * 1.05
+
+    img.onmouseover = () => (img.style.transform = `scale(${hoverScale})`)
+    img.onmouseout = () => (img.style.transform = `scale(${currentScale})`)
+  } catch (error) {
+    console.error("Error in handleImageLoad:", error)
+  }
+}
+
+function getGridSpanClass(index, totalImages) {
+  // Create dynamic layout patterns based on image position
+  const patterns = [
+    "grid-span-1", // Normal size
+    "grid-span-2", // Larger size (spans 2 rows)
+    "grid-span-1", // Normal size
+    "grid-span-wide", // Wide size (spans 2 columns)
+    "grid-span-1", // Normal size
+    "grid-span-1", // Normal size
+  ]
+
+  // Apply pattern based on index, with some randomization for variety
+  const patternIndex = index % patterns.length
+  return patterns[patternIndex]
+}
+
+
+// =====================================================
+// 12. SUCCESS NOTIFICATIONS & FEEDBACK
 // =====================================================
 
 // Enhanced booking success function
@@ -1584,7 +2400,7 @@ function showEnhancedBookingSuccess(formData) {
 }
 
 // =====================================================
-// 11. CAROUSEL & INTERACTIVE COMPONENTS - FIXED
+// 13. CAROUSEL & INTERACTIVE COMPONENTS - FIXED
 // =====================================================
 
 // 🔧 FIXED: Initialize Enhanced Services Carousel
@@ -1641,19 +2457,21 @@ function initializeServicesCarousel() {
             prevEl: ".services-button-prev",
           },
 
-          // Responsive breakpoints
           breakpoints: {
             640: {
               slidesPerView: 1,
               spaceBetween: 20,
+              centeredSlides: true,
             },
             768: {
               slidesPerView: 2,
               spaceBetween: 30,
+              centeredSlides: false,
             },
             1024: {
               slidesPerView: 3,
               spaceBetween: 30,
+              centeredSlides: false,
             },
           },
 
@@ -1661,7 +2479,7 @@ function initializeServicesCarousel() {
           effect: "slide",
           speed: 600,
           loop: true,
-          centeredSlides: false,
+          centeredSlides: true,
 
           // Events
           on: {
@@ -1732,7 +2550,7 @@ function initializeServicesCarousel() {
 }
 
 // =====================================================
-// 12. FORM UTILITIES & HELPERS
+// 14. FORM UTILITIES & HELPERS
 // =====================================================
 
 // Initialize booking form submission
@@ -1762,7 +2580,7 @@ function resetBookingForm() {
 }
 
 // =====================================================
-// 13. RESPONSIVE & ACCESSIBILITY UTILITIES
+// 15. RESPONSIVE & ACCESSIBILITY UTILITIES
 // =====================================================
 
 // Handle responsive behavior
@@ -1806,15 +2624,31 @@ function addKeyboardSupport() {
 }
 
 // =====================================================
-// 14. INITIALIZATION & EVENT LISTENERS
+// 16. INITIALIZATION & EVENT LISTENERS - UPDATED
 // =====================================================
 
 // Main DOM Content Loaded Event
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 Taxi Booking System - Frontend JavaScript Initialized")
 
-  // FIRST: Initialize Lottie loader management
-  initializeLottieLoader()
+  // Initialize Lottie loader
+  hideLottieLoader();   // ✅ instead of initializeLottieLoader
+
+  // ✅ PRIORITY: Load dynamic car types first with immediate refresh
+  loadDynamicCarTypes().then(() => {
+    console.log("🎯 Car types loaded, system ready for bookings")
+  })
+
+  // Load gallery images for index page
+  const grid = document.getElementById("galleryGrid");
+    if (grid) {
+        const path = window.location.pathname || "";
+        if (path.startsWith("/gallery")) {
+            loadGalleryForGalleryPage();
+        } else {
+            loadGalleryForIndex();
+        }
+    }
 
   // Core functionality initialization
   initializeNavigation()
@@ -1860,7 +2694,7 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("resize", handleEnhancedResponsiveChanges)
 
 // =====================================================
-// 15. CSS INJECTION FOR ANIMATIONS
+// 17. CSS INJECTION FOR ANIMATIONS
 // =====================================================
 
 // Inject required CSS for animations and components
@@ -1974,6 +2808,20 @@ const requiredCSS = `
   animation: checkPulse 1.5s ease-out;
 }
 
+/* ✅ NEW: Enhanced route information styling */
+.route-details .calculating {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
 @keyframes checkPulse {
   0% { transform: scale(0); }
   50% { transform: scale(1.2); }
@@ -2062,6 +2910,64 @@ const requiredCSS = `
   opacity: 1;
   transform: scale(1.2);
 }
+
+/* ✅ NEW: Round-trip pricing styles */
+.price-range {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #2a9d8f;
+}
+
+.driver-allowance {
+  color: #6c757d;
+  font-style: italic;
+  display: block;
+  margin-top: 2px;
+}
+
+.car-option .total-price {
+  text-align: center;
+}
+
+/* Date input styling for round-trip */
+input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
+
+input[type="date"]:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Trip type toggle styling */
+.trip-type-toggle .trip-type-option.active {
+  background-color: #2a9d8f;
+  color: white;
+  border-color: #2a9d8f;
+}
+
+/* Enhanced modal pricing display */
+#selectedPrice small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85em;
+  color: #6c757d;
+}
+
+/* Loading spinner for car types */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+  border-width: 0.25em;
+}
+
+.spinner-border.text-primary {
+  color: #2a9d8f !important;
+}
 `
 
 // Inject CSS into document head
@@ -2070,7 +2976,7 @@ styleSheet.textContent = requiredCSS
 document.head.appendChild(styleSheet)
 
 // =====================================================
-// 16. EXPORT UTILITIES (Optional)
+// 18. EXPORT UTILITIES (Optional)
 // =====================================================
 
 // Export utilities for potential external use
@@ -2080,6 +2986,20 @@ window.TaxiBookingSystem = {
   calculateDistancePlaceholder,
   validateBookingForm,
   submitBookingRequest,
+
+  // ✅ NEW: Dynamic car types functions
+  loadDynamicCarTypes,
+  getCarTypeRates,
+  updateCarTypePricing,
+  refreshCarTypesForModal,
+  buildDynamicCarOptions,
+  dynamicCarTypes: () => dynamicCarTypes,
+  isCarTypesLoaded: () => isCarTypesLoaded,
+
+  // ✅ NEW: Enhanced route information functions
+  updateRouteInformation,
+  calculateEstimatedDuration,
+  formatDuration,
 
   // UI functions
   showEnhancedBookingSuccess,
@@ -2105,7 +3025,21 @@ window.TaxiBookingSystem = {
 }
 
 console.log("🎯 Taxi Booking System - All modules loaded and ready!")
+console.log("🚗 Dynamic car types system initialized with round-trip pricing support!")
+console.log("🗺️ Enhanced route information display with dynamic duration calculation!")
 
 // =====================================================
 // END OF TAXI BOOKING SYSTEM JAVASCRIPT
 // =====================================================
+
+
+// ====== Fancybox Integration for Gallery ======
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.jQuery && $('[data-fancybox]').length) {
+        $('[data-fancybox]').fancybox({
+            buttons: ["fullScreen", "thumbs", "share", "slideShow", "close"],
+            protect: true
+        });
+    }
+});
+

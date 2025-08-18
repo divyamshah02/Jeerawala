@@ -1,0 +1,561 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Car Types Management - Admin Panel{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-tags text-primary me-2"></i>
+                Car Types Management
+            </h2>
+            <p class="text-muted mb-0">Manage vehicle categories and pricing</p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCarTypeModal">
+            <i class="fas fa-plus me-1"></i>
+            Add New Car Type
+        </button>
+    </div>
+</div>
+
+<!-- Car Types Table -->
+<div class="table-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Car Type</th>
+                    <th>One-Way Rate</th>
+                    <th>Round-Trip Rate Range</th>
+                    <th>Min Distance Cap</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car_type in car_types %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                {% if car_type.name == 'SUV' %}
+                                    <i class="fas fa-car-side fa-lg text-primary"></i>
+                                {% elif car_type.name == 'Sedan' %}
+                                    <i class="fas fa-car fa-lg text-success"></i>
+                                {% elif car_type.name == 'Hatchback' %}
+                                    <i class="fas fa-car-alt fa-lg text-info"></i>
+                                {% else %}
+                                    <i class="fas fa-car fa-lg text-secondary"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <strong>{{ car_type.name }}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-primary fs-6">₹{{ car_type.rate_per_km|floatformat:2 }}/km</span>
+                    </td>
+                    <td>
+                        <!-- ✅ NEW: Show min-max rate range for round trips -->
+                        <div class="d-flex flex-column">
+                            <span class="badge bg-success fs-6 mb-1">₹{{ car_type.minimum_rate_per_km|floatformat:2 }} - ₹{{ car_type.maximum_rate_per_km|floatformat:2 }}/km</span>
+                            <small class="text-muted">+ ₹300/day driver allowance</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="text-muted">{{ car_type.minimum_distance_cap|floatformat:2 }} km</span>
+                    </td>
+                    <td>
+                        {% if car_type.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div>
+                            <strong>{{ car_type.created_at|date:"M d, Y" }}</strong><br>
+                            <small class="text-muted">{{ car_type.created_at|time:"H:i" }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary edit-car-type-btn me-1" 
+                                data-car-type-id="{{ car_type.id }}"
+                                data-car-type-name="{{ car_type.name }}"
+                                data-car-type-rate="{{ car_type.rate_per_km }}"
+                                data-car-type-min-rate="{{ car_type.minimum_rate_per_km }}"
+                                data-car-type-max-rate="{{ car_type.maximum_rate_per_km }}"
+                                data-car-type-min-distance="{{ car_type.minimum_distance_cap }}"
+                                data-car-type-active="{{ car_type.is_active }}"
+                                title="Edit Car Type">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        {% if car_type.is_active %}
+                            <button class="btn btn-sm btn-outline-warning toggle-status-btn" 
+                                    data-car-type-id="{{ car_type.id }}"
+                                    data-action="deactivate"
+                                    title="Deactivate Car Type">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                        {% else %}
+                            <button class="btn btn-sm btn-outline-success toggle-status-btn" 
+                                    data-car-type-id="{{ car_type.id }}"
+                                    data-action="activate"
+                                    title="Activate Car Type">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <i class="fas fa-tags fa-2x text-muted mb-2"></i><br>
+                        <span class="text-muted">No car types found</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Car Type Modal -->
+<div class="modal fade" id="addCarTypeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Car Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" id="addCarTypeForm">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_car_type">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Car Type Name *</label>
+                        <input type="text" name="name" class="form-control" 
+                               placeholder="Enter car type name (e.g., SUV, Sedan, Hatchback, Luxury, etc.)" 
+                               required maxlength="50">
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Enter a unique name for this vehicle category
+                        </small>
+                    </div>
+                    
+                    <!-- ✅ UPDATED: One-Way Rate Section -->
+                    <div class="mb-3">
+                        <label class="form-label">One-Way Rate per Kilometer *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" name="rate_per_km" class="form-control" 
+                                   step="0.01" min="0" placeholder="0.00" required>
+                            <span class="input-group-text">/km</span>
+                        </div>
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Standard rate for one-way trips
+                        </small>
+                    </div>
+                    
+                    <!-- ✅ NEW: Round-Trip Rate Range Section -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Minimum Rate (Round-Trip) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" name="minimum_rate_per_km" class="form-control" 
+                                       step="0.01" min="0" placeholder="0.00" required>
+                                <span class="input-group-text">/km</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Maximum Rate (Round-Trip) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" name="maximum_rate_per_km" class="form-control" 
+                                       step="0.01" min="0" placeholder="0.00" required>
+                                <span class="input-group-text">/km</span>
+                            </div>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted mb-3">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Round-trip pricing will show as a range between min and max rates, plus ₹300/day driver allowance
+                    </small>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Minimum Distance Cap</label>
+                        <div class="input-group">
+                            <input type="number" name="minimum_distance_cap" class="form-control" 
+                                   step="0.01" min="0" placeholder="0.00" value="0">
+                            <span class="input-group-text">km</span>
+                        </div>
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Minimum distance for billing (optional, default: 0 km)
+                        </small>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="add_is_active" name="is_active" checked>
+                            <label class="form-check-label" for="add_is_active">
+                                <strong>Active</strong>
+                                <br>
+                                <small class="text-muted">Make this car type available for bookings</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Add Car Type
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Car Type Modal -->
+<div class="modal fade" id="editCarTypeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Car Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" id="editCarTypeForm">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="edit_car_type">
+                <input type="hidden" name="car_type_id" id="edit_car_type_id">
+                <input type="hidden" name="name" id="edit_car_type_name_hidden">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Car Type Name</label>
+                        <div class="form-control-plaintext bg-light p-3 rounded border">
+                            <strong id="edit_car_type_name_display" class="text-primary">
+                                <i class="fas fa-car me-2"></i>
+                                Car type name will be displayed here
+                            </strong>
+                        </div>
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Car type name cannot be changed after creation
+                        </small>
+                    </div>
+                    
+                    <!-- ✅ UPDATED: One-Way Rate Section -->
+                    <div class="mb-3">
+                        <label class="form-label">One-Way Rate per Kilometer *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" name="rate_per_km" id="edit_rate_per_km" class="form-control" 
+                                   step="0.01" min="0" placeholder="0.00" required>
+                            <span class="input-group-text">/km</span>
+                        </div>
+                    </div>
+                    
+                    <!-- ✅ NEW: Round-Trip Rate Range Section -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Minimum Rate (Round-Trip) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" name="minimum_rate_per_km" id="edit_minimum_rate_per_km" class="form-control" 
+                                       step="0.01" min="0" placeholder="0.00" required>
+                                <span class="input-group-text">/km</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Maximum Rate (Round-Trip) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" name="maximum_rate_per_km" id="edit_maximum_rate_per_km" class="form-control" 
+                                       step="0.01" min="0" placeholder="0.00" required>
+                                <span class="input-group-text">/km</span>
+                            </div>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted mb-3">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Round-trip pricing will show as a range between min and max rates, plus ₹300/day driver allowance
+                    </small>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Minimum Distance Cap</label>
+                        <div class="input-group">
+                            <input type="number" name="minimum_distance_cap" id="edit_minimum_distance_cap" class="form-control" 
+                                   step="0.01" min="0" placeholder="0.00">
+                            <span class="input-group-text">km</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="edit_is_active" name="is_active">
+                            <label class="form-check-label" for="edit_is_active">
+                                <strong>Active</strong>
+                                <br>
+                                <small class="text-muted">Make this car type available for bookings</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger me-auto" id="deleteCarTypeBtn">
+                        <i class="fas fa-trash me-1"></i>
+                        Delete
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>
+                        Update Car Type
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Car Type Confirmation Modal -->
+<div class="modal fade" id="deleteCarTypeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this car type?</p>
+                <p><strong><span id="deleteCarTypeInfo"></span></strong></p>
+                <p class="text-danger">This action cannot be undone and will affect all cars of this type.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" id="deleteCarTypeForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_car_type">
+                    <input type="hidden" name="car_type_id" id="delete_car_type_id">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>
+                        Delete Car Type
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toggle Status Confirmation Modal -->
+<div class="modal fade" id="toggleStatusModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="toggleStatusMessage">Are you sure you want to change the status of this car type?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" id="toggleStatusForm" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle_status">
+                    <input type="hidden" name="car_type_id" id="toggle_car_type_id">
+                    <input type="hidden" name="new_status" id="toggle_new_status">
+                    <button type="submit" class="btn btn-primary" id="confirmToggleBtn">
+                        <i class="fas fa-check me-1"></i>
+                        Confirm
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // =====================================================
+    // FORM VALIDATION
+    // =====================================================
+    
+    function validateCarTypeForm(form) {
+        const rate = form.querySelector('[name="rate_per_km"]').value;
+        const minRate = form.querySelector('[name="minimum_rate_per_km"]').value;
+        const maxRate = form.querySelector('[name="maximum_rate_per_km"]').value;
+        
+        if (!rate || parseFloat(rate) <= 0) {
+            alert('Please enter a valid one-way rate per kilometer.');
+            return false;
+        }
+        
+        if (!minRate || parseFloat(minRate) <= 0) {
+            alert('Please enter a valid minimum rate per kilometer.');
+            return false;
+        }
+        
+        if (!maxRate || parseFloat(maxRate) <= 0) {
+            alert('Please enter a valid maximum rate per kilometer.');
+            return false;
+        }
+        
+        if (parseFloat(minRate) > parseFloat(maxRate)) {
+            alert('Minimum rate cannot be greater than maximum rate.');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // =====================================================
+    // ADD CAR TYPE FUNCTIONALITY
+    // =====================================================
+    
+    const addCarTypeForm = document.getElementById('addCarTypeForm');
+    if (addCarTypeForm) {
+        addCarTypeForm.addEventListener('submit', function(e) {
+            if (!validateCarTypeForm(this)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    
+    // =====================================================
+    // EDIT CAR TYPE FUNCTIONALITY
+    // =====================================================
+    
+    const editCarTypeForm = document.getElementById('editCarTypeForm');
+    if (editCarTypeForm) {
+        editCarTypeForm.addEventListener('submit', function(e) {
+            if (!validateCarTypeForm(this)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    
+    // Handle edit car type button clicks
+    document.querySelectorAll('.edit-car-type-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const carTypeId = this.getAttribute('data-car-type-id');
+            const carTypeName = this.getAttribute('data-car-type-name');
+            const carTypeRate = this.getAttribute('data-car-type-rate');
+            const carTypeMinRate = this.getAttribute('data-car-type-min-rate');
+            const carTypeMaxRate = this.getAttribute('data-car-type-max-rate');
+            const carTypeMinDistance = this.getAttribute('data-car-type-min-distance');
+            const carTypeActive = this.getAttribute('data-car-type-active') === 'True';
+            
+            // Populate form fields
+            document.getElementById('edit_car_type_id').value = carTypeId;
+            document.getElementById('edit_car_type_name_hidden').value = carTypeName;
+            document.getElementById('edit_car_type_name_display').textContent = carTypeName;
+            document.getElementById('edit_rate_per_km').value = carTypeRate;
+            document.getElementById('edit_minimum_rate_per_km').value = carTypeMinRate || carTypeRate;
+            document.getElementById('edit_maximum_rate_per_km').value = carTypeMaxRate || carTypeRate;
+            document.getElementById('edit_minimum_distance_cap').value = carTypeMinDistance;
+            document.getElementById('edit_is_active').checked = carTypeActive;
+            
+            // Show modal
+            const editModal = new bootstrap.Modal(document.getElementById('editCarTypeModal'));
+            editModal.show();
+            
+            console.log('📝 Edit modal opened for car type:', carTypeName);
+        });
+    });
+    
+    // =====================================================
+    // DELETE CAR TYPE FUNCTIONALITY
+    // =====================================================
+    
+    // Handle delete button in edit modal
+    document.getElementById('deleteCarTypeBtn').addEventListener('click', function() {
+        const carTypeId = document.getElementById('edit_car_type_id').value;
+        const carTypeName = document.getElementById('edit_car_type_name_hidden').value;
+        
+        // Set delete modal data
+        document.getElementById('delete_car_type_id').value = carTypeId;
+        document.getElementById('deleteCarTypeInfo').textContent = carTypeName;
+        
+        // Hide edit modal and show delete modal
+        const editModal = bootstrap.Modal.getInstance(document.getElementById('editCarTypeModal'));
+        editModal.hide();
+        
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteCarTypeModal'));
+        deleteModal.show();
+    });
+    
+    // =====================================================
+    // TOGGLE STATUS FUNCTIONALITY
+    // =====================================================
+    
+    document.querySelectorAll('.toggle-status-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const carTypeId = this.getAttribute('data-car-type-id');
+            const action = this.getAttribute('data-action');
+            
+            // Set form values
+            document.getElementById('toggle_car_type_id').value = carTypeId;
+            document.getElementById('toggle_new_status').value = action === 'activate' ? 'true' : 'false';
+            
+            // Update message and button
+            const message = document.getElementById('toggleStatusMessage');
+            const confirmBtn = document.getElementById('confirmToggleBtn');
+            
+            if (action === 'activate') {
+                message.textContent = 'Are you sure you want to activate this car type? It will become available for bookings.';
+                confirmBtn.innerHTML = '<i class="fas fa-play me-1"></i> Activate';
+                confirmBtn.className = 'btn btn-success';
+            } else {
+                message.textContent = 'Are you sure you want to deactivate this car type? It will no longer be available for new bookings.';
+                confirmBtn.innerHTML = '<i class="fas fa-pause me-1"></i> Deactivate';
+                confirmBtn.className = 'btn btn-warning';
+            }
+            
+            // Show modal
+            const toggleModal = new bootstrap.Modal(document.getElementById('toggleStatusModal'));
+            toggleModal.show();
+            
+            console.log('🔄 Toggle status modal opened for car type ID:', carTypeId, 'Action:', action);
+        });
+    });
+    
+    // =====================================================
+    // MODAL RESET FUNCTIONALITY
+    // =====================================================
+    
+    // Reset Add Car Type Modal when closed
+    const addCarTypeModal = document.getElementById('addCarTypeModal');
+    if (addCarTypeModal) {
+        addCarTypeModal.addEventListener('hidden.bs.modal', function() {
+            const form = this.querySelector('form');
+            if (form) {
+                form.reset();
+                // Set default values
+                form.querySelector('[name="minimum_distance_cap"]').value = '0';
+                form.querySelector('[name="is_active"]').checked = true;
+            }
+            console.log('🔄 Add car type modal reset');
+        });
+    }
+    
+    // Reset Edit Car Type Modal when closed
+    const editCarTypeModal = document.getElementById('editCarTypeModal');
+    if (editCarTypeModal) {
+        editCarTypeModal.addEventListener('hidden.bs.modal', function() {
+            console.log('🔄 Edit car type modal closed');
+        });
+    }
+    
+    console.log('🏷️ Car Types management with round-trip pricing initialized!');
+});
+</script>
+
+{% endblock %}

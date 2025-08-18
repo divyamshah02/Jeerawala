@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
     <title>Our Cars - Jirawala Tours & Travels</title>
     <!-- Google Fonts - Poppins for headings, Open Sans for body -->
     <link
@@ -17,6 +17,18 @@
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Phone Link Styling -->
+    <style>
+        .top-header .contact-info strong a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .top-header .contact-info strong a:hover {
+            text-decoration: underline !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -41,7 +53,7 @@
                 <img src="{% static 'img/call-us-now.gif' %}" alt="Call Us Now" class="img-fluid">
                 <div>
                     <small class="d-block">Call Us Now</small>
-                    <strong>+91 1234567890</strong>
+                    <strong><a href="tel:+911234567890">+91 1234567890</a></strong>
                 </div>
             </div>
         </div>
@@ -73,7 +85,7 @@
                         <a class="nav-link active" aria-current="page" href="/our-cars/">Our Cars</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/blogs/">Our Blogs</a>
+                        <a class="nav-link" href="/gallery/">Gallery</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/#contact">Contact</a>
@@ -95,7 +107,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a href="/">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Our Cars</li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="/our-cars/">Our Cars</a></li>
                         </ol>
                     </nav>
                 </div>
@@ -117,31 +129,25 @@
                     {% endif %}
                 </p>
 
-                <!-- Car Type Filters -->
+                <!-- ✅ UPDATED: Dynamic Car Type Filters -->
                 <div class="enhanced-filter-buttons mb-4">
                     <button class="enhanced-filter-btn active" data-filter="all">All</button>
-                    <button class="enhanced-filter-btn" data-filter="hatchback">Hatchback</button>
-                    <button class="enhanced-filter-btn" data-filter="sedan">Sedan</button>
-                    <button class="enhanced-filter-btn" data-filter="suv">SUV</button>
+                    {% for car_type in available_car_types %}
+                    <button class="enhanced-filter-btn" data-filter="{{ car_type.name_lower }}">{{ car_type.name }}</button>
+                    {% endfor %}
                 </div>
             </div>
 
-            <!-- Enhanced Cars Grid - MADE MORE COMPACT -->
+            <!-- Enhanced Cars Grid -->
             <div class="enhanced-cars-grid compact-grid" id="cars-grid">
                 {% for car in cars %}
-                <div class="enhanced-car-card compact-card" data-car-type="{{ car.car_type.name|lower }}" data-car-id="{{ car.id }}">
-                    <!-- Availability Badge -->
-                    <div class="enhanced-availability-badge">
-                        <span class="badge-available">Available</span>
-                    </div>
-
+                <div class="enhanced-car-card compact-card" data-car-type="{{ car.car_type.name|lower }}"
+                    data-car-id="{{ car.id }}">
                     <!-- Car Image with localStorage Integration - REDUCED HEIGHT -->
                     <div class="enhanced-car-image compact-image">
-                        <img src="{% if car.image %}{{ car.image.url }}{% else %}{% if car.car_type.name|lower == 'hatchback' %}{% static 'img/car-hatchback.png' %}{% elif car.car_type.name|lower == 'sedan' %}{% static 'img/car-sedan.png' %}{% elif car.car_type.name|lower == 'suv' %}{% static 'img/car-suv.png' %}{% else %}{% static 'img/car-sedan.png' %}{% endif %}{% endif %}" 
-                             alt="{{ car.name }}" 
-                             class="car-img frontend-car-image" 
-                             data-car-id="{{ car.id }}"
-                             data-fallback-src="{% if car.car_type.name|lower == 'hatchback' %}{% static 'img/car-hatchback.png' %}{% elif car.car_type.name|lower == 'sedan' %}{% static 'img/car-sedan.png' %}{% elif car.car_type.name|lower == 'suv' %}{% static 'img/car-suv.png' %}{% else %}{% static 'img/car-sedan.png' %}{% endif %}">
+                        <img src="{% if car.image %}{{ car.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                            alt="{{ car.name }}" class="service-image frontend-route-image" data-route-id="{{ car.id }}"
+                            data-fallback-src="{% static 'img/placeholder.svg' %}">
                         <div class="enhanced-image-overlay"></div>
                     </div>
 
@@ -152,59 +158,6 @@
                             <div class="enhanced-car-title-section">
                                 <h3 class="enhanced-car-name compact-name">{{ car.name }}</h3>
                                 <span class="enhanced-car-type-badge">{{ car.car_type.name }}</span>
-                            </div>
-                            <div class="enhanced-car-rating compact-rating">
-                                <div class="rating-stars">
-                                    <i class="bi bi-star-fill"></i>
-                                    <span class="rating-value">4.5</span>
-                                </div>
-                                <p class="trip-count">150 trips</p>
-                            </div>
-                        </div>
-
-                        <!-- Car Info - REDUCED -->
-                        {% if car.registration_number or car.driver_name %}
-                        <div class="enhanced-car-info compact-info">
-                            {% if car.registration_number %}
-                            <div class="info-item">
-                                <i class="bi bi-car-front"></i>
-                                <span>{{ car.registration_number }}</span>
-                            </div>
-                            {% endif %}
-                            {% if car.driver_name %}
-                            <div class="info-item">
-                                <i class="bi bi-person"></i>
-                                <span>{{ car.driver_name }}</span>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-
-                        <!-- Specifications - MADE MORE COMPACT -->
-                        <div class="enhanced-car-specs compact-specs">
-                            <div class="spec-item">
-                                <i class="bi bi-people"></i>
-                                <span>4 Seats</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-suitcase"></i>
-                                <span>2 Bags</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-fuel-pump"></i>
-                                <span>Petrol</span>
-                            </div>
-                        </div>
-
-                        <!-- Features - REDUCED TO ESSENTIAL ONLY -->
-                        <div class="enhanced-car-features compact-features">
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span>AC & Professional Driver</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span class="text-success">Available Now</span>
                             </div>
                         </div>
 
@@ -219,9 +172,8 @@
                                 <span class="price-unit">per km</span>
                                 {% endif %}
                             </div>
-                            <button class="enhanced-book-btn car-book-now-btn" 
-                                data-car-type="{{ car.car_type.name|lower }}" 
-                                data-car-name="{{ car.name }}"
+                            <button class="enhanced-book-btn car-book-now-btn"
+                                data-car-type="{{ car.car_type.name|lower }}" data-car-name="{{ car.name }}"
                                 data-car-id="{{ car.id }}">
                                 Book Now
                             </button>
@@ -234,11 +186,10 @@
                 {% empty %}
                 <!-- Fallback cars if no dynamic cars available -->
                 <div class="enhanced-car-card compact-card" data-car-type="hatchback" data-car-id="fallback-1">
-                    <div class="enhanced-availability-badge">
-                        <span class="badge-available">Available</span>
-                    </div>
                     <div class="enhanced-car-image compact-image">
-                        <img src="{% static 'img/car-hatchback.png' %}" alt="Hatchback" class="car-img frontend-car-image" data-car-id="fallback-1" data-fallback-src="{% static 'img/car-hatchback.png' %}">
+                        <img src="{% static 'img/car-hatchback.png' %}" alt="Hatchback"
+                            class="car-img frontend-car-image" data-car-id="fallback-1"
+                            data-fallback-src="{% static 'img/car-hatchback.png' %}">
                         <div class="enhanced-image-overlay"></div>
                     </div>
                     <div class="enhanced-car-content compact-content">
@@ -247,44 +198,14 @@
                                 <h3 class="enhanced-car-name compact-name">Hatchback</h3>
                                 <span class="enhanced-car-type-badge">Hatchback</span>
                             </div>
-                            <div class="enhanced-car-rating compact-rating">
-                                <div class="rating-stars">
-                                    <i class="bi bi-star-fill"></i>
-                                    <span class="rating-value">4.5</span>
-                                </div>
-                                <p class="trip-count">150 trips</p>
-                            </div>
-                        </div>
-                        <div class="enhanced-car-specs compact-specs">
-                            <div class="spec-item">
-                                <i class="bi bi-people"></i>
-                                <span>4 Seats</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-suitcase"></i>
-                                <span>1 Bag</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-fuel-pump"></i>
-                                <span>Petrol</span>
-                            </div>
-                        </div>
-                        <div class="enhanced-car-features compact-features">
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span>AC & Professional Driver</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span>City rides, Budget trips</span>
-                            </div>
                         </div>
                         <div class="enhanced-price-booking compact-booking">
                             <div class="enhanced-price">
                                 <span class="price-amount">₹12</span>
                                 <span class="price-unit">per km</span>
                             </div>
-                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="hatchback">Book Now</button>
+                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="hatchback">Book
+                                Now</button>
                         </div>
                     </div>
                     <div class="enhanced-hover-overlay"></div>
@@ -292,11 +213,9 @@
 
                 <!-- Add more fallback cars for Sedan and SUV -->
                 <div class="enhanced-car-card compact-card" data-car-type="sedan" data-car-id="fallback-2">
-                    <div class="enhanced-availability-badge">
-                        <span class="badge-available">Available</span>
-                    </div>
                     <div class="enhanced-car-image compact-image">
-                        <img src="{% static 'img/car-sedan.png' %}" alt="Sedan" class="car-img frontend-car-image" data-car-id="fallback-2" data-fallback-src="{% static 'img/car-sedan.png' %}">
+                        <img src="{% static 'img/car-sedan.png' %}" alt="Sedan" class="car-img frontend-car-image"
+                            data-car-id="fallback-2" data-fallback-src="{% static 'img/car-sedan.png' %}">
                         <div class="enhanced-image-overlay"></div>
                     </div>
                     <div class="enhanced-car-content compact-content">
@@ -304,37 +223,6 @@
                             <div class="enhanced-car-title-section">
                                 <h3 class="enhanced-car-name compact-name">Sedan</h3>
                                 <span class="enhanced-car-type-badge">Sedan</span>
-                            </div>
-                            <div class="enhanced-car-rating compact-rating">
-                                <div class="rating-stars">
-                                    <i class="bi bi-star-fill"></i>
-                                    <span class="rating-value">4.7</span>
-                                </div>
-                                <p class="trip-count">200 trips</p>
-                            </div>
-                        </div>
-                        <div class="enhanced-car-specs compact-specs">
-                            <div class="spec-item">
-                                <i class="bi bi-people"></i>
-                                <span>4 Seats</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-suitcase"></i>
-                                <span>3 Bags</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-fuel-pump"></i>
-                                <span>Petrol</span>
-                            </div>
-                        </div>
-                        <div class="enhanced-car-features compact-features">
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span>Premium Interior & Driver</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span>Outstation, Family trips</span>
                             </div>
                         </div>
                         <div class="enhanced-price-booking compact-booking">
@@ -349,11 +237,9 @@
                 </div>
 
                 <div class="enhanced-car-card compact-card" data-car-type="suv" data-car-id="fallback-3">
-                    <div class="enhanced-availability-badge">
-                        <span class="badge-available">Available</span>
-                    </div>
                     <div class="enhanced-car-image compact-image">
-                        <img src="{% static 'img/car-suv.png' %}" alt="SUV" class="car-img frontend-car-image" data-car-id="fallback-3" data-fallback-src="{% static 'img/car-suv.png' %}">
+                        <img src="{% static 'img/car-suv.png' %}" alt="SUV" class="car-img frontend-car-image"
+                            data-car-id="fallback-3" data-fallback-src="{% static 'img/car-suv.png' %}">
                         <div class="enhanced-image-overlay"></div>
                     </div>
                     <div class="enhanced-car-content compact-content">
@@ -361,37 +247,6 @@
                             <div class="enhanced-car-title-section">
                                 <h3 class="enhanced-car-name compact-name">SUV</h3>
                                 <span class="enhanced-car-type-badge">SUV</span>
-                            </div>
-                            <div class="enhanced-car-rating compact-rating">
-                                <div class="rating-stars">
-                                    <i class="bi bi-star-fill"></i>
-                                    <span class="rating-value">4.6</span>
-                                </div>
-                                <p class="trip-count">180 trips</p>
-                            </div>
-                        </div>
-                        <div class="enhanced-car-specs compact-specs">
-                            <div class="spec-item">
-                                <i class="bi bi-people"></i>
-                                <span>7 Seats</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-suitcase"></i>
-                                <span>5 Bags</span>
-                            </div>
-                            <div class="spec-item">
-                                <i class="bi bi-fuel-pump"></i>
-                                <span>Diesel</span>
-                            </div>
-                        </div>
-                        <div class="enhanced-car-features compact-features">
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span>Group Travel & Driver</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="bi bi-check-circle"></i>
-                                <span>Group travel, Hill stations</span>
                             </div>
                         </div>
                         <div class="enhanced-price-booking compact-booking">
@@ -412,65 +267,71 @@
     <!-- Why Choose Our Fleet Section -->
     <section class="enhanced-why-choose-section">
         <div class="container">
-            <div class="enhanced-why-choose-content">
-                <div class="enhanced-why-choose-text">
-                    <h2 class="enhanced-section-title text-start">Why Choose Our Fleet?</h2>
-                    <p class="lead">Experience premium comfort and reliability with our carefully selected and maintained vehicle fleet.</p>
-                    <div class="enhanced-feature-list">
-                        <div class="enhanced-feature-item">
-                            <div class="feature-icon">
-                                <i class="bi bi-shield-check-fill"></i>
+            <div class="row align-items-center">
+                <div class="col-lg-12 order-lg-1">
+                    <h2 class="enhanced-section-title text-center">Why Choose Our Fleet?</h2>
+                    <p class="lead text-center">Experience premium comfort and reliability with our carefully selected and maintained vehicle fleet.</p>
+                </div>
+                <div class="col-lg-6 order-lg-2 order-2">
+                    <div class="enhanced-why-choose-text">
+                        <div class="enhanced-feature-list">
+                            <div class="enhanced-feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-shield-fill-check"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h5>Fully Insured Vehicles</h5>
+                                    <p>All our vehicles are comprehensively insured for your complete peace of mind.</p>
+                                </div>
                             </div>
-                            <div class="feature-content">
-                                <h5>Fully Insured Vehicles</h5>
-                                <p>All our vehicles are comprehensively insured for your complete peace of mind.</p>
-                            </div>
-                        </div>
 
-                        <div class="enhanced-feature-item">
-                            <div class="feature-icon">
-                                <i class="bi bi-tools"></i>
+                            <div class="enhanced-feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-tools"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h5>Regular Maintenance</h5>
+                                    <p>Our vehicles undergo regular servicing and safety checks to ensure optimal
+                                        performance.</p>
+                                </div>
                             </div>
-                            <div class="feature-content">
-                                <h5>Regular Maintenance</h5>
-                                <p>Our vehicles undergo regular servicing and safety checks to ensure optimal
-                                    performance.</p>
-                            </div>
-                        </div>
 
-                        <div class="enhanced-feature-item">
-                            <div class="feature-icon">
-                                <i class="bi bi-person-check-fill"></i>
+                            <div class="enhanced-feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-person-check-fill"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h5>Professional Drivers</h5>
+                                    <p>Experienced and licensed drivers who know the routes and prioritize your safety.
+                                    </p>
+                                </div>
                             </div>
-                            <div class="feature-content">
-                                <h5>Professional Drivers</h5>
-                                <p>Experienced and licensed drivers who know the routes and prioritize your safety.</p>
-                            </div>
-                        </div>
 
-                        <div class="enhanced-feature-item">
-                            <div class="feature-icon">
-                                <i class="bi bi-geo-alt-fill"></i>
-                            </div>
-                            <div class="feature-content">
-                                <h5>GPS Tracking</h5>
-                                <p>Real-time tracking for enhanced security and route optimization.</p>
+                            <div class="enhanced-feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h5>GPS Tracking</h5>
+                                    <p>Real-time tracking for enhanced security and route optimization.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-
+                </div>
+                <div class="col-lg-6 order-lg-3 order-1 mb-4 mb-lg-0">
+                    <div class="enhanced-why-choose-image">
+                        <img src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Premium fleet vehicles" class="img-fluid rounded-4 shadow-lg">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 order-lg-4 order-3">
                     <a href="/#booking-form" class="enhanced-cta-btn">Book Your Ride</a>
-                </div>
-                <div class="enhanced-why-choose-image">
-                    <img src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=800"
-                        alt="Premium fleet vehicles" class="img-fluid">
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- Keep your existing footer and other sections -->
-    <!-- ... (rest of your existing HTML) ... -->
     <!-- Unique Animated Footer -->
     <footer class="unique-footer">
         <!-- Main Footer Content -->
@@ -566,6 +427,27 @@
                                     </p>
                                 </div>
                             </div>
+
+                            <!-- Follow Us -->
+                            <h5 class="footer-title">Follow Us</h5>
+                            <div class="social-links">
+                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-link facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="mailto:info@jirawala.com" class="social-link email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -603,28 +485,15 @@
                             <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="footer-social">
-                            <span>Follow Us:</span>
-                            <div class="social-links">
-                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
-                                    <i class="bi bi-whatsapp"></i>
-                                </a>
-                                <a href="#" class="social-link facebook">
-                                    <i class="bi bi-facebook"></i>
-                                </a>
-                                <a href="#" class="social-link instagram">
-                                    <i class="bi bi-instagram"></i>
-                                </a>
-                                <a href="#" class="social-link twitter">
-                                    <i class="bi bi-twitter"></i>
-                                </a>
-                                <a href="mailto:info@jirawala.com" class="social-link email">
-                                    <i class="bi bi-envelope-fill"></i>
-                                </a>
-                            </div>
+
+                    <!-- Developer Credit Column -->
+                    <div class="col-lg-6 col-md-6 text-center text-md-end">
+                        <div class="developer-credit">
+                            <p>Developed & Managed by <a href="https://www.dynamiclabz.net/" target="_blank"
+                                    style="color: #53c0cb; text-decoration: none;">Dynamic Labz</a></p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -660,332 +529,467 @@
         </div>
     </div>
 
-    <!-- ✅ UPDATED: Frontend localStorage Image Integration Script - NO VISUAL INDICATORS -->
+    <!-- Frontend localStorage Image Integration Script -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚗 Initializing frontend car image integration...');
-        
-        // =====================================================
-        // FRONTEND LOCALSTORAGE IMAGE INTEGRATION - CLEAN VERSION
-        // =====================================================
-        
-        const CAR_IMAGES_KEY = 'car_images_storage';
-        
-        function getStoredImages() {
-            try {
-                return JSON.parse(localStorage.getItem(CAR_IMAGES_KEY)) || {};
-            } catch (e) {
-                console.warn('Error reading stored images:', e);
-                return {};
-            }
-        }
-        
-        function loadFrontendCarImages() {
-            const storedImages = getStoredImages();
-            const carImages = document.querySelectorAll('.frontend-car-image');
-            
-            console.log('📸 Found', carImages.length, 'car images to process');
-            console.log('💾 Stored images:', Object.keys(storedImages));
-            
-            carImages.forEach(img => {
-                const carId = img.getAttribute('data-car-id');
-                const fallbackSrc = img.getAttribute('data-fallback-src');
-                
-                if (carId && storedImages[carId]) {
-                    // Load image from localStorage - NO VISUAL INDICATORS
-                    img.src = storedImages[carId];
-                    console.log('✅ Loaded stored image for car ID:', carId);
-                } else if (fallbackSrc) {
-                    // Use fallback image
-                    img.src = fallbackSrc;
-                    console.log('📷 Using fallback image for car ID:', carId);
-                } else {
-                    console.log('ℹ️ No stored or fallback image for car ID:', carId);
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('🚗 Initializing frontend car image integration...');
+
+            // =====================================================
+            // FRONTEND LOCALSTORAGE IMAGE INTEGRATION - CLEAN VERSION
+            // =====================================================
+
+            const CAR_IMAGES_KEY = 'car_images_storage';
+
+            function getStoredImages() {
+                try {
+                    return JSON.parse(localStorage.getItem(CAR_IMAGES_KEY)) || {};
+                } catch (e) {
+                    console.warn('Error reading stored images:', e);
+                    return {};
                 }
-                
-                // Handle image load errors
-                img.addEventListener('error', function() {
-                    if (fallbackSrc && this.src !== fallbackSrc) {
-                        console.log('⚠️ Image failed to load, using fallback for car ID:', carId);
-                        this.src = fallbackSrc;
+            }
+
+            function loadFrontendCarImages() {
+                const storedImages = getStoredImages();
+                const carImages = document.querySelectorAll('.frontend-car-image');
+
+                console.log('📸 Found', carImages.length, 'car images to process');
+                console.log('💾 Stored images:', Object.keys(storedImages));
+
+                carImages.forEach(img => {
+                    const carId = img.getAttribute('data-car-id');
+                    const fallbackSrc = img.getAttribute('data-fallback-src');
+
+                    if (carId && storedImages[carId]) {
+                        // Load image from localStorage - NO VISUAL INDICATORS
+                        img.src = storedImages[carId];
+                        console.log('✅ Loaded stored image for car ID:', carId);
+                    } else if (fallbackSrc) {
+                        // Use fallback image
+                        img.src = fallbackSrc;
+                        console.log('📷 Using fallback image for car ID:', carId);
+                    } else {
+                        console.log('ℹ️ No stored or fallback image for car ID:', carId);
                     }
+
+                    // Handle image load errors
+                    img.addEventListener('error', function () {
+                        if (fallbackSrc && this.src !== fallbackSrc) {
+                            console.log('⚠️ Image failed to load, using fallback for car ID:', carId);
+                            this.src = fallbackSrc;
+                        }
+                    });
+
+                    // Add smooth loading effect
+                    img.addEventListener('load', function () {
+                        this.style.opacity = '0';
+                        this.style.transition = 'opacity 0.3s ease';
+                        setTimeout(() => {
+                            this.style.opacity = '1';
+                        }, 100);
+                    });
                 });
-                
-                // Add smooth loading effect
-                img.addEventListener('load', function() {
-                    this.style.opacity = '0';
-                    this.style.transition = 'opacity 0.3s ease';
+            }
+
+            // =====================================================
+            // BOOK NOW FUNCTIONALITY FOR OUR CARS PAGE
+            // =====================================================
+
+            function initializeOurCarsBookingButtons() {
+                console.log('🚗 Initializing Our Cars page booking buttons...');
+
+                // Handle car booking buttons on our-cars.html page
+                const carBookNowButtons = document.querySelectorAll('.car-book-now-btn');
+
+                carBookNowButtons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        console.log('🚗 Car Book Now button clicked');
+
+                        const carType = this.getAttribute('data-car-type');
+                        const carName = this.getAttribute('data-car-name') || carType;
+                        const carId = this.getAttribute('data-car-id');
+
+                        console.log('📋 Car details:', { carType, carName, carId });
+
+                        // Show notification
+                        showCarBookingNotification(carName, carType);
+
+                        // Redirect to homepage booking form after a short delay
+                        setTimeout(() => {
+                            console.log('🔄 Redirecting to homepage booking form...');
+                            window.location.href = '/#booking-form';
+                        }, 1500);
+                    });
+                });
+
+                console.log(`✅ Initialized ${carBookNowButtons.length} car booking buttons`);
+            }
+
+            // Show car booking notification for Our Cars page
+            function showCarBookingNotification(carName, carType) {
+                const notification = document.getElementById('carSelectionNotification');
+                const notificationText = document.getElementById('notificationText');
+
+                if (notification && notificationText) {
+                    notificationText.textContent = `${carName} selected! Redirecting to booking form...`;
+                    notification.classList.add('show');
+
+                    // Hide notification after redirect
                     setTimeout(() => {
-                        this.style.opacity = '1';
-                    }, 100);
-                });
-            });
-        }
-    
-    // =====================================================
-    // 🆕 NEW: BOOK NOW FUNCTIONALITY FOR OUR CARS PAGE
-    // =====================================================
-    
-    function initializeOurCarsBookingButtons() {
-        console.log('🚗 Initializing Our Cars page booking buttons...');
-        
-        // Handle car booking buttons on our-cars.html page
-        const carBookNowButtons = document.querySelectorAll('.car-book-now-btn');
-        
-        carBookNowButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('🚗 Car Book Now button clicked');
-                
-                const carType = this.getAttribute('data-car-type');
-                const carName = this.getAttribute('data-car-name') || carType;
-                const carId = this.getAttribute('data-car-id');
-                
-                console.log('📋 Car details:', { carType, carName, carId });
-                
-                // Show notification
-                showCarBookingNotification(carName, carType);
-                
-                // Redirect to homepage booking form after a short delay
-                setTimeout(() => {
-                    console.log('🔄 Redirecting to homepage booking form...');
-                    window.location.href = '/#booking-form';
-                }, 1500);
-            });
-        });
-        
-        console.log(`✅ Initialized ${carBookNowButtons.length} car booking buttons`);
-    }
-    
-    // Show car booking notification for Our Cars page
-    function showCarBookingNotification(carName, carType) {
-        const notification = document.getElementById('carSelectionNotification');
-        const notificationText = document.getElementById('notificationText');
-        
-        if (notification && notificationText) {
-            notificationText.textContent = `${carName} selected! Redirecting to booking form...`;
-            notification.classList.add('show');
-            
-            // Hide notification after redirect
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
-        } else {
-            // Create notification if it doesn't exist
-            const newNotification = document.createElement('div');
-            newNotification.className = 'car-selection-notification show';
-            newNotification.innerHTML = `
+                        notification.classList.remove('show');
+                    }, 2000);
+                } else {
+                    // Create notification if it doesn't exist
+                    const newNotification = document.createElement('div');
+                    newNotification.className = 'car-selection-notification show';
+                    newNotification.innerHTML = `
                 <div class="notification-content">
                     <i class="bi bi-check-circle-fill"></i>
                     <span>${carName} selected! Redirecting to booking form...</span>
                 </div>
             `;
-            
-            document.body.appendChild(newNotification);
-            
-            // Remove notification after redirect
-            setTimeout(() => {
-                if (newNotification.parentNode) {
-                    newNotification.parentNode.removeChild(newNotification);
+
+                    document.body.appendChild(newNotification);
+
+                    // Remove notification after redirect
+                    setTimeout(() => {
+                        if (newNotification.parentNode) {
+                            newNotification.parentNode.removeChild(newNotification);
+                        }
+                    }, 2000);
                 }
-            }, 2000);
-        }
-    }
-    
-    // =====================================================
-    // 🆕 NEW: CAR FILTERING FUNCTIONALITY
-    // =====================================================
-    
-    function initializeCarFiltering() {
-        console.log('🔍 Initializing car filtering...');
-        
-        const filterButtons = document.querySelectorAll('.enhanced-filter-btn');
-        const carCards = document.querySelectorAll('.enhanced-car-card');
-        
-        if (filterButtons.length === 0) {
-            console.log('ℹ️ No filter buttons found');
-            return;
-        }
-        
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const filterValue = this.getAttribute('data-filter');
-                console.log('🔍 Filter clicked:', filterValue);
-                
-                // Remove active from all buttons
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Add active to clicked button
-                this.classList.add('active');
-                
-                let visibleCount = 0;
-                
-                // Filter car items
-                carCards.forEach(item => {
-                    const carType = item.getAttribute('data-car-type');
-                    const shouldShow = filterValue === 'all' || carType === filterValue;
-                    
-                    if (shouldShow) {
-                        item.style.display = 'block';
-                        item.style.opacity = '1';
-                        item.style.transform = 'scale(1)';
-                        visibleCount++;
-                    } else {
-                        item.style.opacity = '0';
-                        item.style.transform = 'scale(0.8)';
-                        setTimeout(() => {
-                            item.style.display = 'none';
-                        }, 300);
-                    }
+            }
+
+            // =====================================================
+            // CAR FILTERING FUNCTIONALITY - ✅ UPDATED FOR DYNAMIC FILTERS
+            // =====================================================
+
+            function initializeCarFiltering() {
+                console.log('🔍 Initializing car filtering...');
+
+                const filterButtons = document.querySelectorAll('.enhanced-filter-btn');
+                const carCards = document.querySelectorAll('.enhanced-car-card');
+
+                if (filterButtons.length === 0) {
+                    console.log('ℹ️ No filter buttons found');
+                    return;
+                }
+
+                console.log(`🔍 Found ${filterButtons.length} filter buttons and ${carCards.length} car cards`);
+
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        const filterValue = this.getAttribute('data-filter');
+                        console.log('🔍 Filter clicked:', filterValue);
+
+                        // Remove active from all buttons
+                        filterButtons.forEach(btn => btn.classList.remove('active'));
+
+                        // Add active to clicked button
+                        this.classList.add('active');
+
+                        let visibleCount = 0;
+
+                        // Filter car items
+                        carCards.forEach(item => {
+                            const carType = item.getAttribute('data-car-type');
+                            const shouldShow = filterValue === 'all' || carType === filterValue;
+
+                            if (shouldShow) {
+                                item.style.display = 'block';
+                                item.style.opacity = '1';
+                                item.style.transform = 'scale(1)';
+                                visibleCount++;
+                            } else {
+                                item.style.opacity = '0';
+                                item.style.transform = 'scale(0.8)';
+                                setTimeout(() => {
+                                    item.style.display = 'none';
+                                }, 300);
+                            }
+                        });
+
+                        console.log(`✅ Filtered: ${visibleCount} cars visible for filter "${filterValue}"`);
+
+                        // Update car count
+                        const carCountElement = document.getElementById('car-count');
+                        if (carCountElement) {
+                            const totalText = filterValue === 'all' ?
+                                `${visibleCount} premium vehicles available for your comfort and convenience` :
+                                `${visibleCount} ${filterValue} vehicles available`;
+                            carCountElement.textContent = totalText;
+                        }
+                    });
                 });
-                
-                console.log(`✅ Filtered: ${visibleCount} cars visible`);
-                
-                // Update car count
-                const carCountElement = document.getElementById('car-count');
-                if (carCountElement) {
-                    const totalText = filterValue === 'all' ? 
-                        `${visibleCount} premium vehicles available for your comfort and convenience` :
-                        `${visibleCount} ${filterValue} vehicles available`;
-                    carCountElement.textContent = totalText;
+
+                // Auto-click "All" button to show all cars initially
+                const allButton = Array.from(filterButtons).find(btn => btn.getAttribute('data-filter') === 'all');
+                if (allButton) {
+                    setTimeout(() => {
+                        allButton.click();
+                        console.log('✅ Auto-clicked "All" filter button');
+                    }, 500);
+                }
+
+                console.log(`✅ Initialized filtering for ${filterButtons.length} buttons and ${carCards.length} cars`);
+            }
+
+            // =====================================================
+            // INITIALIZE ON PAGE LOAD
+            // =====================================================
+
+            // Load images immediately
+            loadFrontendCarImages();
+
+            // Initialize Book Now functionality
+            initializeOurCarsBookingButtons();
+
+            // Initialize car filtering with dynamic filters
+            initializeCarFiltering();
+
+            // Also load images after a short delay to ensure DOM is fully ready
+            setTimeout(loadFrontendCarImages, 500);
+
+            // Listen for storage changes (if admin updates images in another tab)
+            window.addEventListener('storage', function (e) {
+                if (e.key === CAR_IMAGES_KEY) {
+                    console.log('🔄 Storage updated, reloading car images...');
+                    setTimeout(loadFrontendCarImages, 100);
                 }
             });
+
+            console.log('✅ Frontend car image integration and dynamic filtering functionality initialized successfully!');
         });
-        
-        // Auto-click "All" button
-        const allButton = Array.from(filterButtons).find(btn => btn.getAttribute('data-filter') === 'all');
-        if (allButton) {
-            setTimeout(() => {
-                allButton.click();
-            }, 500);
+    </script>
+
+    <!-- Additional CSS for Our Cars Page Functionality -->
+    <style>
+        /* Car Selection Notification Styles */
+        .car-selection-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #2a9d8f 0%, #53c0cb 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+            z-index: 1050;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 300px;
         }
-        
-        console.log(`✅ Initialized filtering for ${filterButtons.length} buttons and ${carCards.length} cars`);
-    }
-    
-    // =====================================================
-    // INITIALIZE ON PAGE LOAD
-    // =====================================================
-    
-    // Load images immediately
-    loadFrontendCarImages();
-    
-    // Initialize Book Now functionality
-    initializeOurCarsBookingButtons();
-    
-    // Initialize car filtering
-    initializeCarFiltering();
-    
-    // Also load images after a short delay to ensure DOM is fully ready
-    setTimeout(loadFrontendCarImages, 500);
-    
-    // Listen for storage changes (if admin updates images in another tab)
-    window.addEventListener('storage', function(e) {
-        if (e.key === CAR_IMAGES_KEY) {
-            console.log('🔄 Storage updated, reloading car images...');
-            setTimeout(loadFrontendCarImages, 100);
+
+        .car-selection-notification.show {
+            transform: translateX(0);
+            opacity: 1;
         }
-    });
-    
-    console.log('✅ Frontend car image integration and booking functionality initialized successfully!');
-});
-</script>
 
-<!-- 🆕 NEW: Additional CSS for Our Cars Page Functionality -->
-<style>
-/* Car Selection Notification Styles */
-.car-selection-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #2a9d8f 0%, #53c0cb 100%);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
-    z-index: 1050;
-    transform: translateX(400px);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    max-width: 300px;
-}
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
 
-.car-selection-notification.show {
-    transform: translateX(0);
-    opacity: 1;
-}
+        .notification-content i {
+            font-size: 1.2rem;
+            animation: checkPulse 1.5s ease-out;
+        }
 
-.notification-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
+        @keyframes checkPulse {
+            0% {
+                transform: scale(0);
+            }
 
-.notification-content i {
-    font-size: 1.2rem;
-    animation: checkPulse 1.5s ease-out;
-}
+            50% {
+                transform: scale(1.2);
+            }
 
-@keyframes checkPulse {
-    0% {
-        transform: scale(0);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
+            100% {
+                transform: scale(1);
+            }
+        }
 
-/* Enhanced Filter Button Animations */
-.enhanced-filter-btn {
-    transition: all 0.3s ease;
-}
+        /* Enhanced Filter Button Animations */
+        .enhanced-filter-btn {
+            transition: all 0.3s ease;
+        }
 
-.enhanced-filter-btn.active {
-    background-color: #2a9d8f !important;
-    color: white !important;
-    border-color: #2a9d8f !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
-}
+        .enhanced-filter-btn.active {
+            background-color: #2a9d8f !important;
+            color: white !important;
+            border-color: #2a9d8f !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+        }
 
-/* Smooth Car Card Transitions */
-.enhanced-car-card {
-    transition: all 0.3s ease;
-}
+        /* Smooth Car Card Transitions */
+        .enhanced-car-card {
+            transition: all 0.3s ease;
+        }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .car-selection-notification {
-        right: 10px;
-        top: 10px;
-        max-width: 250px;
-    }
-    
-    .notification-content {
-        font-size: 0.8rem;
-    }
-}
+        /* Why Choose Our Fleet Section Alignment */
+        .enhanced-why-choose-section {
+            padding: 100px 0;
+            background: #f8f9fa;
+            align-content: center;
+        }
 
-@media (max-width: 576px) {
-    .car-selection-notification {
-        right: 5px;
-        top: 5px;
-        max-width: 200px;
-        padding: 10px 15px;
-    }
-    
-    .notification-content {
-        font-size: 0.75rem;
-    }
-}
-</style>
+        .enhanced-why-choose-text {
+            padding-right: 1rem;
+        }
+
+        .enhanced-why-choose-image {
+            text-align: center;
+        }
+
+        .enhanced-why-choose-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .enhanced-feature-list {
+            margin: 2rem 0;
+        }
+
+        .enhanced-feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding: 1.3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .enhanced-feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 157, 143, 0.1);
+        }
+
+        .enhanced-feature-item .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2a9d8f 0%, #53c0cb 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .enhanced-feature-item .feature-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .enhanced-feature-item .feature-content h5 {
+            color: #282727;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .enhanced-feature-item .feature-content p {
+            color: #6c757d;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .enhanced-cta-btn {
+            display: inline-block;
+            background: #C29E2E;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+            margin-top: 1rem;
+        }
+
+        .enhanced-cta-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 157, 143, 0.4);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .car-selection-notification {
+                right: 10px;
+                top: 10px;
+                max-width: 250px;
+            }
+
+            .notification-content {
+                font-size: 0.8rem;
+            }
+
+            .enhanced-why-choose-text {
+                padding-right: 0;
+                margin-bottom: 2rem;
+            }
+
+            .enhanced-feature-item {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .enhanced-feature-item .feature-icon {
+                width: 50px;
+                height: 50px;
+                margin-right: 1rem;
+            }
+
+            .enhanced-feature-item .feature-icon i {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .car-selection-notification {
+                right: 5px;
+                top: 5px;
+                max-width: 200px;
+                padding: 10px 15px;
+            }
+
+            .notification-content {
+                font-size: 0.75rem;
+            }
+
+            .enhanced-why-choose-section {
+                padding: 60px 0;
+            }
+
+            .enhanced-feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .enhanced-feature-item .feature-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .enhanced-feature-item .feature-icon i {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 
 </body>
 

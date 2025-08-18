@@ -2,9 +2,80 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.contrib.admin import SimpleListFilter
-from .models import CarType, Car, PopularRoute, Inquiry, BookingStatusHistory
+from .models import CarType, Car, PopularRoute, Inquiry, BookingStatusHistory, Gallery
 import datetime
+import base64
 
+try:
+    @admin.register(Gallery)
+    class GalleryAdmin(admin.ModelAdmin):
+        list_display = ['title', 'description_short', 'display_order', 'is_active', 'image_preview', 'created_at']
+        list_filter = ['is_active', 'created_at']
+        search_fields = ['title', 'description']
+        readonly_fields = ['created_at', 'updated_at', 'image_preview']
+        list_editable = ['display_order', 'is_active']
+        ordering = ['display_order', '-created_at']
+        
+        fieldsets = (
+            ('Gallery Information', {
+                'fields': ('title', 'description', 'display_order', 'is_active')
+            }),
+            ('Image Management', {
+                'fields': ('image_upload', 'image_preview', 'image_filename', 'image_content_type'),
+                'description': 'Upload new images or view current image. Images are stored in database.'
+            }),
+            ('Timestamps', {
+                'fields': ('created_at', 'updated_at'),
+                'classes': ('collapse',)
+            }),
+        )
+        
+        def get_form(self, request, obj=None, **kwargs):
+            """Customize the admin form"""
+            form = super().get_form(request, obj, **kwargs)
+            
+            # Add custom image upload field
+            from django import forms
+            form.base_fields['image_upload'] = forms.ImageField(
+                required=False,
+                help_text='Upload a new image to replace the current one. Images are stored in database.',
+                widget=forms.ClearableFileInput(attrs={'accept': 'image/*'})
+            )
+            
+            return form
+        
+        def description_short(self, obj):
+            """Display shortened description"""
+            if obj.description:
+                return obj.description[:100] + '...' if len(obj.description) > 100 else obj.description
+            return "No description"
+        description_short.short_description = 'Description'
+        
+        def image_preview(self, obj):
+            """Display image preview in admin"""
+            if obj and obj.pk and obj.image_data:
+                try:
+                    data_url = obj.get_image_data_url()
+                    if data_url:
+                        return mark_safe(
+                            f'<img src="{data_url}" style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px;" />'
+                            f'<br><small>Stored in database ({len(obj.image_data)} bytes)</small>'
+                        )
+                except Exception as e:
+                    return f"Error loading image: {str(e)}"
+            return "No image"
+        image_preview.short_description = 'Current Image'
+        
+        def save_model(self, request, obj, form, change):
+            """Handle image upload when saving"""
+            # Check if new image was uploaded
+            if 'image_upload' in form.cleaned_data and form.cleaned_data['image_upload']:
+                uploaded_file = form.cleaned_data['image_upload']
+                obj.set_image_from_file(uploaded_file)
+            
+            super().save_model(request, obj, form, change)
+except admin.sites.AlreadyRegistered:
+    pass
 
 class StatusHistoryInline(admin.TabularInline):
     model = BookingStatusHistory
@@ -80,17 +151,161 @@ class CarTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    list_display = ['name', 'registration_number', 'car_type', 'is_available', 'driver_name', 'driver_contact']
+    list_display = ['name', 'car_type', 'is_available', 'image_preview']
     list_filter = ['car_type', 'is_available']
-    search_fields = ['name', 'registration_number', 'driver_name']
+    search_fields = ['name']
+    readonly_fields = ['created_at', 'image_preview']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'car_type', 'is_available')
+        }),
+        ('Image Management', {
+            'fields': ('image_upload', 'image_preview', 'image_filename', 'image_content_type'),
+            'description': 'Upload new images or view current image. Images are stored in database.'
+        }),
+        ('Legacy Image (Deprecated)', {
+            'fields': ('image',),
+            'classes': ('collapse',),
+            'description': 'Old file-based image field. Will be removed after migration.'
+        }),
+        ('Legacy Fields (Hidden)', {
+            'fields': ('registration_number', 'driver_name', 'driver_contact'),
+            'classes': ('collapse',),
+            'description': 'Legacy fields that are no longer used in the frontend but kept for database compatibility.'
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_form(self, request, obj=None, **kwargs):
+        """Customize the admin form"""
+        form = super().get_form(request, obj, **kwargs)
+        
+        # Add custom image upload field
+        from django import forms
+        form.base_fields['image_upload'] = forms.ImageField(
+            required=False,
+            help_text='Upload a new image to replace the current one. Images are stored in database.',
+            widget=forms.ClearableFileInput(attrs={'accept': 'image/*'})
+        )
+        
+        return form
+    
+    def image_preview(self, obj):
+        """Display image preview in admin"""
+        if obj and obj.pk:
+            try:
+                # Check for BLOB image data first
+                if obj.image_data and obj.image_content_type:
+                    # Use database image
+                    data_url = obj.get_image_data_url()
+                    if data_url:
+                        return mark_safe(
+                            f'<img src="{data_url}" style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px;" />'
+                            f'<br><small>Stored in database ({len(obj.image_data)} bytes)</small>'
+                        )
+                # Check for file-based image
+                elif obj.image and hasattr(obj.image, 'url'):
+                    try:
+                        return mark_safe(
+                            f'<img src="{obj.image.url}" style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px;" />'
+                            f'<br><small>File-based (legacy)</small>'
+                        )
+                    except:
+                        pass
+            except Exception as e:
+                return f"Error loading image: {str(e)}"
+        return "No image"
+    image_preview.short_description = 'Current Image'
+    
+    def save_model(self, request, obj, form, change):
+        """Handle image upload when saving"""
+        # Check if new image was uploaded
+        if 'image_upload' in form.cleaned_data and form.cleaned_data['image_upload']:
+            uploaded_file = form.cleaned_data['image_upload']
+            obj.set_image_from_file(uploaded_file)
+        
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(PopularRoute)
 class PopularRouteAdmin(admin.ModelAdmin):
-    list_display = ['origin', 'destination', 'rate', 'distance_km', 'is_active', 'created_at']
+    list_display = ['origin', 'destination', 'rate', 'distance_km', 'is_active', 'image_preview', 'created_at']
     list_filter = ['is_active', 'created_at']
     search_fields = ['origin', 'destination']
-    readonly_fields = ['created_at']
+    readonly_fields = ['created_at', 'image_preview']
+    
+    fieldsets = (
+        ('Route Information', {
+            'fields': ('origin', 'destination', 'distance_km', 'rate', 'is_active')
+        }),
+        ('Image Management', {
+            'fields': ('image_upload', 'image_preview', 'image_filename', 'image_content_type'),
+            'description': 'Upload new images or view current image. Images are stored in database.'
+        }),
+        ('Legacy Image (Deprecated)', {
+            'fields': ('image',),
+            'classes': ('collapse',),
+            'description': 'Old file-based image field. Will be removed after migration.'
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_form(self, request, obj=None, **kwargs):
+        """Customize the admin form"""
+        form = super().get_form(request, obj, **kwargs)
+        
+        # Add custom image upload field
+        from django import forms
+        form.base_fields['image_upload'] = forms.ImageField(
+            required=False,
+            help_text='Upload a new image to replace the current one. Images are stored in database.',
+            widget=forms.ClearableFileInput(attrs={'accept': 'image/*'})
+        )
+        
+        return form
+    
+    def image_preview(self, obj):
+        """Display image preview in admin"""
+        if obj and obj.pk:
+            try:
+                # Check for BLOB image data first
+                if obj.image_data and obj.image_content_type:
+                    # Use database image
+                    data_url = obj.get_image_data_url()
+                    if data_url:
+                        return mark_safe(
+                            f'<img src="{data_url}" style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px;" />'
+                            f'<br><small>Stored in database ({len(obj.image_data)} bytes)</small>'
+                        )
+                # Check for file-based image
+                elif obj.image and hasattr(obj.image, 'url'):
+                    try:
+                        return mark_safe(
+                            f'<img src="{obj.image.url}" style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px;" />'
+                            f'<br><small>File-based (legacy)</small>'
+                        )
+                    except:
+                        pass
+            except Exception as e:
+                return f"Error loading image: {str(e)}"
+        return "No image"
+    image_preview.short_description = 'Current Image'
+    
+    def save_model(self, request, obj, form, change):
+        """Handle image upload when saving"""
+        # Check if new image was uploaded
+        if 'image_upload' in form.cleaned_data and form.cleaned_data['image_upload']:
+            uploaded_file = form.cleaned_data['image_upload']
+            obj.set_image_from_file(uploaded_file)
+        
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Inquiry)
@@ -130,14 +345,12 @@ class InquiryAdmin(admin.ModelAdmin):
     
     actions = ['mark_as_confirmed', 'mark_as_in_progress', 'mark_as_completed', 'mark_as_cancelled']
     
-    # ✅ SAFE: Using simple string concatenation instead of format_html
     def customer_info_safe(self, obj):
         try:
             name = obj.name or "N/A"
             email = obj.email or "N/A"
             number = obj.number or "N/A"
             
-            # Using simple HTML string concatenation - much safer
             html = '<strong>' + str(name) + '</strong><br>'
             html += '<small>📧 ' + str(email) + '</small><br>'
             html += '<small>📱 ' + str(number) + '</small>'
@@ -147,7 +360,6 @@ class InquiryAdmin(admin.ModelAdmin):
             return "Error loading customer info"
     customer_info_safe.short_description = 'Customer'
     
-    # ✅ SAFE: Using simple string concatenation
     def route_info_safe(self, obj):
         try:
             origin = obj.origin or "N/A"
@@ -164,7 +376,6 @@ class InquiryAdmin(admin.ModelAdmin):
             return "Error loading route info"
     route_info_safe.short_description = 'Route'
     
-    # ✅ SAFE: Simple date formatting
     def pickup_date_safe(self, obj):
         try:
             if obj.datetime:
@@ -178,7 +389,6 @@ class InquiryAdmin(admin.ModelAdmin):
             return "Error loading date"
     pickup_date_safe.short_description = 'Pickup Date/Time'
     
-    # ✅ SAFE: Simple price display
     def price_safe(self, obj):
         try:
             if obj.price:
@@ -189,7 +399,6 @@ class InquiryAdmin(admin.ModelAdmin):
             return "Error loading price"
     price_safe.short_description = 'Price'
     
-    # ✅ SAFE: Simple status badge
     def status_badge_safe(self, obj):
         try:
             status_colors = {

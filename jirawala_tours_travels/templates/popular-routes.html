@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
     <title>Popular Routes - Jirawala Tours & Travels</title>
     <!-- Google Fonts - Poppins for headings, Open Sans for body -->
     <link
@@ -17,6 +17,44 @@
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Phone Link Styling -->
+    <style>
+        .top-header .contact-info strong a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+        .top-header .contact-info strong a:hover {
+            text-decoration: underline !important;
+        }
+
+        .enhanced-cta-btn {
+            display: inline-block;
+            background: #C29E2E;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+            margin-top: 1rem;
+        }
+
+        .enhanced-cta-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 157, 143, 0.4);
+        }
+
+        .why-choose-content {
+            padding-top: 1.5rem;
+            padding-right: 1rem;
+            padding-bottom: 1rem;
+            padding-left: 1rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -73,7 +111,7 @@
                         <a class="nav-link" href="/our-cars/">Our Cars</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/blogs/">Our Blogs</a>
+                        <a class="nav-link" href="/gallery/">Gallery</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/#contact">Contact</a>
@@ -90,12 +128,11 @@
             <div class="row">
                 <div class="col-12 text-center">
                     <h1 class="page-title display-font">Popular Routes</h1>
-                    <p class="page-subtitle">Discover our most requested interstate travel destinations with comfortable
-                        and reliable transportation services</p>
+                    <p class="page-subtitle">Discover our most requested interstate travel destinations with comfortable and reliable transportation services</p>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a href="/">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Popular Routes</li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="/popular-routes/">Popular Routes</a></li>
                         </ol>
                     </nav>
                 </div>
@@ -123,24 +160,19 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="enhanced-service-card fade-in" role="group" aria-describedby="desc-{{ route.id }}">
                         <div class="service-image-container">
-                            <!-- Dynamic route image from database or fallback -->
-                            {% if route.image %}
-                                <img src="/media/{{ route.image }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
-                            {% else %}
-                                <!-- Fallback to placeholder image -->
-                                <img src="/placeholder.svg?height=300&width=400&text={{ route.origin }}+to+{{ route.destination }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
-                            {% endif %}
+                             <!-- ✅ FIXED: Dynamic route image from database with better error handling  -->
+                            <img src="{% if route.image_url %}{{ route.image_url }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                            alt="{{ route.origin }} to {{ route.destination }} route"
+                            class="service-image frontend-route-image"
+                            data-route-id="{{ route.id }}"
+                            data-fallback-src="{% static 'img/placeholder.svg' %}">
                             <div class="service-overlay" aria-hidden="true">
                                 <div class="service-icon">
                                     <i class="bi bi-geo-alt-fill"></i>
                                 </div>
                             </div>
                             <div class="service-car-animation" aria-hidden="true">
-                                <!-- Dynamic car image based on distance -->
+                                 <!-- Dynamic car image based on distance  -->
                                 {% if route.distance_km > 500 %}
                                     <img src="{% static 'img/car-suv.png' %}" alt="" class="floating-car" />
                                 {% elif route.distance_km > 200 %}
@@ -156,8 +188,7 @@
                         <div class="service-content">
                             <h3>{{ route.origin|upper }} ⇋ {{ route.destination|upper }}</h3>
                             <p id="desc-{{ route.id }}">
-                                Starting from ₹{{ route.rate|floatformat:0 }} • {{ route.distance_km|floatformat:0 }} km • 
-                                Toll Tax & State Tax Extra • Parking Extra, if Applicable
+                                Starting from ₹{{ route.rate|floatformat:0 }} • {{ route.distance_km|floatformat:0 }} km • Toll Tax & State Tax Extra • Parking Extra, if Applicable
                             </p>
                             <ul class="service-features">
                                 <li><i class="bi bi-check-circle"></i>Professional Drivers</li>
@@ -183,25 +214,24 @@
         </div>
     </section>
 
-    <!-- Why Choose Us Section -->
+     <!-- Why Choose Us Section  -->
     <section class="why-choose-section section-padding">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-6">
+                <div class="col-lg-12 order-lg-1">
+                    <h2 class="section-title">Why Choose Our Interstate Services?</h2>
+                    <p class="lead text-center">Experience hassle-free interstate travel with our premium car rental services designed for comfort, safety, and reliability.</p>
+                </div>
+                <div class="col-lg-6 order-lg-2 order-2">
                     <div class="why-choose-content">
-                        <h2 class="section-title text-start">Why Choose Our Interstate Services?</h2>
-                        <p class="lead">Experience hassle-free interstate travel with our premium car rental services
-                            designed for comfort, safety, and reliability.</p>
-
                         <div class="feature-list">
                             <div class="feature-item">
                                 <div class="feature-icon">
-                                    <i class="bi bi-shield-check-fill"></i>
+                                    <i class="bi bi-shield-fill-check"></i>
                                 </div>
                                 <div class="feature-content">
                                     <h5>Fully Insured Vehicles</h5>
-                                    <p>All our vehicles are comprehensively insured for your peace of mind during
-                                        interstate travel.</p>
+                                    <p>All our vehicles are comprehensively insured for your peace of mind during interstate travel.</p>
                                 </div>
                             </div>
 
@@ -211,8 +241,7 @@
                                 </div>
                                 <div class="feature-content">
                                     <h5>Licensed & Experienced Drivers</h5>
-                                    <p>Our drivers are licensed for interstate travel with years of experience on major
-                                        highways.</p>
+                                    <p>Our drivers are licensed for interstate travel with years of experience on major highways.</p>
                                 </div>
                             </div>
 
@@ -222,8 +251,7 @@
                                 </div>
                                 <div class="feature-content">
                                     <h5>Real-time GPS Tracking</h5>
-                                    <p>Track your journey in real-time and share your location with family for added
-                                        security.</p>
+                                    <p>Track your journey in real-time and share your location with family for added security.</p>
                                 </div>
                             </div>
 
@@ -233,34 +261,34 @@
                                 </div>
                                 <div class="feature-content">
                                     <h5>24/7 Customer Support</h5>
-                                    <p>Round-the-clock customer support for any assistance during your interstate
-                                        journey.</p>
+                                    <p>Round-the-clock customer support for any assistance during your interstate journey.</p>
                                 </div>
                             </div>
                         </div>
-
-                        <a href="/#booking-form" class="btn btn-primary btn-lg mt-4">Start Your Journey</a>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6 order-lg-3 order-1">
                     <div class="why-choose-image">
                         <img src="https://images.pexels.com/photos/1719648/pexels-photo-1719648.jpeg?auto=compress&cs=tinysrgb&w=800"
                             alt="Professional driver and premium car" class="img-fluid rounded-4 shadow-lg">
                     </div>
                 </div>
             </div>
+            <div class="col-lg-12 order-lg-4 order-3">
+                <a href="/#booking-form" class="enhanced-cta-btn">Start Your Journey</a>
+            </div>
         </div>
     </section>
 
-    <!-- Unique Animated Footer -->
+     <!-- Unique Animated Footer  -->
     <footer class="unique-footer">
 
-        <!-- Main Footer Content -->
+         <!-- Main Footer Content  -->
         <div class="footer-main">
             <div class="container">
                 <div class="row gy-5">
 
-                    <!-- Company Info Column -->
+                     <!-- Company Info Column  -->
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-brand">
                             <img src="{% static 'img/JiraWala1-nobg-blue.png' %}" alt="Jirawala Logo"
@@ -287,7 +315,7 @@
                         </div>
                     </div>
 
-                    <!-- Quick Links Column -->
+                     <!-- Quick Links Column  -->
                     <div class="col-lg-2 col-md-6">
                         <div class="footer-links">
                             <h5 class="footer-title">Quick Links</h5>
@@ -302,7 +330,7 @@
                         </div>
                     </div>
 
-                    <!-- Services Column -->
+                     <!-- Services Column  -->
                     <div class="col-lg-2 col-md-6">
                         <div class="footer-links">
                             <h5 class="footer-title">Our Services</h5>
@@ -314,7 +342,7 @@
                         </div>
                     </div>
 
-                    <!-- Contact Info Column -->
+                     <!-- Contact Info Column  -->
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-contact">
                             <h5 class="footer-title">Get In Touch</h5>
@@ -349,13 +377,34 @@
                                     </p>
                                 </div>
                             </div>
+
+                             <!-- Follow Us  -->
+                            <h5 class="footer-title">Follow Us</h5>
+                            <div class="social-links">
+                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-link facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="mailto:info@jirawala.com" class="social-link email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Animated Cars Section -->
+         <!-- Animated Cars Section  -->
         <div class="animated-cars-section">
             <div class="road"></div>
             <div class="car-animation">
@@ -377,7 +426,7 @@
             </div>
         </div>
 
-        <!-- Footer Bottom -->
+         <!-- Footer Bottom  -->
         <div class="footer-bottom">
             <div class="container">
                 <div class="row align-items-center">
@@ -386,34 +435,20 @@
                             <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="footer-social">
-                            <span>Follow Us:</span>
-                            <div class="social-links">
-                                <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
-                                    <i class="bi bi-whatsapp"></i>
-                                </a>
-                                <a href="#" class="social-link facebook">
-                                    <i class="bi bi-facebook"></i>
-                                </a>
-                                <a href="#" class="social-link instagram">
-                                    <i class="bi bi-instagram"></i>
-                                </a>
-                                <a href="#" class="social-link twitter">
-                                    <i class="bi bi-twitter"></i>
-                                </a>
-                                <a href="mailto:info@jirawala.com" class="social-link email">
-                                    <i class="bi bi-envelope-fill"></i>
-                                </a>
-                            </div>
+                    
+                     <!-- Developer Credit Column  -->
+                    <div class="col-lg-6 col-md-6 text-center text-md-end">
+                        <div class="developer-credit">
+                            <p>Developed & Managed by <a href="https://www.dynamiclabz.net/" target="_blank" style="color: #53c0cb; text-decoration: none;">Dynamic Labz</a></p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Floating Call Button -->
+     <!-- Floating Call Button  -->
     <a href="tel:+911234567890" class="floating-btn call-btn" aria-label="Call Us">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -423,17 +458,145 @@
         </svg>
     </a>
 
-    <!-- Floating WhatsApp Button -->
+     <!-- Floating WhatsApp Button  -->
     <a href="https://wa.me/+911234567890" target="_blank" class="floating-whatsapp">
         <i class="bi bi-whatsapp"></i>
     </a>
 
-    <!-- Bootstrap JS CDN (Popper.js and Bootstrap Bundle) -->
+     <!-- Bootstrap JS CDN (Popper.js and Bootstrap Bundle)  -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
-    <!-- Custom JavaScript -->
+     <!-- Custom JavaScript  -->
     <script src="{% static 'js/script.js' %}"></script>
+
+     <!-- ✅ FIXED: Enhanced Frontend Route Image Integration Script  -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🛣️ Initializing FIXED frontend route image integration...');
+        
+        // =====================================================
+        // ENHANCED ROUTE IMAGE LOADING WITH BETTER ERROR HANDLING
+        // =====================================================
+        
+        const ROUTE_IMAGES_KEY = 'route_images_storage';
+        
+        function getStoredImages() {
+            try {
+                return JSON.parse(localStorage.getItem(ROUTE_IMAGES_KEY)) || {};
+            } catch (e) {
+                console.warn('Error reading stored route images:', e);
+                return {};
+            }
+        }
+        
+        function loadFrontendRouteImages() {
+            const storedImages = getStoredImages();
+            const routeImages = document.querySelectorAll('.frontend-route-image');
+            
+            console.log('📸 Found', routeImages.length, 'route images to process');
+            console.log('💾 Stored route images:', Object.keys(storedImages));
+            
+            routeImages.forEach(img => {
+                const routeId = img.getAttribute('data-route-id');
+                const fallbackSrc = img.getAttribute('data-fallback-src');
+                const currentSrc = img.src;
+                
+                console.log(`🔍 Processing route ${routeId}:`, {
+                    currentSrc: currentSrc,
+                    hasStoredImage: !!storedImages[routeId],
+                    fallbackSrc: fallbackSrc
+                });
+                
+                // ✅ FIXED: Better image loading logic
+                if (routeId && storedImages[routeId]) {
+                    // Load image from localStorage
+                    console.log(`✅ Loading stored image for route ${routeId}`);
+                    img.src = storedImages[routeId];
+                } else if (currentSrc && !currentSrc.includes('placeholder.svg') && !currentSrc.includes('static/img/placeholder.svg')) {
+                    // Keep existing valid image URL (from database)
+                    console.log(`ℹ️ Keeping existing database image for route ${routeId}:`, currentSrc);
+                } else if (fallbackSrc) {
+                    // Use fallback image only if no valid image is available
+                    console.log(`📷 Using fallback image for route ${routeId}`);
+                    img.src = fallbackSrc;
+                }
+                
+                // ✅ ENHANCED: Better error handling
+                img.addEventListener('error', function(e) {
+                    console.warn(`⚠️ Image failed to load for route ${routeId}:`, this.src);
+                    
+                    // Try fallback if current source failed
+                    if (fallbackSrc && this.src !== fallbackSrc) {
+                        console.log(`🔄 Switching to fallback for route ${routeId}`);
+                        this.src = fallbackSrc;
+                    }
+                });
+                
+                // ✅ ENHANCED: Success logging
+                img.addEventListener('load', function(e) {
+                    console.log(`✅ Image loaded successfully for route ${routeId}:`, this.src);
+                    
+                    // Add smooth loading effect
+                    this.style.opacity = '0';
+                    this.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => {
+                        this.style.opacity = '1';
+                    }, 100);
+                });
+            });
+        }
+        
+        // ✅ ENHANCED: Multiple loading attempts for reliability
+        function initializeRouteImages() {
+            console.log('🚀 Starting route image initialization...');
+            
+            // Immediate load
+            loadFrontendRouteImages();
+            
+            // Delayed load for dynamic content
+            setTimeout(loadFrontendRouteImages, 500);
+            setTimeout(loadFrontendRouteImages, 1500);
+            
+            // Listen for storage changes (if admin updates images in another tab)
+            window.addEventListener('storage', function(e) {
+                if (e.key === ROUTE_IMAGES_KEY) {
+                    console.log('🔄 Route images storage updated, reloading...');
+                    setTimeout(loadFrontendRouteImages, 100);
+                }
+            });
+            
+            console.log('✅ Route image initialization complete!');
+        }
+        
+        // Start initialization
+        initializeRouteImages();
+        
+        // ✅ NEW: Add debugging helper
+        window.debugRouteImages = function() {
+            const routeImages = document.querySelectorAll('.frontend-route-image');
+            const storedImages = getStoredImages();
+            
+            console.log('🔍 Route Images Debug Info:');
+            console.log('Total route images found:', routeImages.length);
+            console.log('Stored images in localStorage:', Object.keys(storedImages).length);
+            
+            routeImages.forEach(img => {
+                const routeId = img.getAttribute('data-route-id');
+                console.log(`Route ${routeId}:`, {
+                    currentSrc: img.src,
+                    hasStoredImage: !!storedImages[routeId],
+                    naturalWidth: img.naturalWidth,
+                    naturalHeight: img.naturalHeight,
+                    complete: img.complete
+                });
+            });
+        };
+        
+        console.log('✅ FIXED frontend route image integration initialized successfully!');
+        console.log('💡 Use window.debugRouteImages() in console to debug image loading');
+    });
+    </script>
 
 </body>
 

@@ -25,6 +25,7 @@
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>
+                    <th>Image</th>
                     <th>Origin</th>
                     <th>Destination</th>
                     <th>Distance</th>
@@ -37,6 +38,18 @@
             <tbody>
                 {% for route in routes %}
                 <tr>
+                    <td>
+                        {% if route.has_image %}
+                            {% if route.image_url %}
+                                <img src="{{ route.image_url }}" alt="{{ route.origin }} to {{ route.destination }}" 
+                                     style="width: 50px; height: 35px; object-fit: cover; border-radius: 4px;">
+                            {% else %}
+                                <span class="text-muted">No image</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">No image</span>
+                        {% endif %}
+                    </td>
                     <td><strong>{{ route.origin }}</strong></td>
                     <td><strong>{{ route.destination }}</strong></td>
                     <td>
@@ -69,6 +82,7 @@
                                 data-route-distance="{{ route.distance_km }}"
                                 data-route-rate="{{ route.rate }}"
                                 data-route-active="{{ route.is_active }}"
+                                data-route-image="{{ route.image }}"
                                 title="Edit Route">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -76,7 +90,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center py-4">
+                    <td colspan="8" class="text-center py-4">
                         <i class="fas fa-route fa-2x text-muted mb-2"></i><br>
                         <span class="text-muted">No routes found</span>
                     </td>
@@ -95,7 +109,7 @@
                 <h5 class="modal-title">Add New Route</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="add_route">
                 <div class="modal-body">
@@ -114,6 +128,25 @@
                     <div class="mb-3">
                         <label class="form-label">Rate (₹) *</label>
                         <input type="number" name="rate" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Route Image</label>
+                        <input type="file" name="route_image" id="add_route_image" class="form-control" accept="image/*">
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Recommended dimensions: 800x600 pixels or 4:3 aspect ratio for best display
+                        </small>
+                        <!-- Image Preview Container for Add Modal -->
+                        <div id="add_image_preview_container" class="mt-3" style="display: none;">
+                            <small class="text-muted d-block mb-2">Preview:</small>
+                            <div class="image-preview-wrapper">
+                                <img id="add_image_preview" src="/placeholder.svg" alt="Route image preview" 
+                                     style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #e9ecef;">
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="add_remove_image">
+                                    <i class="fas fa-times me-1"></i>Remove Image
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -136,7 +169,7 @@
                 <h5 class="modal-title">Edit Route</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="post" id="editRouteForm">
+            <form method="post" id="editRouteForm" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 <input type="hidden" name="action" value="update_route">
                 <input type="hidden" name="route_id" id="edit_route_id">
@@ -156,6 +189,34 @@
                     <div class="mb-3">
                         <label class="form-label">Rate (₹) *</label>
                         <input type="number" name="rate" id="edit_route_rate" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Route Image</label>
+                        <input type="file" name="route_image" id="edit_route_image" class="form-control" accept="image/*">
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Recommended dimensions: 800x600 pixels or 4:3 aspect ratio. Upload a new image to replace the current one (optional)
+                        </small>
+                        
+                        <!-- Current Image Display -->
+                        <div id="current_image_section" class="mt-2">
+                            <small class="text-muted d-block mb-2">Current image:</small>
+                            <div id="current_image_display">
+                                <!-- This will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- New Image Preview Container for Edit Modal -->
+                        <div id="edit_image_preview_container" class="mt-3" style="display: none;">
+                            <small class="text-muted d-block mb-2">New image preview:</small>
+                            <div class="image-preview-wrapper">
+                                <img id="edit_image_preview" src="/placeholder.svg" alt="New route image preview" 
+                                     style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #28a745;">
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="edit_remove_image">
+                                    <i class="fas fa-times me-1"></i>Remove New Image
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <div class="form-check">
@@ -213,18 +274,263 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle edit route button clicks
+    // =====================================================
+    // ROUTE IMAGE STORAGE SYSTEM (Similar to cars)
+    // =====================================================
+    
+    // Store uploaded images in localStorage for persistence
+    const ROUTE_IMAGES_KEY = 'route_images_storage';
+    
+    function getStoredImages() {
+        try {
+            return JSON.parse(localStorage.getItem(ROUTE_IMAGES_KEY)) || {};
+        } catch (e) {
+            return {};
+        }
+    }
+    
+    function storeRouteImage(routeId, imageDataUrl) {
+        try {
+            const images = getStoredImages();
+            images[routeId] = imageDataUrl;
+            localStorage.setItem(ROUTE_IMAGES_KEY, JSON.stringify(images));
+            console.log('✅ Image stored for route ID:', routeId);
+        } catch (e) {
+            console.error('❌ Failed to store image:', e);
+        }
+    }
+    
+    function getStoredRouteImage(routeId) {
+        const images = getStoredImages();
+        return images[routeId] || null;
+    }
+    
+    // =====================================================
+    // IMAGE PREVIEW FUNCTIONALITY
+    // =====================================================
+    
+    function handleImagePreview(inputElement, previewElement, containerElement, removeButtonElement) {
+        inputElement.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file.');
+                    inputElement.value = '';
+                    containerElement.style.display = 'none';
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size should be less than 5MB.');
+                    inputElement.value = '';
+                    containerElement.style.display = 'none';
+                    return;
+                }
+                
+                // Create FileReader to read the file
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewElement.src = e.target.result;
+                    containerElement.style.display = 'block';
+                    
+                    // SPECIAL HANDLING FOR EDIT MODAL
+                    if (inputElement.id === 'edit_route_image') {
+                        const currentImageSection = document.getElementById('current_image_section');
+                        if (currentImageSection) {
+                            currentImageSection.style.display = 'none';
+                        }
+                        
+                        // Update preview text
+                        const previewLabel = containerElement.querySelector('small');
+                        if (previewLabel) {
+                            previewLabel.textContent = 'New image (will replace current):';
+                        }
+                        
+                        // Store the new image temporarily
+                        const routeId = document.getElementById('edit_route_id').value;
+                        if (routeId) {
+                            storeRouteImage(routeId, e.target.result);
+                        }
+                    }
+                    
+                    console.log('Image preview loaded:', file.name);
+                };
+                
+                reader.onerror = function() {
+                    alert('Error reading the image file.');
+                    containerElement.style.display = 'none';
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                // No file selected
+                containerElement.style.display = 'none';
+                previewElement.src = '';
+                
+                // Show current image back for edit modal
+                if (inputElement.id === 'edit_route_image') {
+                    const currentImageSection = document.getElementById('current_image_section');
+                    if (currentImageSection) {
+                        currentImageSection.style.display = 'block';
+                    }
+                    
+                    const previewLabel = containerElement.querySelector('small');
+                    if (previewLabel) {
+                        previewLabel.textContent = 'New image preview:';
+                    }
+                }
+            }
+        });
+        
+        // Handle remove image button
+        if (removeButtonElement) {
+            removeButtonElement.addEventListener('click', function() {
+                inputElement.value = '';
+                previewElement.src = '';
+                containerElement.style.display = 'none';
+                
+                // Show current image back for edit modal
+                if (inputElement.id === 'edit_route_image') {
+                    const currentImageSection = document.getElementById('current_image_section');
+                    if (currentImageSection) {
+                        currentImageSection.style.display = 'block';
+                    }
+                    
+                    const previewLabel = containerElement.querySelector('small');
+                    if (previewLabel) {
+                        previewLabel.textContent = 'New image preview:';
+                    }
+                }
+                
+                console.log('Image preview removed');
+            });
+        }
+    }
+    
+    // =====================================================
+    // DISPLAY CURRENT ROUTE IMAGE
+    // =====================================================
+    
+    function displayCurrentRouteImage(routeId, routeImage) {
+        const currentImageDisplay = document.getElementById('current_image_display');
+        if (!currentImageDisplay || !routeId) return;
+        
+        // Get stored image or use provided image
+        const storedImage = getStoredRouteImage(routeId);
+        let imageToShow = storedImage;
+        
+        // If no stored image, check for server image
+        if (!imageToShow && routeImage && routeImage !== 'None' && routeImage !== '') {
+            // Check if it's a BLOB URL or file URL
+            if (routeImage.startsWith('/api/images/route/')) {
+                imageToShow = routeImage;
+            } else {
+                imageToShow = `/media/${routeImage}`;
+            }
+        }
+        
+        if (imageToShow) {
+            // Display image
+            currentImageDisplay.innerHTML = `
+            <img src="${imageToShow}" alt="Current route image" 
+                 style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #6c757d; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        `;
+            console.log('✅ Displaying image for route ID:', routeId);
+        } else {
+            // Show no image placeholder
+            currentImageDisplay.innerHTML = `
+            <div class="no-image-placeholder" style="display: flex; align-items: center; justify-content: center; width: 200px; height: 150px; border: 2px dashed #dee2e6; border-radius: 8px; background-color: #f8f9fa;">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-image fa-2x text-muted mb-2"></i>
+                    <p class="text-muted mb-0" style="font-size: 14px;">No image uploaded</p>
+                </div>
+            </div>
+        `;
+            console.log('ℹ️ No image found for route ID:', routeId);
+        }
+    }
+    
+    // =====================================================
+    // INITIALIZE COMPONENTS
+    // =====================================================
+    
+    // Initialize image preview for Add Route Modal
+    const addImageInput = document.getElementById('add_route_image');
+    const addImagePreview = document.getElementById('add_image_preview');
+    const addImageContainer = document.getElementById('add_image_preview_container');
+    const addRemoveButton = document.getElementById('add_remove_image');
+    
+    if (addImageInput && addImagePreview && addImageContainer) {
+        handleImagePreview(addImageInput, addImagePreview, addImageContainer, addRemoveButton);
+        console.log('✅ Add route image preview initialized');
+    }
+    
+    // Initialize image preview for Edit Route Modal
+    const editImageInput = document.getElementById('edit_route_image');
+    const editImagePreview = document.getElementById('edit_image_preview');
+    const editImageContainer = document.getElementById('edit_image_preview_container');
+    const editRemoveButton = document.getElementById('edit_remove_image');
+    
+    if (editImageInput && editImagePreview && editImageContainer) {
+        handleImagePreview(editImageInput, editImagePreview, editImageContainer, editRemoveButton);
+        console.log('✅ Edit route image preview initialized');
+    }
+    
+    // =====================================================
+    // MODAL RESET FUNCTIONALITY
+    // =====================================================
+    
+    // Reset Add Route Modal when closed
+    const addRouteModal = document.getElementById('addRouteModal');
+    if (addRouteModal) {
+        addRouteModal.addEventListener('hidden.bs.modal', function() {
+            const form = addRouteModal.querySelector('form');
+            if (form) form.reset();
+            
+            if (addImageContainer) addImageContainer.style.display = 'none';
+            if (addImagePreview) addImagePreview.src = '';
+            
+            console.log('🔄 Add route modal reset');
+        });
+    }
+    
+    // Reset Edit Route Modal when closed
+    const editRouteModal = document.getElementById('editRouteModal');
+    if (editRouteModal) {
+        editRouteModal.addEventListener('hidden.bs.modal', function() {
+            if (editImageContainer) editImageContainer.style.display = 'none';
+            if (editImagePreview) editImagePreview.src = '';
+            if (editImageInput) editImageInput.value = '';
+            
+            const currentImageSection = document.getElementById('current_image_section');
+            if (currentImageSection) currentImageSection.style.display = 'block';
+            
+            const previewLabel = editImageContainer ? editImageContainer.querySelector('small') : null;
+            if (previewLabel) previewLabel.textContent = 'New image preview:';
+            
+            console.log('🔄 Edit route modal reset');
+        });
+    }
+    
+    // =====================================================
+    // EDIT ROUTE BUTTON FUNCTIONALITY
+    // =====================================================
+    
     document.querySelectorAll('.edit-route-btn').forEach(button => {
         button.addEventListener('click', function() {
-            // Get route data from button attributes
             const routeId = this.getAttribute('data-route-id');
             const routeOrigin = this.getAttribute('data-route-origin');
             const routeDestination = this.getAttribute('data-route-destination');
             const routeDistance = this.getAttribute('data-route-distance');
             const routeRate = this.getAttribute('data-route-rate');
             const routeActive = this.getAttribute('data-route-active') === 'True';
+            const routeImage = this.getAttribute('data-route-image');
             
-            // Populate the edit modal
+            // Populate form fields
             document.getElementById('edit_route_id').value = routeId;
             document.getElementById('edit_route_origin').value = routeOrigin || '';
             document.getElementById('edit_route_destination').value = routeDestination || '';
@@ -232,9 +538,17 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('edit_route_rate').value = routeRate || '';
             document.getElementById('edit_route_active').checked = routeActive;
             
-            // Show the modal
+            // Reset image previews
+            if (editImageContainer) editImageContainer.style.display = 'none';
+            
+            // Display current route image
+            displayCurrentRouteImage(routeId, routeImage);
+            
+            // Show modal
             const editModal = new bootstrap.Modal(document.getElementById('editRouteModal'));
             editModal.show();
+            
+            console.log('📝 Edit modal opened for route ID:', routeId);
         });
     });
     
@@ -255,6 +569,65 @@ document.addEventListener('DOMContentLoaded', function() {
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteRouteModal'));
         deleteModal.show();
     });
+    
+    console.log('🛣️ Route management with image functionality initialized!');
 });
 </script>
+
+<!-- Additional CSS for better image preview styling -->
+<style>
+.image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.image-preview-wrapper img {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.image-preview-wrapper img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.image-preview-wrapper .btn {
+    transition: all 0.2s ease;
+}
+
+.image-preview-wrapper .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Current image display styling */
+#current_image_display img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* No image placeholder styling */
+.no-image-placeholder {
+    transition: all 0.3s ease;
+}
+
+.no-image-placeholder:hover {
+    background-color: #e9ecef !important;
+}
+
+/* Success state for new image in edit modal */
+#edit_image_preview {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .image-preview-wrapper img,
+    #current_image_display img,
+    .no-image-placeholder {
+        max-width: 150px;
+        max-height: 112px;
+    }
+}
+</style>
 {% endblock %}

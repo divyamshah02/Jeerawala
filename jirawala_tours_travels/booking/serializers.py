@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Inquiry, CarType, Car
+from .models import Inquiry, CarType, Car, BookingStatusHistory
 from decimal import Decimal, ROUND_HALF_UP
 
 
@@ -34,7 +34,7 @@ class InquirySerializer(serializers.ModelSerializer):
 
 
 class BookingCreateSerializer(serializers.Serializer):
-    """Serializer for frontend booking form data"""
+    """Serializer for frontend booking form data - CONVERTED TO ORM"""
     name = serializers.CharField(max_length=100)
     email = serializers.EmailField()
     phone = serializers.CharField(max_length=15)
@@ -44,8 +44,8 @@ class BookingCreateSerializer(serializers.Serializer):
     pickupDate = serializers.DateTimeField()
     dropoffDate = serializers.DateTimeField(required=False, allow_null=True)
     carType = serializers.CharField(max_length=20)
-    totalPrice = serializers.DecimalField(max_digits=10, decimal_places=2)  # Increased max_digits
-    distance = serializers.DecimalField(max_digits=8, decimal_places=2)     # Increased max_digits
+    totalPrice = serializers.DecimalField(max_digits=10, decimal_places=2)
+    distance = serializers.DecimalField(max_digits=8, decimal_places=2)
     specialRequests = serializers.CharField(required=False, allow_blank=True)
     
     def validate_pickupDate(self, value):
@@ -77,18 +77,31 @@ class BookingCreateSerializer(serializers.Serializer):
         return data
     
     def create(self, validated_data):
+        """Create inquiry using ORM - CONVERTED FROM RAW SQL"""
+        import random
+        import string
+        from django.utils import timezone
+        
         # Map frontend field names to model field names
         car_type_name = validated_data['carType'].lower()
         
-        # Get or create car type
+        # Get or create car type using ORM
         car_type, created = CarType.objects.get_or_create(
             name__iexact=car_type_name,
             defaults={
                 'name': car_type_name.capitalize(),
-                'rate_per_km': 12 if car_type_name == 'hatchback' else 15 if car_type_name == 'sedan' else 18
+                'rate_per_km': 12 if car_type_name == 'hatchback' else 15 if car_type_name == 'sedan' else 18,
+                'minimum_distance_cap': 0,
+                'is_active': True
             }
         )
         
+        # Generate booking ID
+        timestamp = str(int(timezone.now().timestamp()))
+        random_suffix = ''.join(random.choices(string.digits, k=4))
+        booking_id = "JTT{}{}".format(timestamp, random_suffix)
+        
+        # Create inquiry using ORM
         inquiry = Inquiry.objects.create(
             name=validated_data['name'],
             email=validated_data['email'],
@@ -102,11 +115,12 @@ class BookingCreateSerializer(serializers.Serializer):
             distance_km=validated_data['distance'],
             price=validated_data['totalPrice'],
             special_requests=validated_data.get('specialRequests', ''),
-            status='pending'
+            status='pending',
+            booking_id=booking_id,
+            is_active=True
         )
         
-        # Create initial status history
-        from .models import BookingStatusHistory
+        # Create initial status history using ORM
         BookingStatusHistory.objects.create(
             inquiry=inquiry,
             old_status='',
@@ -119,8 +133,6 @@ class BookingCreateSerializer(serializers.Serializer):
 
 
 class CarSerializer(serializers.ModelSerializer):
-    # car_type_name = serializers.CharField(source='car_type.name', read_only=True)
-
     class Meta:
         model = Car
         fields = [
@@ -131,5 +143,4 @@ class CarSerializer(serializers.ModelSerializer):
             'driver_name',
             'driver_contact',
             'car_type_id',
-            # 'car_type_name',
         ]

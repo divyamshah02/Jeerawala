@@ -16,8 +16,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css"/>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Phone Link Styling -->
+    <style>
+        .top-header .contact-info strong a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+        .top-header .contact-info strong a:hover {
+            text-decoration: underline !important;
+        }
+    </style>
 </head>
 
 <body id="page-top" data-bs-spy="scroll" data-bs-target=".main-navbar" data-bs-offset="130" tabindex="0">
@@ -33,7 +44,7 @@
     <div class="top-header">
         <div class="container d-flex justify-content-between align-items-center py-2">
             <div class="logo-section">
-                <a href="#home" class="logo-link">
+                <a href="/" class="logo-link">
                     <img src="{% static 'img/JiraWala1.png' %}" alt="Jirawala Tours & Travels Logo"
                         class="logo img-fluid">
                 </a>
@@ -42,7 +53,7 @@
                 <img src="{% static 'img/call-us-now.gif' %}" alt="Call Us Now" class="img-fluid">
                 <div>
                     <small class="d-block">Call Us Now</small>
-                    <strong><a href="tel:+911234567891">+91-1234567890</a></strong>
+                    <strong><a href="tel:+911234567890">+91-1234567890</a></strong>
                 </div>
             </div>
         </div>
@@ -59,34 +70,34 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#home">Home</a>
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about-us">About Us</a>
+                        <a class="nav-link" href="/#about-us">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
+                        <a class="nav-link" href="/#services">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#popular-routes">Popular Routes</a>
+                        <a class="nav-link" href="/#popular-routes">Popular Routes</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/our-cars/">Our Cars</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#blogs">Our Blogs</a>
+                        <!-- Changed from "Our Blogs" to "Gallery" and updated href -->
+                        <a class="nav-link" href="/#gallery">Gallery</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
+                        <a class="nav-link" href="/#contact">Contact</a>
                     </li>
                 </ul>
-                <a href="#booking-form" class="btn btn-dark-cta">Book a Taxi</a>
+                <a href="/#booking-form" class="btn btn-dark-cta">Book a Taxi</a>
             </div>
         </div>
     </nav>
 
-    <!-- Invisible scroll anchor -->
-    <div id="home-anchor"></div>
+    
 
     <!-- Hero Section -->
     <section id="home" class="hero-section">
@@ -97,10 +108,9 @@
                     <div class="slider-img">
                         <!-- The background image is now handled by the img element above -->
                     </div>
-                    <p class="hero-subtitle">Your Journey, Our Wheels</p>
-                    <h1 class="hero-title">Interstate Car Rentals for Seamless Travel</h1>
-                    <p class="hero-description">Explore new destinations with our reliable and comfortable car rental
-                        services. Perfect for tours, business, and family trips across states.</p>
+                    <p class="hero-subtitle">Drive Beyond Borders</p>
+                    <h1 class="hero-title">Explore India with Trusted Interstate Car Rentals</h1>
+                    <p class="hero-description">From hill stations to heritage cities, travel comfortably with our well-maintained cars and professional service. Perfect for weekend getaways or long journeys.</p>
                     <a href="#booking-form" class="btn btn-hero-cta">Book Now</a>
                 </div>
             </div>
@@ -109,29 +119,30 @@
 
     <!-- About Us Section -->
     <section id="about-us" class="section-padding bg-light-grey">
-        <div class="container">
-            <h2 class="section-title display-font fade-in">About Jirawala Tours & Travels</h2>
+        <div class="container-md">
+            <h2 class="section-title display-font fade-in">About Us</h2>
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <img src="{% static 'img/aboutus-car-background.png' %}" alt="Our Fleet"
                         class="img-fluid rounded-lg shadow-sm mb-4 mb-md-0 rounded-4">
                 </div>
                 <div class="col-md-6">
-                    <p class="lead">Jirawala Tours & Travels is your premier partner for comfortable and reliable
-                        interstate car rental services. With a commitment to safety, luxury, and convenience, we ensure
-                        every journey is a memorable one.</p>
-                    <p>Our extensive fleet of well-maintained vehicles and professional drivers are dedicated to
-                        providing you with a seamless travel experience across states. Whether it's a business trip or a
-                        family vacation, we've got your transportation needs covered.</p>
-                    <p>We pride ourselves on transparent pricing, exceptional customer service, and a deep understanding
-                        of interstate travel requirements. Choose Jirawala for a stress-free and enjoyable ride.</p>
+                    <p class="lead">
+                        Jirawala Tours & Travels is your trusted partner for comfortable, safe, and reliable car rental services across states. Whether you're planning a family vacation, a business trip, or a weekend getaway, we ensure a smooth and enjoyable travel experience every time.
+                    </p>
+                    <p>
+                        Our well-maintained fleet and experienced drivers are committed to providing high-quality service with a focus on safety, punctuality, and comfort. From short city rides to long-distance travel, we’ve got all your transportation needs covered.
+                    </p>
+                    <p>
+                        At Jirawala, we believe in transparent pricing, excellent customer support, and making every journey a pleasant memory. Choose us for stress-free, dependable, and convenient travel—wherever the road takes you.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Stats Section -->
-    <section class="stats-section">
+    <!-- <section class="stats-section">
         <div class="container">
             <h2 class="section-title display-font fade-in">Why Choose Jirawala?</h2>
             <div class="row g-4">
@@ -161,46 +172,42 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
-    <!-- Services Section (New) -->
+    <!-- Services Section -->
     <section id="services" class="section-padding">
         <div class="container">
             <h2 class="section-title display-font fade-in">Our Services</h2>
             <div class="row text-center">
                 <div class="col-md-4 mb-4">
                     <div class="service-box">
-                        <img src="{% static 'img/car-rental.gif' %}" alt="Car Rental Image" class="img-fluid">
-                        <h3>Car Rentals</h3>
-                        <p>Wide range of vehicles for all your travel needs, from sedans to SUVs.</p>
+                        <img src="{% static 'img/one-way.gif' %}" alt="One-Way Image" class="img-fluid" style="width: 60px; height: 60px;">
+                        <h3>One-Way</h3>
+                        <p>One-direction travel with comfort and ease.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="service-box">
-                        <img src="{% static 'img/interstate-travel.gif' %}" alt="Interstate Travel Icon" height="70"
-                            width="70" class="img-fluid">
-                        <br>
-                        <h3>Interstate Travel</h3>
-                        <p>Seamless and comfortable journeys across state borders with professional drivers.</p>
+                        <img src="{% static 'img/round-trip.gif' %}" alt="Round Trip Image" class="img-fluid" style="width: 60px; height: 60px;">
+                        <h3>Round Trip</h3>
+                        <p>Round trips made easy—on time, every time.</p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="service-box">
-                        <img src="{% static 'img/business-trips.gif' %}" alt="Business Trips Icon" height="70"
-                            width="70" class="img-fluid">
-                        <br>
-                        <h3>Business Trips</h3>
-                        <p>Reliable and punctual transportation solutions for corporate clients.</p>
+                        <img src="{% static 'img/car.gif' %}" alt="Local Rides Icon" class="img-fluid" style="width: 75px; height: 75px;">
+                        <h3>Local Rides</h3>
+                        <p>Need to get around the city? Our local rides are quick, easy, and always reliable.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Popular Routes Section with Dynamic Content - FIXED -->
+    <!-- Popular Routes Section with Dynamic Content -->
     <section id="popular-routes" class="popular-routes-section section-padding">
         <div class="services-bg-overlay"></div>
-        <div class="container">
+        <div class="container-md">
             <div class="text-center mb-5">
                 <h2 class="section-title display-font fade-in">Popular Routes</h2>
                 <p class="section-subtitle fade-in">Explore our most requested intercity taxi services</p>
@@ -210,7 +217,7 @@
                 <div class="services-carousel swiper">
                     <div class="swiper-wrapper">
                         {% for route in routes %}
-                        <!-- Dynamic Route Slide with Fixed Template Variables -->
+                          <!-- Dynamic Route Slide with Fixed Template Variables  -->
                         <div class="swiper-slide" tabindex="0"
                             aria-label="Service from {{ route.origin }} to {{ route.destination }}">
                             <div class="enhanced-service-card fade-in" role="group"
@@ -218,29 +225,29 @@
                                 <div class="service-image-container">
                                     <!-- Dynamic city-based image with fallback -->
                                     {% if route.origin|lower == 'ahmedabad' %}
-                                    <img src="/media/{{ route.image }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
+                                    <img src="{% if route.image %}{{ route.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                                        alt="{{ route.origin }} to {{ route.destination }} route" class="service-image frontend-route-image"
+                                        data-route-id="{{ route.id }}" data-fallback-src="{% static 'img/placeholder.svg' %}">
                                     {% elif route.origin|lower == 'bangalore' %}
-                                    <img src="/media/{{ route.image }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
+                                    <img src="{% if route.image %}{{ route.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                                        alt="{{ route.origin }} to {{ route.destination }} route" class="service-image frontend-route-image"
+                                        data-route-id="{{ route.id }}" data-fallback-src="{% static 'img/placeholder.svg' %}">
                                     {% elif route.origin|lower == 'chandigarh' %}
-                                    <img src="/media/{{ route.image }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
+                                    <img src="{% if route.image %}{{ route.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                                        alt="{{ route.origin }} to {{ route.destination }} route" class="service-image frontend-route-image"
+                                        data-route-id="{{ route.id }}" data-fallback-src="{% static 'img/placeholder.svg' %}">
                                     {% elif route.origin|lower == 'chennai' %}
-                                    <img src="/media/{{ route.image }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
+                                    <img src="{% if route.image %}{{ route.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                                        alt="{{ route.origin }} to {{ route.destination }} route" class="service-image frontend-route-image"
+                                        data-route-id="{{ route.id }}" data-fallback-src="{% static 'img/placeholder.svg' %}">
                                     {% elif route.origin|lower == 'coimbatore' %}
-                                    <img src="/media/{{ route.image }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
+                                    <img src="{% if route.image %}{{ route.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                                        alt="{{ route.origin }} to {{ route.destination }} route" class="service-image frontend-route-image"
+                                        data-route-id="{{ route.id }}" data-fallback-src="{% static 'img/placeholder.svg' %}">
                                     {% else %}
-                                    <img src="/media/{{ route.image }}" 
-                                     alt="{{ route.origin }} to {{ route.destination }} route" 
-                                     class="service-image" />
+                                    <img src="{% if route.image %}{{ route.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                                        alt="{{ route.origin }} to {{ route.destination }} route" class="service-image frontend-route-image"
+                                        data-route-id="{{ route.id }}" data-fallback-src="{% static 'img/placeholder.svg' %}">
                                     {% endif %}
 
                                     <div class="service-overlay" aria-hidden="true">
@@ -249,7 +256,7 @@
                                         </div>
                                     </div>
                                     <div class="service-car-animation" aria-hidden="true">
-                                        <!-- Dynamic car image based on distance -->
+                                          <!-- Dynamic car image based on distance   -->
                                         {% if route.distance_km <= 200 %} <img src="{% static 'img/car-hatchback.png' %}" alt=""
                                             class="floating-car" />
                                         {% elif route.distance_km <= 500 %} <img src="{% static 'img/car-sedan.png' %}" alt=""
@@ -265,8 +272,7 @@
                                 <div class="service-content">
                                     <h3>{{ route.origin|upper }} ⇋ {{ route.destination|upper }}</h3>
                                     <p id="desc-{{ route.id }}">
-                                        Starting from ₹{{ route.rate|floatformat:0 }} • {{ route.distance_km|floatformat:0 }} km •
-                                        Toll Tax & State Tax Extra • Parking Extra, if Applicable
+                                        Starting from ₹{{ route.rate|floatformat:0 }} • {{ route.distance_km|floatformat:0 }} km • Toll Tax & State Tax Extra • Parking Extra, if Applicable
                                     </p>
                                     <ul class="service-features">
                                         <li><i class="bi bi-check-circle"></i>Professional Drivers</li>
@@ -280,7 +286,7 @@
                             </div>
                         </div>
                         {% empty %}
-                        <!-- Fallback content when no routes available from backend -->
+                          <!-- Fallback content when no routes available from backend   -->
                         <div class="swiper-slide">
                             <div class="enhanced-service-card fade-in">
                                 <div class="service-image-container">
@@ -385,7 +391,9 @@
                     </div>
                 </div>
             </div>
-            <!-- Replace your existing button with: -->
+            </div>
+
+            <!-- View All Routes Button -->
             <div class="text-center mt-5">
                 <a href="/popular-routes/" class="enhanced-view-all-btn routes-btn">
                     <div class="btn-content">
@@ -403,56 +411,6 @@
                     <div class="btn-shine"></div>
                 </a>
             </div>
-
-            <!-- Service Stats -->
-            <!-- <div class="service-stats-section mt-5">
-                <div class="row g-4">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="service-stat-card">
-                            <div class="stat-icon">
-                                <i class="bi bi-shield-check"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h4>100% Safe</h4>
-                                <p>Verified drivers and vehicles</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="service-stat-card">
-                            <div class="stat-icon">
-                                <i class="bi bi-clock"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h4>24/7 Service</h4>
-                                <p>Available round the clock</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="service-stat-card">
-                            <div class="stat-icon">
-                                <i class="bi bi-geo-alt"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h4>GPS Tracking</h4>
-                                <p>Real-time location updates</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="service-stat-card">
-                            <div class="stat-icon">
-                                <i class="bi bi-currency-rupee"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h4>Best Rates</h4>
-                                <p>Competitive and transparent pricing</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </section>
 
@@ -467,19 +425,20 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="name" class="form-label">Full Name</label>
-                                <input type="text" name="name" class="form-control" id="name" required
+                                <input type="text" name="name" class="form-control" id="name" required value="Divyam Shah"
                                     aria-label="Full Name">
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3 mb-md-0">
                                     <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" name="email" class="form-control" id="email" required
+                                    <input type="email" name="email" class="form-control" id="email" required value="divyamgrea@gaer.com"
                                         aria-label="Email Address">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3 mb-md-0">
                                     <label for="phone" class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone" class="form-control" id="phone" required
-                                        aria-label="Phone Number">
+                                    <input type="tel" name="phone" class="form-control" id="phone" required value="1234567890"
+                                        aria-label="Phone Number" maxlength="10" pattern="[0-9]{10}"
+                                        title="Please enter exactly 10 digits">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -499,24 +458,27 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3 mb-md-0">
                                     <label for="pickupLocation" class="form-label">Pick-up Location</label>
-                                    <input type="text" name="pickupLocation" class="form-control" id="pickupLocation"
+                                    <input type="text" name="pickupLocation" class="form-control" id="pickupLocation" value="ahmedabad"
                                         required aria-label="Pick-up Location">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3 mb-md-0">
                                     <label for="dropoffLocation" class="form-label">Drop-off Location</label>
-                                    <input type="text" name="dropoffLocation" class="form-control" id="dropoffLocation"
+                                    <input type="text" name="dropoffLocation" class="form-control" id="dropoffLocation" value="surat"
                                         required aria-label="Drop-off Location">
                                 </div>
                             </div>
+    
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="pickupDate" class="form-label">
-                                        <i class="bi bi-calendar-event me-2"></i>Pick-up Date & Time
+                                        <i class="bi bi-calendar-event me-2"></i>
+                                        <span id="pickupDateLabel">Pick-up Date & Time</span>
                                     </label>
                                     <div class="enhanced-datetime-wrapper">
                                         <div class="datetime-input-wrapper">
+    
                                             <input type="datetime-local" name="pickupDate"
                                                 class="form-control datetime-input" id="pickupDate" required
                                                 aria-label="Pick-up Date and Time">
@@ -524,23 +486,26 @@
                                                 <i class="bi bi-clock"></i>
                                             </div>
                                         </div>
-                                        <div class="datetime-quick-select">
-                                            <button type="button" class="quick-select-btn" data-hours="2">+2h</button>
-                                            <button type="button" class="quick-select-btn" data-hours="4">+4h</button>
-                                            <button type="button" class="quick-select-btn"
-                                                data-hours="24">Tomorrow</button>
+    
+                                        <div class="datetime-quick-select" id="pickupQuickSelect">
+                                            <!-- <button type="button" class="quick-select-btn" data-hours="2">+2h</button>
+                                            <button type="button" class="quick-select-btn" data-hours="4">+4h</button> -->
+                                            <button type="button" class="quick-select-btn" data-hours="24">Tomorrow</button>
                                         </div>
                                     </div>
-                                    <small class="form-text text-muted">
-                                        <i class="bi bi-info-circle me-1"></i>Select your preferred pickup date and time
+                                    <small class="form-text text-muted" id="pickupDateHelp">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        <span id="pickupDateHelpText">Select your preferred pickup date and time</span>
                                     </small>
                                 </div>
                                 <div class="col-md-6 date-field-container" id="dropoffDateContainer">
                                     <label for="dropoffDate" class="form-label">
-                                        <i class="bi bi-calendar-check me-2"></i>Drop-off Date & Time
+                                        <i class="bi bi-calendar-check me-2"></i>
+                                        <span id="dropoffDateLabel">Drop-off Date & Time</span>
                                     </label>
                                     <div class="enhanced-datetime-wrapper">
                                         <div class="datetime-input-wrapper">
+    
                                             <input type="datetime-local" name="dropoffDate"
                                                 class="form-control datetime-input" id="dropoffDate" required
                                                 aria-label="Drop-off Date and Time">
@@ -548,17 +513,19 @@
                                                 <i class="bi bi-clock"></i>
                                             </div>
                                         </div>
-                                        <div class="datetime-quick-select">
-                                            <button type="button" class="quick-select-btn dropoff-quick"
-                                                data-days="1">+1 Day</button>
-                                            <button type="button" class="quick-select-btn dropoff-quick"
-                                                data-days="2">+2 Days</button>
-                                            <button type="button" class="quick-select-btn dropoff-quick"
-                                                data-days="7">+1 Week</button>
+    
+                                        <div class="datetime-quick-select" id="dropoffQuickSelect">
+                                            <button type="button" class="quick-select-btn dropoff-quick" data-days="1">+1
+                                                Day</button>
+                                            <button type="button" class="quick-select-btn dropoff-quick" data-days="2">+2
+                                                Days</button>
+                                            <button type="button" class="quick-select-btn dropoff-quick" data-days="7">+1
+                                                Week</button>
                                         </div>
                                     </div>
-                                    <small class="form-text text-muted">
-                                        <i class="bi bi-info-circle me-1"></i>Select your return date and time
+                                    <small class="form-text text-muted" id="dropoffDateHelp">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        <span id="dropoffDateHelpText">Select your return date and time</span>
                                     </small>
                                 </div>
                             </div>
@@ -567,7 +534,6 @@
                                     <i class="bi bi-calculator"></i> Calculate Distance & Price
                                 </button>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -575,129 +541,46 @@
         </div>
     </section>
 
-    <!-- Our Blogs Preview Section -->
-    <section id="blogs" class="section-padding bg-light-grey">
+    <!-- Gallery Section -->
+    <section id="gallery" class="section-padding bg-light-grey">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="section-title display-font fade-in">Our Blog Posts</h2>
-                <p class="section-subtitle fade-in">Explore travel tips, destination ideas, and industry insights</p>
+                <h2 class="section-title display-font fade-in">Our Gallery</h2>
+                <p class="section-subtitle fade-in">Explore our collection of travel moments and beautiful destinations</p>
             </div>
-            <div class="row g-4" id="blogGridPreview">
-                <!-- Blog Post 1 -->
-                <div class="col-lg-4 col-md-6 blog-item" data-category="travel-tips">
-                    <article class="blog-card fade-in">
-                        <div class="blog-image-container">
-                            <img src="https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                alt="Travel Tips" class="blog-image">
-                            <div class="blog-category">Travel Tips</div>
-                        </div>
-                        <div class="blog-content">
-                            <div class="blog-meta">
-                                <span class="blog-date">
-                                    <i class="bi bi-calendar3"></i> January 15, 2025
-                                </span>
-                                <span class="blog-read-time">
-                                    <i class="bi bi-clock"></i> 5 min read
-                                </span>
-                            </div>
-                            <h3 class="blog-title">
-                                <a href="#">Essential Travel Tips for Interstate Road Trips</a>
-                            </h3>
-                            <p class="blog-excerpt">
-                                Discover best practices for planning your interstate journey—from routes to safety tips
-                                for
-                                a smooth experience.
-                            </p>
-                            <a href="blog1.html" class="blog-read-more">
-                                Read More <i class="bi bi-arrow-right"></i>
+            <!-- New Template Gallery Grid -->
+        <div class="d2c_gallery_wrapper">
+            <div class="row">
+                {% for item in gallery_items|slice:":6" %}
+                    <div class="col-12 col-sm-6 col-md-4 d2c_column_wrapper">
+                        <div class="d2c_img_wrapper">
+                            <a data-fancybox="gallery-home" href="{% url 'serve_gallery_image' item.id %}">
+                                <img src="{% url 'serve_gallery_image' item.id %}" alt="{{ item.title }}">
                             </a>
                         </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 2 -->
-                <div class="col-lg-4 col-md-6 blog-item" data-category="destinations">
-                    <article class="blog-card fade-in">
-                        <div class="blog-image-container">
-                            <img src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                alt="Destination Guide" class="blog-image">
-                            <div class="blog-category">Destination Guide</div>
-                        </div>
-                        <div class="blog-content">
-                            <div class="blog-meta">
-                                <span class="blog-date">
-                                    <i class="bi bi-calendar3"></i> January 12, 2025
-                                </span>
-                                <span class="blog-read-time">
-                                    <i class="bi bi-clock"></i> 7 min read
-                                </span>
-                            </div>
-                            <h3 class="blog-title">
-                                <a href="#">Top 10 Must-Visit Destinations from Ahmedabad</a>
-                            </h3>
-                            <p class="blog-excerpt">
-                                Explore beautiful destinations reachable from Ahmedabad with our rental service—hill
-                                stations, heritage sites, and more.
-                            </p>
-                            <a href="blog2.html" class="blog-read-more">
-                                Read More <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 3 -->
-                <div class="col-lg-4 col-md-6 blog-item" data-category="car-care">
-                    <article class="blog-card fade-in">
-                        <div class="blog-image-container">
-                            <img src="https://images.pexels.com/photos/1118448/pexels-photo-1118448.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                alt="Car Care Tips" class="blog-image">
-                            <div class="blog-category">Car Care</div>
-                        </div>
-                        <div class="blog-content">
-                            <div class="blog-meta">
-                                <span class="blog-date">
-                                    <i class="bi bi-calendar3"></i> January 10, 2025
-                                </span>
-                                <span class="blog-read-time">
-                                    <i class="bi bi-clock"></i> 4 min read
-                                </span>
-                            </div>
-                            <h3 class="blog-title">
-                                <a href="#">How to Prepare Your Car for a Long Journey</a>
-                            </h3>
-                            <p class="blog-excerpt">
-                                Simple maintenance tips and essential checks before hitting the road for a long
-                                interstate
-                                trip.
-                            </p>
-                            <a href="blog3.html" class="blog-read-more">
-                                Read More <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
+                    </div>
+                {% endfor %}
             </div>
-            <!-- Replace your existing button with: -->
+        </div>
+            <!-- View All Gallery Button -->
             <div class="text-center mt-4">
-                <a href="/blogs/" class="enhanced-view-all-btn blogs-btn">
+                <a href="/gallery/" class="enhanced-view-all-btn gallery-btn">
                     <div class="btn-content">
                         <div class="btn-icon">
-                            <i class="bi bi-journal-text"></i>
+                            <i class="bi bi-images"></i>
                         </div>
                         <div class="btn-text">
-                            <span class="btn-main-text">View All Blogs</span>
-                            <span class="btn-sub-text">Latest travel insights</span>
+                            <span class="btn-main-text">View Full Gallery</span>
+                            <span class="btn-sub-text">See all our moments</span>
                         </div>
                         <div class="btn-arrow">
                             <i class="bi bi-arrow-right-circle"></i>
                         </div>
                     </div>
-                    <div class="btn-shine"></div>
                 </a>
             </div>
-            </div>
-            </section>
+        </div>
+    </section>
 
     <!-- Testimonials Section -->
     <section class="testimonials-section" id="testimonials">
@@ -705,16 +588,14 @@
             <div class="text-center mb-5">
                 <h2 class="section-title display-font fade-in">Customer Reviews</h2>
                 <h4>What Our Clients Say</h4>
-                <p class="section-subtitle fade-in">Read testimonials from our satisfied customers who have experienced
-                    our premium transportation services</p>
+                <p class="section-subtitle fade-in">Read testimonials from our satisfied customers who have experienced our premium transportation services</p>
             </div>
 
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="testimonial-card fade-in">
                         <div class="testimonial-text">
-                            Exceptional service! The driver was professional, the car was immaculate, and the journey
-                            was comfortable. Highly recommend Jeerawala Taxi for premium transportation.
+                            Exceptional service! The driver was professional, the car was immaculate, and the journey was comfortable. Highly recommend Jeerawala Taxi for premium transportation.
                         </div>
                         <div class="testimonial-author">
                             <div class="author-avatar">RK</div>
@@ -729,8 +610,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="testimonial-card fade-in">
                         <div class="testimonial-text">
-                            Used their airport transfer service multiple times. Always punctual, professional, and
-                            reliable. The booking process is seamless and customer service is excellent.
+                            Used their airport transfer service multiple times. Always punctual, professional, and reliable. The booking process is seamless and customer service is excellent.
                         </div>
                         <div class="testimonial-author">
                             <div class="author-avatar">PS</div>
@@ -745,8 +625,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="testimonial-card fade-in">
                         <div class="testimonial-text">
-                            Booked their SUV for a family trip to Rajasthan. The vehicle was luxurious, driver was
-                            courteous, and the entire experience was memorable. Will definitely use again.
+                            Booked their SUV for a family trip to Rajasthan. The vehicle was luxurious, driver was courteous, and the entire experience was memorable. Will definitely use again.
                         </div>
                         <div class="testimonial-author">
                             <div class="author-avatar">AM</div>
@@ -794,29 +673,28 @@
                             </div>
                         </div>
                     </div>
-                    <p class="mt-4">You can also use the booking form above for specific inquiries.</p>
+                    <h5 class="mt-4">You can also use the <a href="/#booking-form">booking form</a> above for specific inquiries.</h5>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Unique Animated Footer -->
+     <!-- Unique Animated Footer  -->
     <footer class="unique-footer">
 
-        <!-- Main Footer Content -->
+         <!-- Main Footer Content   -->
         <div class="footer-main">
             <div class="container">
                 <div class="row gy-5">
 
-                    <!-- Company Info Column -->
+                    <!-- Company Info Column  -->
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-brand">
                             <img src="{% static 'img/JiraWala1-nobg-blue.png' %}" alt="Jirawala Logo"
                                 class="footer-logo mb-3"><br>
-                            <h4 class="brand-tagline">Your Journey, Our Wheels</h4>
+                            <h4 class="brand-tagline">Drive Beyond Borders</h4>
                             <p class="brand-description">
-                                Experience premium interstate car rentals with Jirawala Tours & Travels.
-                                Reliable, comfortable, and seamless transportation across India.
+                                From hill stations to heritage cities, travel comfortably with our well-maintained cars and professional service. Perfect for weekend getaways or long journeys.
                             </p>
                             <div class="footer-stats">
                                 <div class="stat-item">
@@ -835,7 +713,7 @@
                         </div>
                     </div>
 
-                    <!-- Quick Links Column -->
+                     <!-- Quick Links Column  -->
                     <div class="col-lg-2 col-md-6">
                         <div class="footer-links">
                             <h5 class="footer-title">Quick Links</h5>
@@ -850,19 +728,19 @@
                         </div>
                     </div>
 
-                    <!-- Services Column -->
+                     <!-- Services Column  -->
                     <div class="col-lg-2 col-md-6">
                         <div class="footer-links">
                             <h5 class="footer-title">Our Services</h5>
                             <ul class="footer-menu">
-                                <li><a href="#"><i class="bi bi-chevron-right"></i>Interstate Travel</a></li>
-                                <li><a href="#"><i class="bi bi-chevron-right"></i>Business Trips</a></li>
-                                <li><a href="#"><i class="bi bi-chevron-right"></i>Tour Packages</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>One-Way Trips</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Round Trips</a></li>
+                                <li><a href="#"><i class="bi bi-chevron-right"></i>Local Rides</a></li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Contact Info Column -->
+                     <!-- Contact Info Column  -->
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-contact">
                             <h5 class="footer-title">Get In Touch</h5>
@@ -897,46 +775,8 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Animated Cars Section -->
-        <div class="animated-cars-section">
-            <div class="road"></div>
-            <div class="car-animation">
-                <div class="car car-1">
-                    <div class="car-body"></div>
-                    <div class="car-wheel wheel-front"></div>
-                    <div class="car-wheel wheel-rear"></div>
-                </div>
-                <div class="car car-2">
-                    <div class="car-body sedan"></div>
-                    <div class="car-wheel wheel-front"></div>
-                    <div class="car-wheel wheel-rear"></div>
-                </div>
-                <div class="car car-3">
-                    <div class="car-body suv"></div>
-                    <div class="car-wheel wheel-front"></div>
-                    <div class="car-wheel wheel-rear"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer Bottom -->
-        <div class="footer-bottom">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="copyright">
-                            <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="footer-social">
-                            <span>Follow Us:</span>
+                             <!-- Follow Us  -->
+                            <h5 class="footer-title">Follow Us</h5>
                             <div class="social-links">
                                 <a href="https://wa.me/+911234567890" target="_blank" class="social-link whatsapp">
                                     <i class="bi bi-whatsapp"></i>
@@ -959,9 +799,46 @@
                 </div>
             </div>
         </div>
+
+         <!-- Animated Cars Section  -->
+        <div class="animated-cars-section">
+            <div class="road"></div>
+            <div class="car-animation">
+                <div class="car car-1">
+                    <div class="car-body"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-2">
+                    <div class="car-body sedan"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+                <div class="car car-3">
+                    <div class="car-body suv"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-rear"></div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Footer Bottom   -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="text-center">
+                    <div class="copyright">
+                            <p>&copy; 2025 Jirawala Tours & Travels. All rights reserved.</p>
+                    </div><br>
+                    <div class="developer-credit">
+                        <p>Developed & Managed by <a href="https://www.dynamiclabz.net/" target="_blank" style="color: #53c0cb; text-decoration: none;"><u><strong>Dynamic Labz</strong></u></a></p>
+                    </div>
+            </div>
+
+            </div>
+        </div>
     </footer>
 
-    <!-- Floating Call Button -->
+     <!-- Floating Call Button   -->
     <a href="tel:+911234567890" class="floating-btn call-btn" aria-label="Call Us">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -971,18 +848,21 @@
         </svg>
     </a>
 
-    <!-- Floating WhatsApp Button -->
+     <!-- Floating WhatsApp Button   -->
     <a href="https://wa.me/+911234567890" target="_blank" class="floating-whatsapp">
         <i class="bi bi-whatsapp"></i>
     </a>
 
-    <!-- Bootstrap JS CDN (Popper.js and Bootstrap Bundle) -->
+     <!-- Bootstrap JS CDN (Popper.js and Bootstrap Bundle)  -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
 
-    <!-- Custom JavaScript -->
-    <script src="{% static 'js/script.js' %}?v=5"></script>
+     <!-- Custom JavaScript  -->
+    <script src="{% static 'js/script.js' %}?v=6"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
     <script>
         document.getElementById('fareForm').addEventListener('submit', function (e) {
@@ -995,7 +875,7 @@
         });
     </script>
 
-    <!-- Distance & Price Calculation Modal -->
+     <!-- ✅ ENHANCED: Distance & Price Calculation Modal with Dynamic Route Information  -->
     <div class="modal fade" id="distancePriceModal" tabindex="-1" aria-labelledby="distancePriceModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -1035,6 +915,7 @@
                         </div>
                     </div>
 
+                     <!-- ✅ ENHANCED: Dynamic Route Information Card  -->
                     <div class="enhanced-distance-display mb-4">
                         <div class="distance-header">
                             <i class="bi bi-geo-alt-fill"></i>
@@ -1048,57 +929,43 @@
                             <div class="route-details">
                                 <div class="route-time">
                                     <i class="bi bi-clock"></i>
-                                    <span id="estimatedDuration">Calculating...</span>
+                                    <span id="estimatedDuration">Ready to calculate</span>
                                 </div>
                                 <div class="route-type">
                                     <i class="bi bi-signpost-2"></i>
-                                    <span>Interstate Route</span>
+                                    <span id="routeType">Interstate Route</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                     <!-- ✅ UPDATED: Dynamic Car Types Section  -->
                     <div class="pricing-options">
-                        <h6 class="mb-3">Select Your Car Type & View Pricing:</h6>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="car-option" data-car-type="hatchback" data-rate="12">
-                                    <div class="car-icon">
-                                        <i class="bi bi-car-front-fill"></i>
-                                    </div>
-                                    <h6>Hatchback</h6>
-                                    <div class="rate">₹12/km</div>
-                                    <div class="total-price" id="hatchbackPrice">₹0</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="car-option" data-car-type="sedan" data-rate="15">
-                                    <div class="car-icon">
-                                        <i class="bi bi-car-front"></i>
-                                    </div>
-                                    <h6>Sedan</h6>
-                                    <div class="rate">₹15/km</div>
-                                    <div class="total-price" id="sedanPrice">₹0</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="car-option" data-car-type="suv" data-rate="18">
-                                    <div class="car-icon">
-                                        <i class="bi bi-truck"></i>
-                                    </div>
-                                    <h6>SUV</h6>
-                                    <div class="rate">₹18/km</div>
-                                    <div class="total-price" id="suvPrice">₹0</div>
-                                </div>
+                        <h6 class="mb-3">Loading car types...</h6>
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="selected-car-info mt-4" id="selectedCarInfo" style="display: none;">
                         <div class="alert alert-success">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            <strong>Selected:</strong> <span id="selectedCarType"></span> -
-                            <strong>Total Price:</strong> <span id="selectedPrice"></span>
+
+                            <!-- Left - Tick -->
+                            <!-- <div class="icon-col">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                            </div> -->
+
+                            <!-- Right - Stacked text -->
+                             <div class="text-col">
+                                <div>
+                                    <strong>Selected:</strong> <span id="selectedCarType"></span>
+                                </div>
+                                <div>
+                                    <strong id="selectedCarPriceEle">Total Price:</strong> <span id="selectedPrice"></span>
+                                </div>
+                             </div>
                         </div>
                     </div>
 
@@ -1119,7 +986,7 @@
         </div>
     </div>
 
-    <!-- Car Selection Notification -->
+     <!-- Car Selection Notification  -->
     <div id="carSelectionNotification" class="car-selection-notification">
         <div class="notification-content">
             <i class="bi bi-check-circle-fill"></i>
@@ -1130,3 +997,41 @@
 </body>
 
 </html>
+
+<script>
+// Update labels and help text based on trip type
+document.addEventListener('DOMContentLoaded', function() {
+    const tripTypeButtons = document.querySelectorAll('.trip-type-option');
+    const pickupDateLabel = document.getElementById('pickupDateLabel');
+    const dropoffDateLabel = document.getElementById('dropoffDateLabel');
+    const pickupDateHelpText = document.getElementById('pickupDateHelpText');
+    const dropoffDateHelpText = document.getElementById('dropoffDateHelpText');
+    const pickupQuickSelect = document.getElementById('pickupQuickSelect');
+    const dropoffQuickSelect = document.getElementById('dropoffQuickSelect');
+
+    tripTypeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tripType = this.getAttribute('data-trip');
+            
+            if (tripType === 'one-way') {
+                // ✅ ONE-WAY: Show time selection
+                if (pickupDateLabel) pickupDateLabel.textContent = 'Pick-up Date & Time';
+                if (dropoffDateLabel) dropoffDateLabel.textContent = 'Drop-off Date & Time';
+                if (pickupDateHelpText) pickupDateHelpText.textContent = 'Select your preferred pickup date and time';
+                if (dropoffDateHelpText) dropoffDateHelpText.textContent = 'Select your return date and time';
+                if (pickupQuickSelect) pickupQuickSelect.style.display = 'flex';
+                if (dropoffQuickSelect) dropoffQuickSelect.style.display = 'flex';
+                
+            } else if (tripType === 'round-trip') {
+                // ✅ ROUND-TRIP: Hide time selection
+                if (pickupDateLabel) pickupDateLabel.textContent = 'Pick-up Date';
+                if (dropoffDateLabel) dropoffDateLabel.textContent = 'Return Date';
+                if (pickupDateHelpText) pickupDateHelpText.textContent = 'Select your pickup date (time not required for round trips)';
+                if (dropoffDateHelpText) dropoffDateHelpText.textContent = 'Select your return date (time not required for round trips)';
+                if (pickupQuickSelect) pickupQuickSelect.style.display = 'none';
+                if (dropoffQuickSelect) dropoffQuickSelect.style.display = 'none';
+            }
+        });
+    });
+});
+</script>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <title>How to Prepare Your Car for a Long Journey - Jirawala Tours & Travels</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Phone Link Styling  -->
+    <style>
+        .top-header .contact-info strong a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .top-header .contact-info strong a:hover {
+            text-decoration: underline !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <div class="logo-section">
+                <a href="index.html" class="logo-link">
+                    <img src="{% static 'img/JiraWala1.png' %}" alt="Jirawala Tours & Travels Logo"
+                        class="logo img-fluid">
+                </a>
+            </div>
+            <div class="contact-info d-flex align-items-center">
+                <img src="{% static 'img/call-us-now.gif' %}" alt="Call Us Now" class="img-fluid">
+                <div>
+                    <small class="d-block">Call Us Now</small>
+                    <strong><a href="tel:+911234567890">+91 1234567890</a></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#about-us">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/popular-routes">Popular Routes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#cabs">Our Cars</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blogs">Our Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="/#booking-form" class="btn btn-dark-cta">Book a Taxi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="page-title display-font">How to Prepare Your Car for a Long Journey</h1>
+                    <p class="page-subtitle">A step‑by‑step maintenance checklist before you hit the road</p>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/blogs">Our Blogs</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">How to Prepare Your Car for a Long Journey</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="blog-content-single">
+
+                        <h2>Pre‑Trip Inspection</h2>
+                        <p>Schedule a mechanic visit a week prior. Check belts, hoses, battery health and coolant system.</p>
+
+                        <h2>Fluid Top‑Up</h2>
+                        <ul>
+                            <li>Engine oil</li>
+                            <li>Brake &amp; clutch fluid</li>
+                            <li>Power‑steering fluid</li>
+                            <li>Windshield washer fluid</li>
+                        </ul>
+
+                        <h2>Tyre &amp; Brake Care</h2>
+                        <p>Inflate to manufacturer PSI, examine tread depth and carry a functional spare. Replace worn brake pads to avoid fade.</p>
+
+                        <h2>Emergency Preparedness</h2>
+                        <p>Pack a flashlight, reflective triangle, jumper cables, basic tools and a comprehensive first‑aid kit.</p>
+
+                        <h2>On‑Road Etiquette</h2>
+                        <p>Maintain steady speeds, avoid aggressive acceleration and take 15‑minute breaks every two hours.</p>
+
+                        <p class="mt-4"><em>Written by Car Care Specialist • 10 Jan 2025 • 4&nbsp;min read</em></p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light pt-5 pb-3">
+        <div class="container text-center">
+            <p class="small mb-0">&copy; 2025 Jirawala Tours & Travels. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html>

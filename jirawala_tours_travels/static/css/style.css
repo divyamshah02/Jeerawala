@@ -1,11 +1,11 @@
 /* =====================================================
-   🎨 JIRAWALA TOURS & TRAVELS - MAIN STYLESHEET
-   Restructured by Frontend Component Hierarchy
-   =====================================================*/
+ 🎨 JIRAWALA TOURS & TRAVELS - MAIN STYLESHEET
+ Restructured by Frontend Component Hierarchy
+ =====================================================*/
 
 /* =====================================================
-   📋 TABLE OF CONTENTS / CSS INDEX
-   =====================================================*/
+ 📋 TABLE OF CONTENTS / CSS INDEX
+ =====================================================*/
 /*
 ┌─────────────────────────────────────────────────────────────────┐
 │                🚖 JIRAWALA TOURS & TRAVELS                     │
@@ -13,122 +13,122 @@
 └─────────────────────────────────────────────────────────────────┘
 
 📍 SECTION 1: IMPORTS & ROOT VARIABLES (Line ~50)
-   ├── Google Fonts imports
-   ├── CSS custom properties (color palette)
-   ├── CSS variables for shadows & transitions
-   └── Brand color definitions
+ ├── Google Fonts imports
+ ├── CSS custom properties (color palette)
+ ├── CSS variables for shadows & transitions
+ └── Brand color definitions
 
 📍 SECTION 2: GLOBAL BASE STYLES (Line ~110)
-   ├── HTML & body base styles
-   ├── Typography hierarchy (h1-h6)
-   ├── Container & layout utilities
-   └── Image & media defaults
+ ├── HTML & body base styles
+ ├── Typography hierarchy (h1-h6)
+ ├── Container & layout utilities
+ └── Image & media defaults
 
 📍 SECTION 3: UTILITY & HELPER CLASSES (Line ~150)
-   ├── Display font classes
-   ├── Section padding utilities
-   ├── Animation & transition classes
-   └── Responsive utilities
+ ├── Display font classes
+ ├── Section padding utilities
+ ├── Animation & transition classes
+ └── Responsive utilities
 
 📍 SECTION 4: LOADER & OVERLAY COMPONENTS (Line ~180)
-   ├── Lottie loader overlay
-   ├── Loading animations
-   └── Fade transitions
+ ├── Lottie loader overlay
+ ├── Loading animations
+ └── Fade transitions
 
 📍 SECTION 5: HEADER & NAVIGATION (Line ~220)
-   ├── Top header styling
-   ├── Logo & contact info
-   ├── Main navigation bar
-   ├── Mobile navigation
-   └── Navbar responsive behavior
+ ├── Top header styling
+ ├── Logo & contact info
+ ├── Main navigation bar
+ ├── Mobile navigation
+ └── Navbar responsive behavior
 
 📍 SECTION 6: HERO & BANNER SECTIONS (Line ~380)
-   ├── Hero section background
-   ├── Hero typography
-   ├── Call-to-action buttons
-   └── Page headers (consistent)
+ ├── Hero section background
+ ├── Hero typography
+ ├── Call-to-action buttons
+ └── Page headers (consistent)
 
 📍 SECTION 7: CONTENT SECTIONS (Line ~520)
-   ├── About us section
-   ├── Stats section with animations
-   ├── Services section
-   └── Section titles & subtitles
+ ├── About us section
+ ├── Stats section with animations
+ ├── Services section
+ └── Section titles & subtitles
 
 📍 SECTION 8: INTERACTIVE COMPONENTS (Line ~720)
-   ├── Service cards & animations
-   ├── Popular routes carousel
-   ├── Enhanced service cards
-   ├── Swiper navigation & pagination
-   ├── Car animation components
-   └── Enhanced View All Buttons
+ ├── Service cards & animations
+ ├── Popular routes carousel
+ ├── Enhanced service cards
+ ├── Swiper navigation & pagination
+ ├── Car animation components
+ └── Enhanced View All Buttons
 
 📍 SECTION 9: FLEET & CAR COMPONENTS (Line ~1100)
-   ├── Fleet section styling
-   ├── Enhanced car cards
-   ├── Car filtering system
-   ├── Availability badges
-   └── Car specifications
+ ├── Fleet section styling
+ ├── Enhanced car cards
+ ├── Car filtering system
+ ├── Availability badges
+ └── Car specifications
 
 📍 SECTION 10: BOOKING SYSTEM & FORMS (Line ~1400)
-   ├── Booking form styling
-   ├── Enhanced datetime inputs
-   ├── Trip type toggles
-   ├── Form validation states
-   └── Quick select buttons
+ ├── Booking form styling
+ ├── Enhanced datetime inputs
+ ├── Trip type toggles
+ ├── Form validation states
+ └── Quick select buttons
 
-📍 SECTION 11: MODALS & OVERLAYS (Line ~1700)
-   ├── Distance calculation modal
-   ├── Car selection modal
-   ├── Booking success modal
-   ├── Notification system
-   └── Modal animations
+📍 SECTION 11: COMPACT MODALS & OVERLAYS (Line ~1700)
+ ├── COMPACT Distance calculation modal
+ ├── COMPACT Car selection cards
+ ├── Booking success modal
+ ├── Notification system
+ └── Modal animations
 
-📍 SECTION 12: BLOG & CONTENT PAGES (Line ~1950)
-   ├── Blog card styling
-   ├── Blog filters
-   ├── Newsletter section
-   ├── Content typography
-   └── Blog responsive design
+📍 SECTION 12: GALLERY & CONTENT PAGES (Line ~1950)
+ ├── Gallery card styling
+ ├── Gallery filters
+ ├── Newsletter section
+ ├── Content typography
+ └── Gallery responsive design
 
 📍 SECTION 13: TESTIMONIALS & REVIEWS (Line ~2150)
-   ├── Testimonial cards
-   ├── Author avatars
-   ├── Review animations
-   └── Customer feedback styling
+ ├── Testimonial cards
+ ├── Author avatars
+ ├── Review animations
+ └── Customer feedback styling
 
 📍 SECTION 14: CONTACT & INFO SECTIONS (Line ~2250)
-   ├── Contact info boxes
-   ├── Contact form styling
-   ├── Address & phone styling
-   └── Social media links
+ ├── Contact info boxes
+ ├── Contact form styling
+ ├── Address & phone styling
+ └── Social media links
 
 📍 SECTION 15: FOOTER & BOTTOM COMPONENTS (Line ~2350)
-   ├── Unique animated footer
-   ├── Footer branding
-   ├── Footer navigation
-   ├── Animated cars section
-   ├── Social media footer
-   └── Copyright styling
+ ├── Unique animated footer
+ ├── Footer branding
+ ├── Footer navigation
+ ├── Animated cars section
+ ├── Social media footer
+ └── Copyright styling
 
 📍 SECTION 16: FLOATING ELEMENTS (Line ~2650)
-   ├── Floating call button
-   ├── Floating WhatsApp button
-   ├── Floating animations
-   └── Fixed position elements
+ ├── Floating call button
+ ├── Floating WhatsApp button
+ ├── Floating animations
+ └── Fixed position elements
 
 📍 SECTION 17: RESPONSIVE DESIGN (Line ~2750)
-   ├── Mobile navigation fixes
-   ├── Tablet breakpoint styles
-   ├── Mobile breakpoint styles
-   ├── Touch device optimizations
-   └── Small screen adjustments
+ ├── Mobile navigation fixes
+ ├── Tablet breakpoint styles
+ ├── Mobile breakpoint styles
+ ├── Touch device optimizations
+ └── Small screen adjustments
 
 📍 SECTION 18: ANIMATIONS & KEYFRAMES (Line ~2950)
-   ├── Loading animations
-   ├── Scroll animations
-   ├── Hover effects
-   ├── Car movement animations
-   └── UI transition effects
+ ├── Loading animations
+ ├── Scroll animations
+ ├── Hover effects
+ ├── Car movement animations
+ └── UI transition effects
 
 ┌─────────────────────────────────────────────────────────────────┐
 │  🔧 QUICK REFERENCE - KEY CLASSES                              │
@@ -150,30 +150,30 @@
 └─────────────────────────────────────────────────────────────────┘
 
 💡 USAGE TIPS:
-   • Use Ctrl+F to search for section numbers (e.g., "SECTION 7")
-   • Class names are searchable (e.g., ".enhanced-car-card")
-   • All sections are clearly marked with comment headers
-   • Color variables are defined in SECTION 1
-   • Responsive breakpoints follow mobile-first approach
+ • Use Ctrl+F to search for section numbers (e.g., "SECTION 7")
+ • Class names are searchable (e.g., ".enhanced-car-card")
+ • All sections are clearly marked with comment headers
+ • Color variables are defined in SECTION 1
+ • Responsive breakpoints follow mobile-first approach
 
 🎨 COLOR PALETTE QUICK REFERENCE:
-   • Primary: #2a9d8f (Teal)
-   • Accent: #53c0cb (Light Teal)
-   • Secondary: #33b3c6 (Medium Blue)
-   • Dark: #282727 (Dark Gray)
-   • Gold: #d4af37 (Hero CTA)
+ • Primary: #2a9d8f (Teal)
+ • Accent: #53c0cb (Light Teal)
+ • Secondary: #33b3c6 (Medium Blue)
+ • Dark: #282727 (Dark Gray)
+ • Gold: #d4af37 (Hero CTA)
 
 📱 BREAKPOINTS:
-   • Mobile: 576px and below
-   • Tablet: 768px and below
-   • Desktop: 992px and above
-   • Large: 1200px and above
+ • Mobile: 576px and below
+ • Tablet: 768px and below
+ • Desktop: 992px and above
+ • Large: 1200px and above
 
 */
 
 /* =====================================================
-   1. IMPORTS & ROOT VARIABLES
-   =====================================================*/
+ 1. IMPORTS & ROOT VARIABLES
+ =====================================================*/
 
 /* Google Fonts Import */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap");
@@ -217,8 +217,8 @@
 }
 
 /* =====================================================
-   2. GLOBAL BASE STYLES
-   =====================================================*/
+ 2. GLOBAL BASE STYLES
+ =====================================================*/
 
 body {
   font-family: "Open Sans", sans-serif;
@@ -256,8 +256,8 @@ html {
 }
 
 /* =====================================================
-   3. UTILITY & HELPER CLASSES
-   =====================================================*/
+ 3. UTILITY & HELPER CLASSES
+ =====================================================*/
 
 /* Typography */
 .display-font {
@@ -271,7 +271,7 @@ html {
 
 .section-title {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 1rem;
   font-size: 2.8rem;
   font-weight: 700;
   position: relative;
@@ -304,8 +304,8 @@ html {
 }
 
 /* =====================================================
-   4. LOADER & OVERLAY COMPONENTS
-   =====================================================*/
+ 4. LOADER & OVERLAY COMPONENTS
+ =====================================================*/
 
 /* Lottie Loader Styles */
 .lottie-loader-overlay {
@@ -326,11 +326,16 @@ html {
 
 .lottie-loader-overlay.fade-out {
   opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
 }
 
+
+
 /* =====================================================
-   5. HEADER & NAVIGATION
-   =====================================================*/
+ 5. HEADER & NAVIGATION
+ =====================================================*/
 
 /* Top Header */
 .top-header {
@@ -353,8 +358,9 @@ html {
 }
 
 .top-header .logo {
-  height: 60px;
+  height: 50px;
   width: auto;
+  object-fit: contain;
 }
 
 .logo-link {
@@ -393,7 +399,7 @@ html {
 /* Main Navigation Bar */
 .main-navbar .nav-link.active {
   position: relative;
-  color: #1a7a85 !important; /* your brand color */
+  color: var(--dark-color) !important; /* Changed from #1a7a85 to black */
   font-weight: 600;
 }
 
@@ -404,7 +410,7 @@ html {
   bottom: 5px;
   height: 2px;
   width: 100%;
-  background-color: #1a7a85; /* brand underline */
+  background-color: #dec18c; /* Changed from #1a7a85 to golden color */
 }
 
 .main-navbar {
@@ -426,7 +432,7 @@ html {
 /* Navbar Styling */
 .navbar-toggler {
   border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.25rem;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
@@ -460,13 +466,14 @@ html {
   transform: translateX(-50%);
   width: 0;
   height: 3px;
-  background-color: var(--beige);
+  background-color: #dec18c; /* Changed from var(--beige) to golden color */
   transition: width 0.3s ease;
 }
 
 .main-navbar .navbar-nav .nav-link:hover::after,
 .main-navbar .navbar-nav .nav-link.active::after {
   width: 80%;
+  background-color: #dec18c; /* Ensure consistency */
 }
 
 .main-navbar .navbar-nav .nav-link:hover {
@@ -475,8 +482,8 @@ html {
 }
 
 .btn-dark-cta {
-  background-color: var(--dark-color);
-  color: var(--white);
+  background-color: var(--hero-cta-gold);
+  color: var(--dark-color);
   border: none;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
@@ -486,8 +493,9 @@ html {
 }
 
 .btn-dark-cta:hover {
-  background-color: var(--text-secondary);
-  color: var(--white);
+  background-color: #c29e2e; /* Keep the same golden color */
+  border-color: #c29e2e;
+  color: var(--dark-color); /* Changed to black text instead of white */
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
@@ -495,7 +503,7 @@ html {
 /* Mobile Navigation Fixes */
 @media (max-width: 991.98px) {
   body {
-    padding-top: 140px;
+    padding-top: 70px;
   }
 
   .top-header {
@@ -522,45 +530,70 @@ html {
 
   .main-navbar {
     position: fixed;
-    top: 70px;
-    left: 0;
-    width: 100%;
-    z-index: 1020;
-    border-radius: 0;
+    top: 15px;
+    right: 15px;
+    left: auto;
+    width: auto;
     background: var(--primary-color);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    border-radius: 8px;
+    padding: 4px 0 4px;
+    z-index: 1030;
   }
 
+  /* Adjust navbar collapse positioning */
   .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    right: 0;
     background: var(--primary-color);
-    margin-top: 0.5rem;
     border-radius: 8px;
+    margin-top: 5px;
+    min-width: 200px;
     padding: 1rem;
-    position: relative;
     z-index: 1025;
   }
 
-  .top-header .logo {
-    height: 45px;
+  /* Style hamburger menu with white lines */
+  .navbar-toggler {
+    border: none;
+    background: var(--primary-color);
+  }
+
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    width: 1.4em;
+    height: 1.4em;
   }
 
   .top-header .contact-info {
     font-size: 1rem;
     gap: 15px;
     flex-shrink: 0;
+    display: none !important;
   }
 
   .top-header .contact-info img {
     width: 25px;
     height: 25px;
   }
+
+  .top-header .logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+}
+
+@media (min-width: 991.98px) and (max-width: 1199.98px) {
+  .main-navbar {
+    left: 17%;
+    width: 82%;
+  }
 }
 
 /* =====================================================
-   6. HERO & BANNER SECTIONS
-   =====================================================*/
+ 6. HERO & BANNER SECTIONS
+ =====================================================*/
 
 /* Hero Section */
 .slider-img {
@@ -699,6 +732,15 @@ html {
   line-height: 1.6;
 }
 
+.page-header .gallery-page-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
 /* Breadcrumb Styling */
 .breadcrumb {
   background: rgba(255, 255, 255, 0.1);
@@ -742,8 +784,8 @@ html {
 }
 
 /* =====================================================
-   7. CONTENT SECTIONS
-   =====================================================*/
+ 7. CONTENT SECTIONS
+ =====================================================*/
 
 /* About Us Section */
 .about-us img {
@@ -847,8 +889,8 @@ html {
 }
 
 /* =====================================================
-   8. INTERACTIVE COMPONENTS - FIXED CAROUSEL
-   =====================================================*/
+ 8. INTERACTIVE COMPONENTS - FIXED CAROUSEL
+ =====================================================*/
 
 /* Popular Routes Section - FIXED CAROUSEL IMPLEMENTATION */
 .popular-routes-section {
@@ -916,8 +958,18 @@ html {
 
 @media (max-width: 767px) {
   .services-carousel .swiper-slide {
-    width: calc(100% - 20px) !important;
-    margin-right: 20px;
+    width: 100% !important;
+    margin-right: 0;
+    padding: 0 20px;
+  }
+
+  .enhanced-service-card {
+    max-width: none;
+    margin: 0;
+  }
+
+  .services-carousel-wrapper {
+    padding: 0 10px;
   }
 }
 
@@ -974,7 +1026,7 @@ html {
 }
 
 /* .enhanced-service-card:hover .service-overlay {
-  opacity: 1;
+opacity: 1;
 } */
 
 .service-icon {
@@ -1200,12 +1252,12 @@ html {
 }
 
 /* =====================================================
-   🆕 ENHANCED VIEW ALL BUTTONS
-   =====================================================*/
+ 🆕 ENHANCED VIEW ALL BUTTONS
+ =====================================================*/
 
 /* =====================================================
-   🆕 ENHANCED VIEW ALL BUTTONS - COMPACT VERSION
-   =====================================================*/
+ 🆕 ENHANCED VIEW ALL BUTTONS - COMPACT VERSION
+ =====================================================*/
 
 /* Enhanced View All Buttons - Main Styling */
 .enhanced-view-all-btn {
@@ -1342,86 +1394,45 @@ html {
 }
 
 /* Blogs Button Specific Styling - Same as Routes */
-.blogs-btn {
+/* Replaced blog button styles with gallery button styles */
+.gallery-btn {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--medium-blue) 100%);
   box-shadow: 0 4px 15px rgba(42, 157, 143, 0.25);
   color: white;
 }
 
-.blogs-btn:hover {
+.gallery-btn:hover {
   background: linear-gradient(135deg, var(--medium-blue) 0%, var(--primary-color) 100%);
   box-shadow: 0 6px 20px rgba(51, 179, 198, 0.35);
   color: white;
 }
 
-.blogs-btn .btn-icon {
+.gallery-btn .btn-icon {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
 }
 
-.blogs-btn .btn-icon i {
+.gallery-btn .btn-icon i {
   color: white;
 }
 
-.blogs-btn .btn-arrow i {
+.gallery-btn .btn-arrow i {
   color: white;
 }
 
-/* Simple View All Button (Alternative) - Compact */
-.view-all-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-  color: white !important;
-  text-decoration: none !important;
-  border-radius: 25px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 10px rgba(42, 157, 143, 0.25);
-  border: none;
-  min-width: 160px;
-  margin: 15px auto;
-  font-family: "Poppins", sans-serif;
-}
-
-.view-all-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(42, 157, 143, 0.35);
-  color: white !important;
-  text-decoration: none !important;
-}
-
-.view-all-btn:focus {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-.view-all-btn i {
-  font-size: 1rem;
-  transition: transform 0.3s ease;
-}
-
-.view-all-btn:hover i {
-  transform: scale(1.1);
-}
-
-/* Blogs Button Specific - Simple Version */
-.blogs-btn.view-all-btn {
+/* Gallery Button Specific - Simple Version */
+.gallery-btn.view-all-btn {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--medium-blue) 100%);
   color: white !important;
 }
 
-.blogs-btn.view-all-btn:hover {
+.gallery-btn.view-all-btn:hover {
   background: linear-gradient(135deg, var(--medium-blue) 0%, var(--primary-color) 100%);
   color: white !important;
 }
 
 /* =====================================================
-   9. FLEET & CAR COMPONENTS
-   =====================================================*/
+ 9. FLEET & CAR COMPONENTS
+ =====================================================*/
 
 /* Fleet Section */
 .fleet-section {
@@ -1440,7 +1451,7 @@ html {
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   transition: all var(--transition-base);
   height: 100%;
@@ -1751,15 +1762,15 @@ html {
   font-size: 1rem;
 }
 
-/* Car Specifications */
+/* 🔥 COMPACT Car Specifications - More Space Efficient */
 .enhanced-car-specs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 8px; /* Reduced from 16px */
   background: #f8f9fa;
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 16px;
+  padding: 12px; /* Reduced from 16px */
+  border-radius: 8px; /* Reduced from 12px */
+  margin-bottom: 12px; /* Reduced from 16px */
 }
 
 .spec-item {
@@ -1767,18 +1778,20 @@ html {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 4px; /* Added small padding */
 }
 
 .spec-item i {
   color: #2a9d8f;
-  font-size: 1.25rem;
-  margin-bottom: 4px;
+  font-size: 1rem; /* Reduced from 1.25rem */
+  margin-bottom: 2px; /* Reduced from 4px */
 }
 
 .spec-item span {
-  font-size: 0.8rem;
+  font-size: 0.75rem; /* Reduced from 0.8rem */
   color: #6b7280;
   font-weight: 500;
+  line-height: 1.2; /* Added for better text spacing */
 }
 
 /* Car Features */
@@ -1789,21 +1802,40 @@ html {
 .feature-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   margin-bottom: 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #6b7280;
   transition: all 0.3s ease;
 }
 
-.feature-item:hover {
+/* .feature-item:hover {
   color: #2a9d8f;
   transform: translateX(4px);
 }
 
 .feature-item i {
   color: #10b981;
+  /* font-size: 1rem; */
+  /* width: 50px;
+  height: 50px;
+} */
+
+.feature-item .feature-icon {
+  width: 40px;
+  height: 40px;
+  background: #10b981;
+  border-radius: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+}
+
+.feature-item .feature-icon i {
   font-size: 1rem;
+  color: white;
 }
 
 /* Price and Booking */
@@ -1940,14 +1972,14 @@ html {
   font-size: 0.95rem;
 }
 
-/* =====================================================
-   10. BOOKING SYSTEM & FORMS
-   =====================================================*/
+/* =====================================================\
+ 10. BOOKING SYSTEM & FORMS\
+ =====================================================*/
 
 /* Booking Form Card */
 .booking-form-card {
   background-color: var(--white);
-  padding: 40px;
+  padding: 40px 20px;
   border-radius: 10px;
   box-shadow: var(--shadow-lg);
 }
@@ -2295,10 +2327,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =====================================================
-   11. MODALS & OVERLAYS
-   =====================================================*/
+ 11. COMPACT MODALS & OVERLAYS - OPTIMIZED
+ ======================================================*/
 
-/* Distance & Price Modal Styling */
+/* COMPACT Modal Content - Reduced Padding and Spacing */
 .modal-content {
   border-radius: 15px;
   border: none;
@@ -2310,12 +2342,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   color: white;
   border-radius: 15px 15px 0 0;
   border-bottom: none;
-  padding: 20px 30px;
+  padding: 15px 25px; /* Reduced from 20px 30px */
 }
 
 .modal-title {
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.2rem; /* Reduced from 1.3rem */
 }
 
 .btn-close {
@@ -2327,25 +2359,27 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
 }
 
+/* COMPACT Route Info - Streamlined Layout */
 .route-info {
   background: var(--light-bg);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 25px;
+  border-radius: 8px; /* Reduced from 10px */
+  padding: 15px; /* Reduced from 20px */
+  margin-bottom: 20px; /* Reduced from 25px */
 }
 
 .location-card {
   background: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 12px; /* Reduced from 15px */
+  border-radius: 6px; /* Reduced from 8px */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Reduced shadow */
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px; /* Reduced from 12px */
+  font-size: 0.9rem; /* Added smaller font */
 }
 
 .location-card i {
-  font-size: 1.5rem;
+  font-size: 1.2rem; /* Reduced from 1.5rem */
   color: var(--primary-color);
 }
 
@@ -2358,7 +2392,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .route-arrow {
-  font-size: 2rem;
+  font-size: 1.5rem; /* Reduced from 2rem */
   color: var(--primary-color);
   animation: pulse 2s infinite;
 }
@@ -2375,27 +2409,28 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   }
 }
 
-/* Enhanced Distance Display */
+/* COMPACT Enhanced Distance Display - Streamlined */
 .enhanced-distance-display {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-  border-radius: 15px;
+  border-radius: 12px; /* Reduced from 15px */
   padding: 0;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(42, 157, 143, 0.3);
+  box-shadow: 0 6px 20px rgba(42, 157, 143, 0.25); /* Reduced shadow */
   border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 20px; /* Reduced from 25px */
 }
 
 .distance-header {
   background: rgba(255, 255, 255, 0.15);
-  padding: 15px 20px;
+  padding: 10px 15px; /* Reduced from 15px 20px */
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px; /* Reduced from 10px */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .distance-header i {
-  font-size: 1.2rem;
+  font-size: 1rem; /* Reduced from 1.2rem */
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -2403,15 +2438,15 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   margin: 0;
   color: white;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem; /* Reduced from 1rem */
 }
 
 .distance-content {
-  padding: 25px 20px;
+  padding: 20px 15px; /* Reduced from 25px 20px */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 15px; /* Reduced from 20px */
 }
 
 .distance-main {
@@ -2420,16 +2455,16 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 
 .distance-number {
   display: block;
-  font-size: 2.5rem;
+  font-size: 2.2rem; /* Reduced from 2.5rem */
   font-weight: 900;
   color: white;
   line-height: 1;
-  margin-bottom: 5px;
+  margin-bottom: 4px; /* Reduced from 5px */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .distance-label {
-  font-size: 0.9rem;
+  font-size: 0.8rem; /* Reduced from 0.9rem */
   color: rgba(255, 255, 255, 0.8);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -2439,7 +2474,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 .route-details {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px; /* Reduced from 12px */
   text-align: right;
 }
 
@@ -2447,64 +2482,254 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 .route-type {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
+  font-size: 0.8rem; /* Reduced from 0.9rem */
   font-weight: 500;
 }
 
 .route-time i,
 .route-type i {
-  font-size: 1rem;
+  font-size: 0.9rem; /* Reduced from 1rem */
   opacity: 0.8;
+}
+
+/* COMPACT Car Options - Optimized Grid Layout */
+/* ENHANCED Car Options Section */
+.pricing-options {
+  margin-bottom: 25px;
+}
+
+.pricing-options h6 {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: var(--dark-color);
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.pricing-options h6::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  border-radius: 2px;
+}
+
+.pricing-options .row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin: 0;
+  max-width: 100%;
+}
+
+.modal .pricing-options .row {
+  /* Smaller height/width for one-way */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 15px;
+}
+
+/* .modal.round-trip-trip .pricing-options .row {
+  Smaller height/width for round-trip
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 25px;
+} */
+
+.pricing-options .row > [class*="col-"] {
+  grid-column: span 1;
+  padding: 0;
+  margin: 0;
 }
 
 .car-option {
   background: white;
-  border: 2px solid var(--border-color);
+  border: 2px solid #e2e8f0;
   border-radius: 12px;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  height: 100%;
+  aspect-ratio: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 150px;
+  min-width: 180px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+
+/* .modal.one-way-trip .car-option {
+  Smaller height/width for one-way
+  min-height: 150px !important;
+  min-width: 180px !important;
+} */
+
+.modal.round-trip-trip .car-option {
+  /* Smaller height/width for round-trip */
+  /* min-height: 250px !important; */
+  /* min-width: 250px !important; */
 }
 
 .car-option:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(42, 157, 143, 0.15);
   border-color: var(--primary-color);
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(42, 157, 143, 0.2);
 }
 
 .car-option.selected {
   border-color: var(--primary-color);
-  background: linear-gradient(135deg, rgba(42, 157, 143, 0.1) 0%, rgba(83, 192, 203, 0.1) 100%);
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(42, 157, 143, 0.3);
-}
-
-.car-icon {
-  font-size: 2.5rem;
-  color: var(--primary-color);
-  margin-bottom: 10px;
+  background: linear-gradient(135deg, rgba(42, 157, 143, 0.05) 0%, rgba(83, 192, 203, 0.05) 100%);
+  box-shadow: 0 6px 20px rgba(42, 157, 143, 0.2);
+  transform: translateY(-2px);
 }
 
 .car-option h6 {
   font-weight: 700;
   color: var(--dark-color);
-  margin-bottom: 8px;
+  margin-bottom: 12px; /* Increased from 10px */
+  font-size: 1.25rem; /* Increased from 1.2rem */
+  line-height: 1.3;
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
 .rate {
-  font-size: 0.9rem;
+  font-size: 0.95rem; /* Increased from 0.9rem */
   color: var(--text-muted);
-  margin-bottom: 10px;
+  margin-bottom: 14px; /* Increased from 12px */
+  line-height: 1.3;
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
+/* 🔥 ENHANCED: Total Price with Range Display - UPDATED FOR NO OVERFLOW */
 .total-price {
-  font-size: 1.5rem;
+  font-size: 1.3rem; /* Reduced from 1.5rem to prevent overflow */
   font-weight: 800;
   color: var(--primary-color);
+  line-height: 1.3; /* Improved line height */
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px; /* Increased from 10px */
+  width: 100%;
+  padding: 0 12px; /* Increased horizontal padding */
+}
+
+/* 🔥 NEW: Price Range Display - UPDATED FOR NO OVERFLOW */
+.price-range {
+  font-size: 1rem; /* Reduced from 1.1rem to prevent overflow */
+  font-weight: 600;
+  color: var(--primary-color);
+  line-height: 1.3;
+  margin-bottom: 10px; /* Increased from 8px */
+  white-space: normal; /* Allow wrapping if needed */
+  word-break: break-word; /* Break long words if necessary */
+  max-width: 100%;
+  text-align: center;
+}
+
+/* 🔥 NEW: Final Total Price Display - UPDATED FOR NO OVERFLOW */
+.final-total {
+  font-size: 1.5rem; /* Reduced from 1.7rem to prevent overflow */
+  font-weight: 900;
+  color: var(--success-color);
+  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.final-total-amount {
+  font-size: 1.5rem; /* Reduced from 1.7rem to prevent overflow */
+  font-weight: 900;
+  color: var(--success-color);
+  white-space: normal; /* Allow wrapping if needed */
+  word-break: break-word; /* Break long words if necessary */
+  max-width: 100%;
+  text-align: center;
+}
+
+.final-total-label {
+  font-size: 0.9rem; /* Increased from 0.85rem */
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 6px; /* Increased from 5px */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* 🔥 COMPACT Modal Body and Footer */
+.modal-body {
+  padding: 20px 25px; /* Reduced from 25px 30px */
+}
+
+.modal-footer {
+  padding: 15px 25px; /* Reduced from 20px 30px */
+  border-top: 1px solid #e2e8f0;
+  gap: 10px; /* Added gap between buttons */
+}
+
+.modal-footer .btn {
+  font-size: 0.9rem; /* Slightly reduced button text */
+  padding: 10px 20px; /* Reduced button padding */
+}
+
+/* 🔥 COMPACT Selected Car Info */
+.selected-car-info {
+  background: linear-gradient(135deg, rgba(42, 157, 143, 0.05) 0%, rgba(83, 192, 203, 0.05) 100%);
+  border: 1px solid rgba(42, 157, 143, 0.2);
+  border-radius: 8px;
+  padding: 12px 15px; /* Reduced padding */
+  margin-top: 15px; /* Reduced margin */
+  display: flex;
+  align-items: flex-start;   /* Vertically center the tick */
+  gap: 12px;             /* Space between tick and text */
+}
+
+/* Ensure the icon is vertically centered relative to the WHOLE block */
+.selected-car-info .icon-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  color: #28a745;
+  font-size: 1.2rem;
+}
+
+/* Stretch text block fully so icon can center against it */
+.selected-car-info .text-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* ✅ centers text block vertically with icon */
+  gap: 4px;
+}
+
+.selected-car-info .alert {
+  margin-bottom: 0;
+  padding: 10px 12px; /* Reduced padding */
+  font-size: 0.9rem; /* Reduced font size */
+}
+
+/* 🔥 COMPACT Special Requests Textarea */
+#modalSpecialRequests {
+  min-height: 80px; /* Reduced from default */
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  border-radius: 8px;
 }
 
 /* Enhanced Booking Success */
@@ -2627,12 +2852,106 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   transform: translateY(-2px);
 }
 
-/* =====================================================
-   12. BLOG & CONTENT PAGES
-   =====================================================*/
+/* 🔥 RESPONSIVE: Compact Modal Optimizations */
+/* 🔥 RESPONSIVE: Enhanced Mobile Layout - UPDATED FOR WIDER CARDS */
+@media (max-width: 768px) {
+  .pricing-options .row {
+    grid-template-columns: repeat(2, 1fr); /* Keep 2 per row for mobile */
+    gap: 20px; /* Increased from 18px */
+  }
 
-/* Blog Cards Styling */
-.blog-card {
+  .car-option {
+    padding: 22px 18px; /* Increased from 20px 16px */
+    min-height: 240px; /* Increased from 220px */
+    min-width: auto; /* Remove fixed width on mobile */
+  }
+
+  .car-option h6 {
+    font-size: 1.15rem; /* Increased from 1.1rem */
+  }
+
+  .total-price {
+    font-size: 1.2rem; /* Reduced from 1.4rem to prevent overflow */
+  }
+
+  .rate {
+    font-size: 0.9rem; /* Increased from 0.85rem */
+  }
+
+  .price-range {
+    font-size: 0.95rem;
+  }
+
+  .final-total-amount {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .pricing-options .row {
+    grid-template-columns: 1fr; /* Changed to single column for very small screens */
+    gap: 18px; /* Increased from 16px */
+  }
+
+  .car-option {
+    padding: 20px 16px; /* Increased from 18px 14px */
+    min-height: 220px; /* Increased from 200px */
+    max-width: 100%; /* Ensure full width usage */
+  }
+
+  .car-option h6 {
+    font-size: 1.1rem; /* Increased from 1rem */
+  }
+
+  .total-price {
+    font-size: 1.15rem; /* Reduced from 1.3rem to prevent overflow */
+  }
+
+  .rate {
+    font-size: 0.85rem;
+  }
+
+  .price-range {
+    font-size: 0.9rem;
+  }
+
+  .final-total-amount {
+    font-size: 1.2rem;
+  }
+}
+
+/* =====================================================
+ 🔥 ENHANCED DRIVER ALLOWANCE SECTION
+ =====================================================*/
+
+/* ✅ ENHANCED: Driver allowance styling with premium design */
+/* Align tick + text in the same row */
+.enhanced-driver-allowance,
+.enhanced-driver-allowance .allowance-details,
+.selected-alert-item {   /* for "Selected", "Total Price", etc. */
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between tick and text */
+}
+
+/* Ensure driver allowance stays in one line */
+.enhanced-driver-allowance {
+  flex-wrap: nowrap;
+}
+
+.enhanced-driver-allowance .allowance-text,
+.enhanced-driver-allowance .allowance-details small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* =====================================================
+ 12. GALLERY & CONTENT PAGES
+ =====================================================*/
+
+/* Gallery Cards Styling */
+.gallery-card {
   background: white;
   border-radius: 20px;
   overflow: hidden;
@@ -2643,141 +2962,178 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   position: relative;
 }
 
-.blog-card:hover {
+.gallery-card:hover {
   transform: translateY(-10px);
   box-shadow: var(--shadow-xl);
   border-color: var(--primary-color);
 }
 
-.blog-image-container {
+.gallery-image-container {
   position: relative;
   height: 250px;
   overflow: hidden;
 }
 
-.blog-image {
+.gallery-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
 
-.blog-card:hover .blog-image {
+.gallery-card:hover .gallery-image {
   transform: scale(1.1);
 }
 
-.blog-category {
+.gallery-overlay {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  background: var(--primary-color);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+}
+
+.gallery-card:hover .gallery-overlay {
+  opacity: 1;
+}
+
+.gallery-overlay-content {
   color: white;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  width: 100%;
 }
 
-.blog-content {
-  padding: 25px;
-}
-
-.blog-meta {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.blog-date,
-.blog-read-time {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.blog-date i,
-.blog-read-time i {
-  font-size: 0.8rem;
-  color: var(--primary-color);
-}
-
-.blog-title {
-  margin-bottom: 15px;
-}
-
-.blog-title a {
-  color: var(--dark-color);
-  text-decoration: none;
-  font-size: 1.3rem;
+.gallery-title {
+  font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1.4;
-  transition: color 0.3s ease;
+  margin-bottom: 8px;
+  color: white;
 }
 
-.blog-title a:hover {
-  color: var(--primary-color);
-}
-
-.blog-excerpt {
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
-}
-
-.blog-read-more {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 600;
+.gallery-description {
   font-size: 0.9rem;
+  margin-bottom: 15px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.gallery-view-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  transition: all 0.3s ease;
-}
-
-.blog-read-more:hover {
-  color: var(--accent-color);
-  transform: translateX(5px);
-}
-
-.blog-read-more i {
-  font-size: 0.8rem;
-  transition: transform 0.3s ease;
-}
-
-.blog-read-more:hover i {
-  transform: translateX(3px);
-}
-
-/* Blog Filters */
-.blog-filters .btn {
-  border-radius: 25px;
-  padding: 8px 20px;
+  gap: 8px;
+  background: var(--primary-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
-.blog-filters .btn.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+.gallery-view-btn:hover {
+  background: var(--accent-color);
   color: white;
+  transform: translateY(-2px);
 }
 
-.blog-filters .btn:not(.active):hover {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+/* Gallery Hero Section */
+.gallery-hero-section {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--medium-blue) 100%);
   color: white;
+  padding: 80px 0 60px;
+  text-align: center;
 }
 
-/* Blog Items Animation */
-.blog-item {
+.gallery-hero-section .hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.gallery-hero-section .hero-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Gallery Filters */
+.gallery-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.gallery-filter-btn {
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-weight: 600;
   transition: all 0.3s ease;
+  border: 2px solid var(--border-color);
+  background: white;
+  color: var(--text-color);
+}
+
+.gallery-filter-btn.active,
+.gallery-filter-btn:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* Gallery Loading State */
+.gallery-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.gallery-loading .spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Gallery Items Animation */
+.gallery-item {
+  transition: all 0.3s ease;
+}
+
+/* Gallery Section Spacing */
+.gallery-section {
+  padding: 60px 0;
+}
+
+/* Responsive Gallery */
+@media (max-width: 768px) {
+  .gallery-hero-section .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .gallery-hero-section .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .gallery-filters {
+    gap: 5px;
+  }
+
+  .gallery-filter-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .gallery-image-container {
+    height: 200px;
+  }
 }
 
 /* Newsletter Section */
@@ -2792,47 +3148,73 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 .newsletter-icon {
   font-size: 3rem;
   color: var(--primary-color);
+  margin-bottom: 1rem;
 }
 
-.newsletter-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--dark-color);
+
+/* ====== Gallery Styles (New Template Integration) ====== */
+.d2c_gallery_wrapper {
+    padding: 100px 0px;
+}
+.d2c_gallery_wrapper .d2c_column_wrapper {
+    padding: 10px;
+}
+.d2c_gallery_wrapper .d2c_img_wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.d2c_gallery_wrapper .d2c_img_wrapper img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: all ease 0.4s;
+}
+.d2c_img_wrapper:hover img {
+    transform: scale(1.1);
+    transition: all ease 0.4s;
 }
 
-.newsletter-description {
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  line-height: 1.6;
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
-.newsletter-form .input-group {
-  max-width: 500px;
-  margin: 0 auto;
+.gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, .8));
+  color: #fff;
+  padding: 15px;
+  transform: translateY(100%);
+  transition: transform .3s ease;
+  border-radius: 0 0 8px 8px;
 }
 
-.newsletter-form .form-control {
-  border-radius: 50px 0 0 50px;
-  border: 2px solid var(--border-color);
-  padding: 12px 20px;
-  font-size: 1rem;
+.gallery-item:hover .gallery-overlay {
+  transform: translateY(0);
 }
 
-.newsletter-form .form-control:focus {
-  border-color: var(--primary-color);
-  box-shadow: none;
-}
-
-.newsletter-form .btn {
-  border-radius: 0 50px 50px 0;
-  padding: 12px 25px;
+.gallery-title {
+  font-size: 14px;
   font-weight: 600;
-  border: 2px solid var(--primary-color);
 }
+
+.gallery-description {
+  font-size: 12px;
+  opacity: .9;
+}
+
 
 /* =====================================================
-   13. TESTIMONIALS & REVIEWS
-   =====================================================*/
+ 13. TESTIMONIALS & REVIEWS
+ =====================================================*/
 
 /* Testimonials Section */
 .testimonials-section {
@@ -2916,7 +3298,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   font-weight: 800;
   color: var(--dark-color);
   margin-bottom: 0.5rem;
-  font-size: 1.25rem;
 }
 
 .author-info small {
@@ -2925,8 +3306,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =====================================================
-   14. CONTACT & INFO SECTIONS
-   =====================================================*/
+ 14. CONTACT & INFO SECTIONS
+ =====================================================*/
 
 /* Contact Info Box */
 .contact-info-box {
@@ -2974,8 +3355,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =====================================================
-   15. FOOTER & BOTTOM COMPONENTS
-   =====================================================*/
+ 15. FOOTER & BOTTOM COMPONENTS
+ =====================================================*/
 
 /* Unique Animated Footer */
 .unique-footer {
@@ -3420,8 +3801,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =====================================================
-   16. FLOATING ELEMENTS
-   =====================================================*/
+ 16. FLOATING ELEMENTS
+ =====================================================*/
 
 /* Floating Buttons */
 .floating-btn {
@@ -3506,8 +3887,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =====================================================
-   17. RESPONSIVE DESIGN
-   =====================================================*/
+ 17. RESPONSIVE DESIGN
+ =====================================================*/
 
 /* Scroll behavior fixes */
 section[id] {
@@ -3516,13 +3897,6 @@ section[id] {
 
 #home {
   scroll-margin-top: 100px;
-}
-
-#home-anchor {
-  position: absolute;
-  top: -120px;
-  height: 0;
-  visibility: hidden;
 }
 
 @media (max-width: 991.98px) {
@@ -3621,121 +3995,53 @@ section[id] {
     gap: 1rem;
   }
 
-  .enhanced-filter-buttons {
-    gap: 8px;
-  }
-
-  .enhanced-filter-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-
-  .distance-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
-  }
-
-  .route-details {
-    text-align: center;
-    flex-direction: row;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .distance-number {
-    font-size: 2rem;
-  }
-
-  .enhanced-service-card {
-    margin: 0 10px;
-  }
-
-  .service-image-container {
-    height: 200px;
-  }
-
-  .service-content {
-    padding: 20px;
-  }
-
-  .services-navigation {
-    display: none;
-  }
-
-  .service-car-animation {
-    display: none;
-  }
-
-  .blog-image-container {
-    height: 200px;
-  }
-
-  .blog-content {
-    padding: 20px;
-  }
-
-  .blog-title a {
-    font-size: 1.2rem;
-  }
-
-  .blog-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .newsletter-section {
-    padding: 2rem;
-  }
-
-  .newsletter-title {
-    font-size: 1.5rem;
-  }
-
-  .newsletter-form .input-group {
-    flex-direction: column;
-  }
-
-  .newsletter-form .form-control,
-  .newsletter-form .btn {
-    border-radius: 25px;
-    margin-bottom: 10px;
-  }
-
-  .datetime-input-wrapper {
-    margin-bottom: 10px;
+  .enhanced-stat-card {
+    padding: 1.5rem;
   }
 
   .datetime-input {
-    padding: 12px 16px !important;
-    font-size: 0.95rem !important;
+    padding: 10px 14px !important;
+    font-size: 0.9rem !important;
   }
 
   .datetime-icon {
-    right: 12px;
-    font-size: 1.1rem;
+    right: 10px;
+    font-size: 1rem;
   }
 
-  .form-label {
-    font-size: 1rem;
-    margin-bottom: 10px;
+  .form-text {
+    font-size: 0.8rem;
   }
 
   .quick-select-btn {
-    padding: 3px 6px;
-    font-size: 0.7rem;
+    padding: 2px 5px;
+    font-size: 0.65rem;
+  }
+
+  .service-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .service-content p {
+    font-size: 0.85rem;
   }
 
   /* FIXED: Mobile carousel styling */
   .services-carousel .swiper-slide {
-    width: calc(100% - 40px) !important;
-    margin-right: 20px;
+    width: 100% !important;
+    margin-right: 0;
+    padding: 0;
   }
 
   .enhanced-service-card {
     max-width: none;
-    margin: 0;
+    margin: 0 auto;
+    max-width: 350px;
+  }
+
+  .services-carousel {
+    padding: 20px 0 100px;
+    margin: 0 20px;
   }
 }
 
@@ -3832,8 +4138,21 @@ section[id] {
   }
 
   .enhanced-car-specs {
-    gap: 12px;
-    padding: 12px;
+    gap: 6px; /* Further reduced for mobile */
+    padding: 10px; /* Further reduced for mobile */
+  }
+
+  .spec-item {
+    padding: 2px; /* Further reduced for mobile */
+  }
+
+  .spec-item i {
+    font-size: 0.9rem; /* Further reduced for mobile */
+    margin-bottom: 1px;
+  }
+
+  .spec-item span {
+    font-size: 0.7rem; /* Further reduced for mobile */
   }
 
   .enhanced-stats-grid {
@@ -3870,11 +4189,26 @@ section[id] {
   .service-content p {
     font-size: 0.85rem;
   }
+
+  .services-carousel .swiper-slide {
+    width: 100% !important;
+    margin-right: 0;
+    padding: 0;
+  }
+
+  .enhanced-service-card {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .services-carousel {
+    margin: 0 15px;
+  }
 }
 
 /* =====================================================
-   18. ANIMATIONS & KEYFRAMES
-   =====================================================*/
+ 18. ANIMATIONS & KEYFRAMES
+ =====================================================*/
 
 /* Enhanced Focus States */
 .datetime-input-wrapper:focus-within {
@@ -4005,9 +4339,6 @@ section[id] {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
   border-radius: 2px;
   transform: scaleX(0);
-  animation: expandLine 1s ease-out 0.5s255, 255, 0.1;
-  border-radius: 2px;
-  transform: scaleX(0);
   animation: expandLine 1s ease-out 0.5s forwards;
 }
 
@@ -4125,5 +4456,132 @@ section[id] {
 }
 
 /* ===================================================== 
-   END OF JIRAWALA TOURS & TRAVELS CSS STYLESHEET
-   ===================================================== */
+ END OF JIRAWALA TOURS & TRAVELS CSS STYLESHEET
+ ===================================================== */
+
+/* ✅ NEW: Round-trip pricing styles */
+.price-range {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #28a745;
+}
+
+.driver-allowance {
+  color: #6c757d;
+  font-style: italic;
+  display: block;
+  margin-top: 2px;
+  font-size: 0.65rem !important; /* UPDATED: Made font size smaller */
+}
+
+/* Date input styling for round-trip */
+input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
+
+input[type="date"]:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Trip type toggle styling */
+.trip-type-toggle .trip-type-option.active {
+  background-color: #2a9d8f;
+  color: white;
+  border-color: #2a9d8f;
+}
+
+/* Enhanced modal pricing display */
+#selectedPrice small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85em;
+  color: #6c757d;
+}
+
+/* Loading spinner for car types */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+  border-width: 0.25em;
+}
+
+.spinner-border.text-primary {
+  color: #2a9d8f !important;
+}
+
+/* ===========================
+   Custom Car Type Tooltip
+   =========================== */
+.tooltip-inner {
+    background-color: #ffffff !important; /* White background */
+    color: #333333 !important;            /* Dark text */
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 8px 12px;
+    max-width: 240px;
+    text-align: left;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid #ddd;
+}
+
+/* Tooltip Arrow Color */
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #ffffff !important;
+}
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: #ffffff !important;
+}
+.tooltip.bs-tooltip-start .tooltip-arrow::before {
+    border-left-color: #ffffff !important;
+}
+.tooltip.bs-tooltip-end .tooltip-arrow::before {
+    border-right-color: #ffffff !important;
+}
+
+/* Smooth fade-in effect */
+.tooltip.show {
+    opacity: 1;
+    transition: opacity 0.25s ease-in-out;
+}
+
+/* ===========================
+   Tooltip Car List Styling
+   =========================== */
+.tooltip-car-list {
+    margin: 6px 0 0;
+    padding-left: 0;
+}
+.tooltip-car-list li {
+    list-style: none;
+    margin: 2px 0;
+    padding-left: 0;
+    font-size: 0.85rem;
+    line-height: 1.2rem;
+}
+.tooltip-car-list li::before {
+    content: "🚗";
+    margin-right: 6px;
+}
+
+@media (max-width: 320px){
+  .top-header .logo {
+    height: 30px;
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+
+.car-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+
