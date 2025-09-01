@@ -4,11 +4,12 @@ import traceback
 import decimal
 import random
 import string
+import io
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponse, Http404
+from django.http import JsonResponse, HttpResponse, Http404, FileResponse, HttpResponseNotFound
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, Sum, Case, When, DecimalField, F
 from django.db.models.functions import Coalesce
@@ -27,7 +28,7 @@ from .models import Inquiry, CarType, Car, PopularRoute, BookingStatusHistory, G
 from .serializers import InquirySerializer, BookingCreateSerializer, CarSerializer
 
 logger = logging.getLogger(__name__)
-# hello
+
 def is_admin_user(user):
     """Check if user is admin (superuser or staff)"""
     return user.is_authenticated and (user.is_superuser or user.is_staff)
@@ -92,6 +93,40 @@ def serve_gallery_image(request, gallery_id):
         logger.error("Error serving gallery image {}: {}".format(gallery_id, str(e)))
         raise Http404("Error loading image")
 
+from django.http import FileResponse, Http404
+import io
+import logging
+
+logger = logging.getLogger(__name__)
+
+def serve_gallery_video(request, gallery_id):
+    """Serve gallery video from database BLOB storage with streaming"""
+    try:
+        gallery_item = get_object_or_404(Gallery, id=gallery_id, is_active=True)
+
+        if not gallery_item.video_data:
+            raise Http404("Video not found")
+
+        content_type = gallery_item.video_content_type or 'video/mp4'
+        if not content_type.startswith('video/'):
+            content_type = 'video/mp4'
+
+        # Wrap binary blob in BytesIO for streaming
+        video_stream = io.BytesIO(gallery_item.video_data)
+        filename = gallery_item.video_filename or f'gallery_video_{gallery_id}.mp4'
+
+        response = FileResponse(video_stream, content_type=content_type)
+        response['Content-Disposition'] = f'inline; filename="{filename}"'
+        response['Cache-Control'] = 'public, max-age=3600'
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Content-Length'] = len(gallery_item.video_data)
+
+        return response
+
+    except Exception as e:
+        logger.error(f"Error serving gallery video {gallery_id}: {str(e)}")
+        raise Http404("Error loading video")
+
 def get_gallery_image_info(request):
     """API endpoint to get gallery information in JSON format"""
     try:
@@ -140,8 +175,9 @@ def get_gallery_data_api(request):
                 'display_order': item.display_order,
                 'image_url': '/api/images/gallery/{}/'.format(item.id),
                 'image_filename': item.image_filename or 'gallery_image.jpg',
+                'video_url': '/api/videos/gallery/{}/'.format(item.id) if item.video_data else None,
                 'created_at': item.created_at.isoformat() if item.created_at else None,
-                'is_active': item.is_active
+                'is_active': item.is_active,
             })
         
         logger.info(f"Returning {len(gallery_data)} gallery items to frontend")
@@ -183,6 +219,8 @@ def custom_admin_gallery(request):
     try:
         # Get gallery items using ORM
         gallery_items = Gallery.objects.order_by('display_order', '-created_at')
+        for item in gallery_items:
+            item.is_video = True if item.video_data else False
         
         logger.info("Successfully loaded {} gallery items using ORM".format(gallery_items.count()))
             
@@ -200,9 +238,9 @@ def custom_admin_gallery(request):
             description = request.POST.get('description', '').strip()
             display_order = request.POST.get('display_order', '0').strip()
             is_active = request.POST.get('is_active') == 'on'
-            gallery_image = request.FILES.get('image')
+            gallery_file = request.FILES.get('image') or request.FILES.get('video_file')  # Can be image or video
             
-            if title and gallery_image:
+            if title and gallery_file:
                 try:
                     # Validate display order
                     display_order_int = int(display_order) if display_order else 0
@@ -221,8 +259,19 @@ def custom_admin_gallery(request):
                         is_active=is_active
                     )
                     
-                    # Handle image upload to BLOB storage
-                    gallery_item.set_image_from_file(gallery_image)
+                    # Handle file upload (image or video)
+                    content_type = gallery_file.content_type.lower()
+                    if content_type.startswith('image/'):
+                        gallery_item.set_image_from_file(gallery_file)
+                        logger.info("Image uploaded for new gallery item {}".format(title))
+                    elif content_type.startswith('video/'):
+                        gallery_item.set_video_from_file(gallery_file)
+                        logger.info("Video uploaded for new gallery item {}".format(title))
+                    else:
+                        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                            return JsonResponse({'success': False, 'message': 'Unsupported file type. Please upload an image or video.'})
+                        messages.error(request, 'Unsupported file type. Please upload an image or video.')
+                    
                     gallery_item.save()
                     
                     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -242,8 +291,8 @@ def custom_admin_gallery(request):
                     logger.error("Error creating gallery item: {}".format(str(e)))
             else:
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'message': 'Please provide a title and select an image.'})
-                messages.error(request, 'Please provide a title and select an image.')
+                    return JsonResponse({'success': False, 'message': 'Please provide a title and select an image or video.'})
+                messages.error(request, 'Please provide a title and select an image or video.')
                 
             return redirect('custom_admin_gallery')
         
@@ -253,7 +302,7 @@ def custom_admin_gallery(request):
             description = request.POST.get('description', '').strip()
             display_order = request.POST.get('display_order', '0').strip()
             is_active = request.POST.get('is_active') == 'on'
-            gallery_image = request.FILES.get('image')
+            gallery_file = request.FILES.get('image') or request.FILES.get('video_file')  # Can be image or video
             
             if gallery_id and title:
                 try:
@@ -268,16 +317,33 @@ def custom_admin_gallery(request):
                     # Get and update gallery item using ORM
                     gallery_item = get_object_or_404(Gallery, id=gallery_id)
                     
-                    # Update gallery item using ORM
+                    # Update gallery item fields
                     gallery_item.title = title
                     gallery_item.description = description if description else None
                     gallery_item.display_order = display_order_int
                     gallery_item.is_active = is_active
                     
-                    # Handle image upload to BLOB storage
-                    if gallery_image:
-                        gallery_item.set_image_from_file(gallery_image)
-                        logger.info("New image uploaded for gallery item {}".format(gallery_id))
+                    # Handle new file upload (image or video)
+                    if gallery_file:
+                        content_type = gallery_file.content_type.lower()
+                        if content_type.startswith('image/'):
+                            gallery_item.set_image_from_file(gallery_file)
+                            # clear video fields
+                            gallery_item.video_filename = None
+                            gallery_item.video_content_type = None
+                            gallery_item.video_data = None
+                            logger.info("New image uploaded for gallery item {}".format(gallery_id))
+                        elif content_type.startswith('video/'):
+                            gallery_item.set_video_from_file(gallery_file)
+                            # clear image fields
+                            gallery_item.image_filename = None
+                            gallery_item.image_content_type = None
+                            gallery_item.image_data = None
+                            logger.info("New video uploaded for gallery item {}".format(gallery_id))
+                        else:
+                            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                                return JsonResponse({'success': False, 'message': 'Unsupported file type. Please upload an image or video.'})
+                            messages.error(request, 'Unsupported file type. Please upload an image or video.')
                     
                     gallery_item.save()
                     

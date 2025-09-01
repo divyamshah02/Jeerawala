@@ -111,13 +111,29 @@ let currentModal = null
 let selectedCar = null
 let calculatedDistance = 0
 
-// ✅ NEW: Dynamic car types storage
+// Dynamic car types storage
 let dynamicCarTypes = {}
 let isCarTypesLoaded = false
 
-// API Configuration
-const DISTANCE_MATRIX_API_KEY = "9rmBnCVMJAN8qPoxHROmBoNpXm4qQHPL5b6ttlnQbEzziHh28SSdBJ6zmNEZP1DI"
-const API_TIMEOUT = 10000 // 10 seconds
+// Distance-Matrix API Configuration
+// const DISTANCE_MATRIX_API_KEY = "9rmBnCVMJAN8qPoxHROmBoNpXm4qQHPL5b6ttlnQbEzziHh28SSdBJ6zmNEZP1DI"
+// const API_TIMEOUT = 10000 // 10 seconds
+
+// Google Maps API Configuration
+// --- Distance/ETA helpers (safe) ---
+let routeInfoPlaceholderTimer = null;
+
+function toMessage(err) {
+  try {
+    if (!err) return "Unknown error";
+    if (typeof err === "string") return err;
+    if (err && typeof err === "object" && "message" in err) return String(err.message || "Unknown error");
+    return String(err);
+  } catch (_) {
+    return "Unknown error";
+  }
+}
+
 
 // =====================================================
 // 2. UTILITY FUNCTIONS
@@ -222,7 +238,7 @@ function initCarTypeTooltips() {
 // 3. 🆕 DYNAMIC CAR TYPES MANAGEMENT - UPDATED WITH MIN/MAX RATES
 // =====================================================
 
-// ✅ UPDATED: FUNCTION TO FETCH DYNAMIC CAR TYPES FROM API WITH MIN/MAX RATES
+// FUNCTION TO FETCH DYNAMIC CAR TYPES FROM API WITH MIN/MAX RATES
 async function loadDynamicCarTypes() {
   try {
     console.log("🚗 Loading dynamic car types from API...")
@@ -251,8 +267,8 @@ async function loadDynamicCarTypes() {
           name: carType.name,
           display_name: carType.display_name,
           rate_per_km: carType.rate_per_km,
-          minimum_rate_per_km: carType.minimum_rate_per_km, // ✅ NEW
-          maximum_rate_per_km: carType.maximum_rate_per_km, // ✅ NEW
+          minimum_rate_per_km: carType.minimum_rate_per_km,
+          maximum_rate_per_km: carType.maximum_rate_per_km,
           minimum_distance_cap: carType.minimum_distance_cap,
           is_active: carType.is_active,
         }
@@ -275,7 +291,7 @@ async function loadDynamicCarTypes() {
   }
 }
 
-// ✅ UPDATED: FALLBACK FUNCTION WITH MIN/MAX RATES
+// FALLBACK FUNCTION WITH MIN/MAX RATES
 function loadFallbackCarTypes() {
   console.log("⚠️ Using fallback car types with hardcoded rates")
   dynamicCarTypes = {
@@ -313,7 +329,7 @@ function loadFallbackCarTypes() {
   isCarTypesLoaded = true
 }
 
-// ✅ NEW: Function to get min/max rates for round-trip pricing
+// Function to get min/max rates for round-trip pricing
 function getCarTypeRates(carTypeName) {
   const normalizedName = carTypeName.toLowerCase()
   if (dynamicCarTypes[normalizedName]) {
@@ -334,7 +350,7 @@ function getCarTypeRates(carTypeName) {
   return fallbackRates[normalizedName] || { oneWayRate: 15, minRate: 13, maxRate: 17 }
 }
 
-// ✅ NEW: Function to refresh car types in modal
+// Function to refresh car types in modal
 async function refreshCarTypesForModal() {
   console.log("🔄 Refreshing car types for modal...")
 
@@ -363,7 +379,7 @@ async function refreshCarTypesForModal() {
   }
 }
 
-// ✅ NEW: Function to build dynamic car options in modal
+// Function to build dynamic car options in modal
 function buildDynamicCarOptions() {
   const pricingOptions = document.querySelector(".pricing-options")
   if (!pricingOptions) return
@@ -447,7 +463,7 @@ function buildDynamicCarOptions() {
   console.log(`✅ Built ${activeCarTypes.length} dynamic car options for ${tripType}`)
 }
 
-// ✅ NEW: Function to get appropriate icon for car type
+// Function to get appropriate icon for car type
 function getCarTypeIcon(carTypeName) {
   const iconMap = {
     hatchback: "bi bi-car-front-fill",
@@ -462,7 +478,7 @@ function getCarTypeIcon(carTypeName) {
   return iconMap[carTypeName.toLowerCase()] || "bi bi-car-front"
 }
 
-// ✅ NEW: Function to attach event listeners to car options
+// Function to attach event listeners to car options
 function attachCarOptionListeners() {
   const carOptions = document.querySelectorAll(".car-option")
   const confirmBtn = document.getElementById("confirmSelection")
@@ -519,7 +535,7 @@ function attachCarOptionListeners() {
           selectedPrice.innerHTML = `   
           ₹${selectedCarData.totalPrice.toLocaleString()}         
             <div class="mt-1">              
-              <strong class="allowance-text">Toll tax & Parking as per actual</strong>
+              <p class="allowance-text">> Toll Tax & Parking as per actual</p>
             </div>
           `;
         } else {
@@ -534,18 +550,19 @@ function attachCarOptionListeners() {
           }
           const driverAllowance = numberOfDays * 300;
           document.getElementById("selectedCarPriceEle").style.display = "none";
-          selectedPrice.innerHTML = `            
+          selectedPrice.innerHTML = `
             <div class="enhanced-driver-allowance">
-              <strong class="allowance-text">Includes driver allowance (₹300/- per day): </strong>
-              <span class="allowance-details">
-                <small>
+              <p class="allowance-text">> Includes driver allowance (₹300/- per day):
+              </p>
+              <p class="allowance-details">
+                <b>
                   <img width="28" height="28" src="https://img.icons8.com/windows/32/baby-calendar.png" alt="calendar"/>
                   ${numberOfDays} day${numberOfDays > 1 ? "s" : ""} • <i class="bi bi-currency-rupee"></i>${driverAllowance}
-                </small><br>                
-              </span>
-
-              </div>
-              <strong class="allowance-text">Toll tax & Parking as per actual</strong>
+                </b>
+              </p>
+            </div>
+            <p class="allowance-text">> Toll Tax & Parking as per actual</p>
+            <p class="allowance-text">> <b>Note:</b> For round-trip bookings, the average distance must be at least <b>300 km/day.</b></p>
           `;
         }
       }
@@ -790,13 +807,24 @@ function initializeBreadcrumbs() {
 // 6. FORM HANDLING & VALIDATION - UPDATED FOR ROUND-TRIP
 // =====================================================
 
-// ✅ UPDATED: Trip type toggle functionality with date-only for round-trip
+// Trip type toggle functionality with date-only for round-trip
 function initializeTripTypeToggle() {
   const tripTypeButtons = document.querySelectorAll(".trip-type-option")
   const tripTypeInput = document.getElementById("tripType")
   const dropoffDateContainer = document.getElementById("dropoffDateContainer")
   const dropoffDateInput = document.getElementById("dropoffDate")
   const pickupDateInput = document.getElementById("pickupDate")
+  const localRideInfo = document.querySelector(".local-ride-info") // ✅ new block
+
+  // --- NEW: pickup/dropoff elements and parent rows we will show/hide ---
+  const pickupInput  = document.getElementById("pickupLocation");
+  const dropoffInput = document.getElementById("dropoffLocation");
+
+  // containers we want to show/hide as a whole
+  const locationRow  = pickupInput?.closest(".row");
+  const datetimeRow  = pickupDateInput?.closest(".row");
+  const calcRow      = document.getElementById("calculateBtn")?.closest(".mb-3");
+  // ----------------------------------------------------------------------
 
   tripTypeButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -805,61 +833,125 @@ function initializeTripTypeToggle() {
 
       const tripType = button.getAttribute("data-trip")
       tripTypeInput.value = tripType
-      // ADD THIS LINE HERE:
-      // document.querySelector('#distancePriceModal').classList.toggle('one-way-trip', tripType === 'one-way')
+
+      // Toggle round-trip minimum distance note
+      const minDistanceNote = document.getElementById("roundTripMinDistanceNote")
+      if (minDistanceNote) {
+        if (tripType === "round-trip") {
+          minDistanceNote.classList.remove("hidden")
+        } else {
+          minDistanceNote.classList.add("hidden")
+        }
+      }
+
+      // Toggle distance modal classes
       document.querySelector('#distancePriceModal').classList.toggle('round-trip-trip', tripType === 'round-trip')
 
       if (tripType === "one-way") {
+        // Hide local-ride banner if present
+        if (localRideInfo) localRideInfo.style.display = "none";
+
+        // show rows & button again
+        if (locationRow) locationRow.style.display = "";
+        if (datetimeRow) datetimeRow.style.display = "";
+        if (calcRow)     calcRow.style.display     = "";
+
+        // keep existing behavior for one-way date UI
         dropoffDateContainer.classList.remove("visible")
         dropoffDateContainer.classList.add("hidden")
         dropoffDateInput.removeAttribute("required")
         dropoffDateInput.value = ""
 
-        // ✅ RESTORE: Show time selection for one-way
         if (pickupDateInput) {
           pickupDateInput.type = "datetime-local"
         }
       } else if (tripType === "round-trip") {
+        // Hide local-ride banner if present
+        if (localRideInfo) localRideInfo.style.display = "none";
+
+        // show rows & button again
+        if (locationRow) locationRow.style.display = "";
+        if (datetimeRow) datetimeRow.style.display = "";
+        if (calcRow)     calcRow.style.display     = "";
+
+        // keep existing behavior for round-trip date UI
         dropoffDateContainer.classList.remove("hidden")
         dropoffDateContainer.classList.add("visible")
         dropoffDateInput.setAttribute("required", "required")
 
-        // ✅ NEW: Remove time selection for round-trip (date only)
+        // re-add required on visible fields
+        if (pickupInput) pickupInput.setAttribute("required","required");
+        if (dropoffInput) dropoffInput.setAttribute("required","required");
+        if (pickupDateInput) pickupDateInput.setAttribute("required","required");
+        if (dropoffDateInput) dropoffDateInput.setAttribute("required","required");
+
         if (pickupDateInput) {
-          pickupDateInput.type = "date"
-          // Clear time part if it exists
+          pickupDateInput.type = "date";
           if (pickupDateInput.value) {
-            const dateOnly = pickupDateInput.value.split("T")[0]
-            pickupDateInput.value = dateOnly
+            const dateOnly = pickupDateInput.value.split("T")[0];
+            pickupDateInput.value = dateOnly;
           }
         }
         if (dropoffDateInput) {
-          dropoffDateInput.type = "date"
-          // Clear time part if it exists
+          dropoffDateInput.type = "date";
           if (dropoffDateInput.value) {
-            const dateOnly = dropoffDateInput.value.split("T")[0]
-            dropoffDateInput.value = dateOnly
+            const dateOnly = dropoffDateInput.value.split("T")[0];
+            dropoffDateInput.value = dateOnly;
           }
         }
+      } else if (tripType === "local-ride") {
+        // ✅ Local Ride: show info & hide all booking controls you don’t want
+        if (localRideInfo) localRideInfo.style.display = "block";
+
+        // hide entire rows and the calculate button row
+        if (locationRow) locationRow.style.display = "none";
+        if (datetimeRow) datetimeRow.style.display = "none";
+        if (calcRow)     calcRow.style.display     = "none";
+
+        // hide the return date column (keeps your fade anim)
+        dropoffDateContainer.classList.add("hidden");
+
+        // remove requireds and clear values so hidden fields don’t block anything
+        if (pickupInput) pickupInput.removeAttribute("required");
+        if (dropoffInput) dropoffInput.removeAttribute("required");
+        if (pickupDateInput) pickupDateInput.removeAttribute("required");
+        if (dropoffDateInput) dropoffDateInput.removeAttribute("required");
+
+        if (pickupInput)  pickupInput.value = "";
+        if (dropoffInput) dropoffInput.value = "";
+        if (pickupDateInput)  pickupDateInput.value  = "";
+        if (dropoffDateInput) dropoffDateInput.value = "";
       }
 
-      // ✅ NEW: Refresh car pricing when trip type changes
-      if (calculatedDistance > 0) {
+      // Refresh car pricing if needed (keep original behavior)
+      if (calculatedDistance > 0 && tripType !== "local-ride") {
         updateCarPrices(calculatedDistance)
       }
     })
   })
 
-  // Initialize with one-way selected
+  // Initialize with one-way selected (or local-ride if that's stored)
   dropoffDateContainer.classList.add("visible")
   setTimeout(() => {
     if (tripTypeInput.value === "one-way") {
       dropoffDateContainer.classList.remove("visible")
       dropoffDateContainer.classList.add("hidden")
       dropoffDateInput.removeAttribute("required")
+    } else if (tripTypeInput.value === "local-ride") {
+      // local ride initially selected: show info & hide rows/button
+      if (localRideInfo) localRideInfo.style.display = "block";
+      if (locationRow) locationRow.style.display = "none";
+      if (datetimeRow) datetimeRow.style.display = "none";
+      if (calcRow)     calcRow.style.display     = "none";
+      dropoffDateContainer.classList.add('hidden');
+      if (pickupInput) pickupInput.removeAttribute('required');
+      if (dropoffInput) dropoffInput.removeAttribute('required');
+      if (pickupDateInput) pickupDateInput.removeAttribute('required');
+      if (dropoffDateInput) dropoffDateInput.removeAttribute('required');
     }
   }, 100)
 }
+
 
 // Quick select functionality for datetime inputs
 function initializeQuickSelect() {
@@ -1070,306 +1162,173 @@ function showRoutePrefilledNotification(origin, destination) {
 // =====================================================
 
 // Distance calculation using DistanceMatrix API
-async function calculateDistanceMatrix(origin, destination) {
-  const url = `https://api.distancematrix.ai/maps/api/distancematrix/json?origins=${encodeURIComponent(
-    origin,
-  )}&destinations=${encodeURIComponent(destination)}&key=${DISTANCE_MATRIX_API_KEY}`
+function calculateDistanceMatrix(pickup, dropoff) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (!window.google || !google.maps || !google.maps.DistanceMatrixService) {
+        return reject(new Error("Google Maps JS not loaded"));
+      }
 
-  console.log("🌐 API URL:", url)
+      const service = new google.maps.DistanceMatrixService();
 
-  try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT)
+      service.getDistanceMatrix(
+        {
+          origins: [pickup],
+          destinations: [dropoff],
+          travelMode: google.maps.TravelMode.DRIVING,
+          unitSystem: google.maps.UnitSystem.METRIC,
+          drivingOptions: {
+            departureTime: new Date(),
+            trafficModel: google.maps.TrafficModel.BEST_GUESS,
+          },
+        },
+        (response, status) => {
+          try {
+            if (status !== "OK") {
+              return reject(new Error("DistanceMatrix failed: " + status));
+            }
+            const el = response?.rows?.[0]?.elements?.[0];
+            if (!el || el.status !== "OK") {
+              return reject(new Error("No route found: " + (el?.status || "UNKNOWN")));
+            }
 
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: { Accept: "application/json" },
-    })
+            const distanceKm = Number(el.distance?.value) / 1000; // meters → km
+            const durationSec = Number((el.duration_in_traffic || el.duration)?.value);
 
-    clearTimeout(timeoutId)
-    console.log("📡 API Response status:", response.status)
+            if (!Number.isFinite(distanceKm) || distanceKm <= 0) {
+              return reject(new Error("Invalid distance from API"));
+            }
 
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`)
+            // Refresh the UI with the actual API duration if present
+            updateRouteInformation(distanceKm, Number.isFinite(durationSec) ? durationSec : null);
+
+            resolve({ distanceKm, durationSec: Number.isFinite(durationSec) ? durationSec : null });
+          } catch (cbErr) {
+            reject(cbErr);
+          }
+        }
+      );
+    } catch (err) {
+      reject(err);
     }
-
-    const data = await response.json()
-    console.log("📊 API Response data:", data)
-
-    if (
-      data.rows &&
-      data.rows.length > 0 &&
-      data.rows[0].elements &&
-      data.rows[0].elements.length > 0 &&
-      data.rows[0].elements[0].status === "OK"
-    ) {
-      const distanceInMeters = data.rows[0].elements[0].distance.value
-      const distanceKm = distanceInMeters / 1000
-      const durationInSeconds = data.rows[0].elements[0].duration.value
-
-      console.log("✅ Distance (km):", distanceKm)
-      console.log("✅ Duration (seconds):", durationInSeconds)
-
-      // ✅ NEW: Update route information with duration
-      updateRouteInformation(distanceKm, durationInSeconds)
-
-      return distanceKm
-    } else {
-      console.warn("⚠️ DistanceMatrix response error:", data)
-      throw new Error("Invalid API response")
-    }
-  } catch (error) {
-    if (error.name === "AbortError") {
-      throw new Error("Request timed out")
-    }
-    console.error("❌ Failed to fetch distance from DistanceMatrix.ai:", error)
-    throw error
-  }
+  });
 }
+
 
 // Fallback distance calculation
 function calculateDistancePlaceholder(pickup, dropoff) {
-  const validIndianLocations = [
-    "mumbai",
-    "delhi",
-    "bangalore",
-    "hyderabad",
-    "ahmedabad",
-    "chennai",
-    "kolkata",
-    "pune",
-    "jaipur",
-    "lucknow",
-    "kanpur",
-    "nagpur",
-    "indore",
-    "thane",
-    "bhopal",
-    "visakhapatnam",
-    "pimpri",
-    "patna",
-    "vadodara",
-    "ghaziabad",
-    "ludhiana",
-    "agra",
-    "nashik",
-    "faridabad",
-    "meerut",
-    "rajkot",
-    "kalyan",
-    "vasai",
-    "varanasi",
-    "srinagar",
-    "aurangabad",
-    "dhanbad",
-    "amritsar",
-    "navi mumbai",
-    "allahabad",
-    "ranchi",
-    "howrah",
-    "coimbatore",
-    "jabalpur",
-    "gwalior",
-    "vijayawada",
-    "jodhpur",
-    "madurai",
-    "raipur",
-    "kota",
-    "guwahati",
-    "chandigarh",
-    "solapur",
-    "hubli",
-    "bareilly",
-    "moradabad",
-    "mysore",
-    "gurgaon",
-    "aligarh",
-    "jalandhar",
-    "tiruchirappalli",
-    "bhubaneswar",
-    "salem",
-    "warangal",
-    "mira",
-    "thiruvananthapuram",
-    "bhiwandi",
-    "saharanpur",
-    "gorakhpur",
-    "guntur",
-    "bikaner",
-    "amravati",
-    "noida",
-    "jamshedpur",
-    "bhilai",
-    "cuttack",
-    "firozabad",
-    "kochi",
-    "bhavnagar",
-    "dehradun",
-    "durgapur",
-    "asansol",
-    "nanded",
-    "kolhapur",
-    "ajmer",
-    "gulbarga",
-    "jamnagar",
-    "ujjain",
-    "loni",
-    "siliguri",
-    "jhansi",
-    "ulhasnagar",
-    "nellore",
-    "jammu",
-    "sangli",
-    "belgaum",
-    "mangalore",
-    "ambattur",
-    "tirunelveli",
-    "malegaon",
-    "gaya",
-    "jalgaon",
-    "udaipur",
-    "maheshtala",
-    "surat",
-  ]
+  try {
+    const a = (pickup || "").trim().toLowerCase();
+    const b = (dropoff || "").trim().toLowerCase();
+    if (!a || !b) return 0;
 
-  const pickupLower = pickup.toLowerCase()
-  const dropoffLower = dropoff.toLowerCase()
+    if (a === b) return 8; // same-city nudge so we never get 0
 
-  const pickupValid = validIndianLocations.some((city) => pickupLower.includes(city))
-  const dropoffValid = validIndianLocations.some((city) => dropoffLower.includes(city))
+    // A tiny known-distance map (non-blocking fallback)
+    const cityDistances = {
+      "ahmedabad|surat": 265,
+      "ahmedabad|mumbai": 525,
+      "delhi|jaipur": 280,
+      "delhi|agra": 230,
+      "mumbai|pune": 150,
+      "delhi|mumbai": 1450,
+      "mumbai|surat": 280,
+      "surat|mumbai": 280,
+    };
 
-  if (!pickupValid || !dropoffValid) {
-    throw new Error("Please enter valid Indian city names for both pickup and drop-off locations.")
+    const key1 = `${a}|${b}`;
+    const key2 = `${b}|${a}`;
+    const exact =
+      (cityDistances[key1] ?? cityDistances[key2] ?? null);
+
+    if (Number.isFinite(exact)) return exact;
+
+    // Loose heuristic based on name length difference (never throws)
+    const heuristic = Math.max(40, Math.min(1200, Math.abs(a.length - b.length) * 60));
+    return heuristic;
+  } catch (_) {
+    return 0;
   }
-
-  const cityDistances = {
-    "mumbai-delhi": 1400,
-    "mumbai-pune": 150,
-    "mumbai-ahmedabad": 530,
-    "mumbai-bangalore": 980,
-    "delhi-mumbai": 1400,
-    "delhi-jaipur": 280,
-    "delhi-agra": 230,
-    "delhi-chandigarh": 250,
-    "pune-mumbai": 150,
-    "pune-bangalore": 840,
-    "ahmedabad-mumbai": 530,
-    "ahmedabad-delhi": 950,
-    "ahmedabad-surat": 273,
-    "surat-ahmedabad": 273,
-    "bangalore-chennai": 350,
-    "bangalore-mumbai": 980,
-    "bangalore-pune": 840,
-    "chennai-bangalore": 350,
-    "chennai-mumbai": 1340,
-    "kolkata-delhi": 1470,
-    "hyderabad-bangalore": 570,
-    "hyderabad-chennai": 630,
-  }
-
-  const key1 =
-    pickup.toLowerCase().replace(/\s+/g, "").replace(/,.*/, "") +
-    "-" +
-    dropoff.toLowerCase().replace(/\s+/g, "").replace(/,.*/, "")
-  const key2 =
-    dropoff.toLowerCase().replace(/\s+/g, "").replace(/,.*/, "") +
-    "-" +
-    pickup.toLowerCase().replace(/\s+/g, "").replace(/,.*/, "")
-
-  const distance = cityDistances[key1] || cityDistances[key2] || Math.floor(Math.random() * 600) + 100
-
-  // ✅ NEW: Calculate estimated duration for fallback (assuming 60 km/h average speed)
-  const estimatedDurationSeconds = (distance / 60) * 3600
-  updateRouteInformation(distance, estimatedDurationSeconds)
-
-  return distance
 }
 
-// ✅ NEW: Update route information display with dynamic content
-function updateRouteInformation(distanceKm, durationSeconds = null) {
-  console.log("🗺️ Updating route information:", { distanceKm, durationSeconds })
+// Update route information display with dynamic content
+function updateRouteInformation(distanceKm, durationSeconds) {
+  const distanceEl = document.getElementById("calculatedDistance");
+  const durationEl = document.getElementById("estimatedDuration");
+  const routeTypeEl = document.getElementById("routeType");
 
-  // Update distance display
-  const distanceElement = document.getElementById("calculatedDistance")
-  if (distanceElement) {
-    distanceElement.textContent = `${distanceKm.toFixed(1)} km`
+  // Clear any previous "calculating…" placeholder updates
+  if (routeInfoPlaceholderTimer) {
+    clearTimeout(routeInfoPlaceholderTimer);
+    routeInfoPlaceholderTimer = null;
   }
 
-  // Update duration display
-  const durationElement = document.getElementById("estimatedDuration")
-  if (durationElement) {
-    if (durationSeconds) {
-      const formattedDuration = formatDuration(durationSeconds)
-      durationElement.innerHTML = `<i class="bi bi-clock me-1"></i>${formattedDuration}`
-      durationElement.classList.remove("calculating")
-    } else {
-      // Show calculating state
-      durationElement.innerHTML = `<i class="bi bi-hourglass-split me-1"></i>Calculating...`
-      durationElement.classList.add("calculating")
-
-      // ✅ NEW: Calculate estimated duration based on distance
-      setTimeout(() => {
-        const estimatedDuration = calculateEstimatedDuration(distanceKm)
-        const formattedDuration = formatDuration(estimatedDuration)
-        durationElement.innerHTML = `<i class="bi bi-clock me-1"></i>~${formattedDuration}`
-        durationElement.classList.remove("calculating")
-      }, 1500)
-    }
+  // Distance text (don’t throw on bad values)
+  let distanceText = "—";
+  if (Number.isFinite(distanceKm) && distanceKm >= 0) {
+    distanceText = `${distanceKm.toFixed(1)} km`;
   }
+  if (distanceEl) distanceEl.textContent = distanceText;
 
-  // Update route type based on distance
-  const routeTypeElement = document.getElementById("routeType")
-  if (routeTypeElement) {
-    let routeType = "Interstate Route"
-    if (distanceKm < 100) {
-      routeType = "Local Route"
-    } else if (distanceKm < 300) {
-      routeType = "Regional Route"
-    } else {
-      routeType = "Long Distance Route"
-    }
-    routeTypeElement.innerHTML = `<i class="bi bi-signpost-2 me-1"></i>${routeType}`
+  // Route type based on distance (falls back gracefully)
+  let type = "Interstate Route";
+  if (Number.isFinite(distanceKm)) {
+    if (distanceKm < 100) type = "Intra-state / Short haul";
+    else if (distanceKm < 400) type = "Interstate Route";
+    else type = "Long-distance Route";
   }
+  if (routeTypeEl) routeTypeEl.textContent = type;
 
-  console.log("✅ Route information updated successfully")
+  // ETA handling
+  if (!durationEl) return;
+
+  if (Number.isFinite(durationSeconds) && durationSeconds > 0) {
+    durationEl.textContent = formatDuration(durationSeconds);
+    durationEl.classList.remove("text-muted");
+  } else {
+    durationEl.textContent = "Calculating ETA…";
+    durationEl.classList.add("text-muted");
+
+    // After a brief moment, show a reasonable estimate based on distance
+    routeInfoPlaceholderTimer = setTimeout(() => {
+      const estSeconds = calculateEstimatedDuration(distanceKm);
+      if (Number.isFinite(estSeconds) && estSeconds > 0) {
+        durationEl.textContent = formatDuration(estSeconds) + " (estimated)";
+      } else {
+        durationEl.textContent = "ETA unavailable";
+      }
+      durationEl.classList.remove("text-muted");
+      routeInfoPlaceholderTimer = null;
+    }, 1200);
+  }
 }
 
-// ✅ NEW: Calculate estimated duration based on distance
+
+// Calculate estimated duration based on distance
 function calculateEstimatedDuration(distanceKm) {
-  // Estimate based on different road types and traffic conditions
-  let averageSpeed = 60 // km/h base speed
+  if (!Number.isFinite(distanceKm) || distanceKm <= 0) return 0;
 
-  if (distanceKm < 50) {
-    averageSpeed = 45 // City/local roads
-  } else if (distanceKm < 200) {
-    averageSpeed = 55 // State highways
-  } else {
-    averageSpeed = 65 // National highways
-  }
+  // Base speed assumption and congestion factor
+  const baseSpeedKmph =
+    distanceKm < 100 ? 45 : distanceKm < 400 ? 60 : 65; // short:city-ish, mid:interstate, long:highway
+  const congestionFactor = 1.15; // small buffer
 
-  // Add buffer time for breaks, traffic, etc.
-  const baseTimeHours = distanceKm / averageSpeed
-  const bufferTime = Math.min(baseTimeHours * 0.2, 2) // 20% buffer, max 2 hours
-  const totalTimeHours = baseTimeHours + bufferTime
-
-  return totalTimeHours * 3600 // Convert to seconds
+  const hours = (distanceKm / baseSpeedKmph) * congestionFactor;
+  return Math.round(hours * 3600); // seconds
 }
 
-// ✅ NEW: Format duration from seconds to human readable format
+// Format duration from seconds to human readable format
 function formatDuration(seconds) {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
+  if (!Number.isFinite(seconds) || seconds <= 0) return "—";
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.round((seconds % 3600) / 60);
 
-  if (hours === 0) {
-    return `${minutes} min`
-  } else if (minutes === 0) {
-    return `${hours}h`
-  } else {
-    return `${hours}h ${minutes}m`
-  }
+  if (hrs <= 0) return `${mins} min`;
+  if (mins === 0) return `${hrs} hr`;
+  return `${hrs} hr ${mins} min`;
 }
 
-// ✅ UPDATED: Update car prices based on distance and trip type
+// Update car prices based on distance and trip type
 function updateCarPrices(distance) {
   console.log("💰 Updating car prices with distance:", distance, "km")
 
@@ -1403,7 +1362,7 @@ function updateCarPrices(distance) {
     const rates = getCarTypeRates(carType)
 
     if (tripType === "one-way") {
-      // ✅ ONE-WAY: Show fixed price
+      // ONE-WAY: Show fixed price
       const totalPrice = distance * rates.oneWayRate
       const roundedPrice = Math.round(totalPrice / 25) * 25;
 
@@ -1421,7 +1380,7 @@ function updateCarPrices(distance) {
 
       console.log(`💰 One-way ${carType}: ₹${rates.oneWayRate}/km × ${distance}km = ₹${roundedPrice.toLocaleString()}`)
     } else if (tripType === "round-trip") {
-      // ✅ ROUND-TRIP: Show price range with enhanced driver allowance
+      // ROUND-TRIP: Show price range with enhanced driver allowance
       const driverAllowance = numberOfDays * 300 // ₹300 per day
       const minTotalPrice = distance * rates.minRate + driverAllowance
       const maxTotalPrice = distance * rates.maxRate + driverAllowance
@@ -1449,129 +1408,215 @@ function updateCarPrices(distance) {
   })
 }
 
+// --- Mini Map & Route Drawing ---
+let routeMap, directionsService, directionsRenderer;
+
+function initRouteMap() {
+  if (!window.google || !google.maps) return;
+  const el = document.getElementById("routeMap");
+  if (!el) return;
+
+  if (!routeMap) {
+    routeMap = new google.maps.Map(el, {
+      zoom: 6,
+      center: { lat: 22.9734, lng: 78.6569 },
+      mapTypeControl: false,
+      streetViewControl: false,
+    });
+
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer({
+      suppressMarkers: false,
+      preserveViewport: false,
+    });
+    directionsRenderer.setMap(routeMap);
+  }
+}
+
+function drawRouteOnMap(pickup, dropoff) {
+  try {
+    if (!pickup || !dropoff) return;
+    if (!window.google || !google.maps) return;
+
+    // If Directions API is not enabled, this will be undefined; just bail quietly
+    if (!google.maps.DirectionsService) {
+      console.warn("Directions API is not enabled for this key.");
+      return;
+    }
+
+    initRouteMap();
+
+    directionsService.route(
+      {
+        origin: pickup,
+        destination: dropoff,
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === "OK") {
+          directionsRenderer.setDirections(result);
+        } else {
+          console.warn("Route drawing failed:", status);
+        }
+      }
+    );
+
+    // Fix sizing when map is inside a newly opened modal
+    setTimeout(() => {
+      if (routeMap) google.maps.event.trigger(routeMap, "resize");
+    }, 100);
+  } catch (err) {
+    console.warn("drawRouteOnMap error:", err);
+  }
+}
+
+
 // =====================================================
 // 8. BOOKING SYSTEM & MODAL MANAGEMENT - UPDATED WITH ROUND-TRIP SUPPORT
 // =====================================================
 
-// ✅ UPDATED: Car option selection with round-trip pricing support
+// Car option selection with round-trip pricing support
 function initializeDistanceCalculation() {
-  const calculateBtn = document.getElementById("calculateBtn")
-  const modalElement = document.getElementById("distancePriceModal")
-  const confirmBtn = document.getElementById("confirmSelection")
+  const calculateBtn  = document.getElementById("calculateBtn");
+  const modalElement  = document.getElementById("distancePriceModal");
+  const confirmBtn    = document.getElementById("confirmSelection");
 
   if (!calculateBtn || !modalElement || !confirmBtn) {
-    console.error("Required elements not found for distance calculation!")
-    return
+    console.error("Required elements not found for distance calculation!");
+    return;
   }
 
+  // Modal instance
   currentModal = new window.bootstrap.Modal(modalElement, {
     backdrop: "static",
     keyboard: false,
-  })
+  });
 
-  console.log("✅ Distance calculation initialized")
+  console.log("✅ Distance calculation initialized");
 
-  modalElement.addEventListener("shown.bs.modal", async () => {
-    console.log("🔄 Modal opened, refreshing car types...")
-    await refreshCarTypesForModal()
-  })
+  // Keep this so the map knows where to draw when shown
+  modalElement.addEventListener("shown.bs.modal", () => {
+    try {
+      drawRouteOnMap(lastPickupText || "", lastDropoffText || "");
+    } catch (e) {
+      console.warn("Mini-map draw skipped:", e);
+    }
+  });
 
   // Calculate distance button click
   calculateBtn.addEventListener("click", async (e) => {
-    e.preventDefault()
-    console.log("🔘 Calculate button clicked")
+    e.preventDefault();
+    console.log("🔘 Calculate button clicked");
 
-    const pickupLocation = document.getElementById("pickupLocation")?.value?.trim()
-    const dropoffLocation = document.getElementById("dropoffLocation")?.value?.trim()
+    const pickupLocation  = document.getElementById("pickupLocation")?.value?.trim();
+    const dropoffLocation = document.getElementById("dropoffLocation")?.value?.trim();
 
     if (!pickupLocation || !dropoffLocation) {
-      alert("Please enter both pickup and drop-off locations first.")
-      return
+      alert("Please enter both pickup and drop-off locations first.");
+      return;
     }
-
     if (pickupLocation.length < 3 || dropoffLocation.length < 3) {
-      alert("Please enter valid location names (at least 3 characters each).")
-      return
+      alert("Please enter valid location names (at least 3 characters each).");
+      return;
     }
 
-    const pickupDate = document.getElementById("pickupDate")?.value?.trim()
-    const dropoffDate = document.getElementById("dropoffDate")?.value?.trim()
+    // time validations (unchanged)
+    const pickupDate  = document.getElementById("pickupDate")?.value?.trim();
+    const dropoffDate = document.getElementById("dropoffDate")?.value?.trim();
+    const tripType    = document.getElementById("tripType")?.value || "one-way";
 
-    const tripTypeValidate = document.getElementById("tripType")?.value || "one-way"
-    if (tripTypeValidate === "one-way") {
+    if (tripType === "one-way") {
       if (!pickupDate) {
-        alert("Please enter both pickup time.")
-        return
+        alert("Please enter pickup time.");
+        return;
       }
-      
-    } else if (tripTypeValidate === "round-trip") {
+    } else if (tripType === "round-trip") {
       if (!pickupDate || !dropoffDate) {
-        alert("Please enter both pickup time and drop-off time.")
-        return
+        alert("Please enter both pickup time and drop-off time.");
+        return;
       }
     }
 
-    calculateBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Calculating Distance...'
-    calculateBtn.disabled = true
+    calculateBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Calculating Distance...';
+    calculateBtn.disabled = true;
 
     try {
-      console.log("🔄 Starting distance calculation...")
-      let distanceKm
+      console.log("🔄 Starting distance calculation...");
+      updateRouteInformation(0, null); // set “Calculating…” state
 
-      // ✅ NEW: Reset route information to calculating state
-      updateRouteInformation(0, null)
-
+      // Distance Matrix (returns { distanceKm, durationSec })
+      let distanceKm, durationSec;
       try {
-        distanceKm = await calculateDistanceMatrix(pickupLocation, dropoffLocation)
-        console.log("✅ API Distance:", distanceKm)
+        const { distanceKm: km, durationSec: sec } =
+          await calculateDistanceMatrix(pickupLocation, dropoffLocation);
+        distanceKm  = km;
+        durationSec = sec;
+        console.log("✅ API Distance:", { distanceKm, durationSec });
       } catch (apiError) {
-        console.warn("⚠️ API failed, using fallback:", apiError)
-        distanceKm = calculateDistancePlaceholder(pickupLocation, dropoffLocation)
-        console.log("✅ Fallback Distance:", distanceKm)
+        console.warn("⚠️ API failed, using fallback:", apiError);
+        distanceKm = calculateDistancePlaceholder(pickupLocation, dropoffLocation);
+        durationSec = null; // we don’t have ETA in fallback
+        // update UI with fallback numbers
+        updateRouteInformation(distanceKm, durationSec);
       }
 
-      if (distanceKm && distanceKm > 0) {
-        const modalPickup = document.getElementById("modalPickupLocation")
-        const modalDropoff = document.getElementById("modalDropoffLocation")
-
-        if (modalPickup) modalPickup.textContent = pickupLocation
-        if (modalDropoff) modalDropoff.textContent = dropoffLocation
-
-        calculatedDistance = distanceKm
-
-        console.log("🔄 Refreshing car types before showing modal...")
-        await refreshCarTypesForModal()
-
-        console.log("✅ Showing modal...")
-        currentModal.show()
-      } else {
-        throw new Error("Unable to calculate distance")
+      if (!distanceKm || distanceKm <= 0) {
+        throw new Error("No distance returned");
       }
+
+      // --- post-distance UI writes (safe, non-throwing) ---
+      try {
+        const puEl = document.getElementById("modalPickupLocation");
+        if (puEl) puEl.textContent = pickupLocation;
+
+        const doEl = document.getElementById("modalDropoffLocation");
+        if (doEl) doEl.textContent = dropoffLocation;
+      } catch (uiErr) {
+        console.warn("Non-blocking UI write skipped:", uiErr);
+      }
+
+      // make these available to the mini map
+      lastPickupText  = pickupLocation;
+      lastDropoffText = dropoffLocation;
+
+      // keep your pricing logic intact
+      calculatedDistance = distanceKm;
+
+      console.log("🔄 Refreshing car types before showing modal...");
+      try {
+        await refreshCarTypesForModal();
+      } catch (x) {
+        console.warn("refreshCarTypesForModal failed (continuing):", x);
+      }
+
+      // Show modal (map will draw in shown.bs.modal)
+      currentModal?.show();
+
     } catch (error) {
-      console.error("❌ Distance calculation error:", error)
-      let errorMessage = "Unable to calculate distance. "
-
-      if (error.message.includes("not a recognized location")) {
-        errorMessage =
+      console.error("❌ Distance calculation error:", error);
+      let msg = "Unable to calculate distance. ";
+      if (error?.message?.includes("not a recognized location")) {
+        msg =
           error.message +
-          "\n\nSuggestions:\n• Check spelling of location names\n• Use full city names (e.g., 'Mumbai' instead of 'Mum')\n• Include state name if needed (e.g., 'Rajkot, Gujarat')"
-      } else if (error.message.includes("timed out")) {
-        errorMessage = "Connection timed out. Please check your internet connection and try again."
+          "\n\nSuggestions:\n• Check spelling of location names\n• Use full city names (e.g., 'Mumbai')\n• Include state name if needed (e.g., 'Rajkot, Gujarat')";
+      } else if (error?.message?.includes("timed out")) {
+        msg = "Connection timed out. Please check your internet connection and try again.";
       } else {
-        errorMessage += "Please check your internet connection and try again, or contact us for assistance."
+        msg += "Please check your internet connection and try again, or contact us for assistance.";
       }
-      alert(errorMessage)
+      alert(msg);
     } finally {
-      calculateBtn.innerHTML = '<i class="bi bi-calculator"></i> Calculate Distance & Price'
-      calculateBtn.disabled = false
+      calculateBtn.innerHTML = '<i class="bi bi-calculator"></i> Calculate Distance & Price';
+      calculateBtn.disabled = false;
     }
-  })
+  });
 
-  confirmBtn.addEventListener("click", handleBookingConfirmation)
-  modalElement.addEventListener("hidden.bs.modal", handleModalClose)
+  confirmBtn.addEventListener("click", handleBookingConfirmation);
+  modalElement.addEventListener("hidden.bs.modal", handleModalClose);
 }
 
-// ✅ UPDATED: Handle booking confirmation with round-trip support
+
+// Handle booking confirmation with round-trip support
 async function handleBookingConfirmation() {
   console.log("✅ Confirm booking clicked")
 
@@ -2075,18 +2120,20 @@ async function loadGalleryForIndex() {
       const galleryGrid = document.getElementById("galleryGrid")
       const loadingText = document.querySelector(".gallery-loading")
 
-      if (galleryGrid && loadingText) {
-        // Hide loading text
-        loadingText.style.display = "none"
+      if (galleryGrid) {
+        // Hide loading text if it exists
+        if (loadingText) {
+          loadingText.style.display = "none";
+        }
 
         galleryGrid.style.cssText = `
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          grid-auto-rows: 250px;
-          gap: 15px;
-          padding: 0;
-          max-width: 1200px;
-          margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-auto-rows: 250px;
+        gap: 15px;
+        padding: 0;
+        max-width: 1200px;
+        margin: 0 auto;
         `
 
         const imagesToShow = data.data.slice(0, 6)
@@ -2105,18 +2152,22 @@ async function loadGalleryForIndex() {
                 transition: all 0.3s ease;
               " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.15)'" 
                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                ${item.video_url
+                ? `
+                <video controls preload="metadata" 
+                      style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                  <source src="${item.video_url}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+                ` : `
                 <img src="${item.image_url}" alt="${item.title}" loading="lazy" 
-                     data-gallery-id="${item.id}"
-                     style="
-                       width: 100%;
-                       height: 100%;
-                       object-fit: cover;
-                       transition: transform 0.3s ease;
-                       border-radius: 8px;
-                     " 
-                     onload="handleImageLoad(this)"
-                     onmouseover="this.style.transform='scale(1.05)'" 
-                     onmouseout="this.style.transform='scale(1)'" />
+                    data-gallery-id="${item.id}"
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" 
+                    onload="handleImageLoad(this)"
+                    onmouseover="this.style.transform='scale(1.05)'" 
+                    onmouseout="this.style.transform='scale(1)'" />
+                `
+                }
                 <div class="gallery-overlay" style="
                   position: absolute;
                   bottom: 0;
@@ -2138,18 +2189,22 @@ async function loadGalleryForIndex() {
           })
           .join("")
 
-        const mediaQuery = window.matchMedia("(max-width: 768px)")
+        const mediaQuery = window.matchMedia('(max-width: 768px)');
         const handleMobileLayout = (e) => {
           if (e.matches) {
-            galleryGrid.style.gridTemplateColumns = "repeat(auto-fit, minmax(250px, 1fr))"
-            galleryGrid.style.gap = "10px"
+            galleryGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+            galleryGrid.style.gap = '10px';
           } else {
-            galleryGrid.style.gridTemplateColumns = "repeat(auto-fit, minmax(300px, 1fr))"
-            galleryGrid.style.gap = "15px"
+            galleryGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+            galleryGrid.style.gap = '15px';
           }
+        };
+        if (mediaQuery.addEventListener) {
+          mediaQuery.addEventListener('change', handleMobileLayout);
+        } else {
+          mediaQuery.addListener(handleMobileLayout); // fallback
         }
-        mediaQuery.addListener(handleMobileLayout)
-        handleMobileLayout(mediaQuery)
+        handleMobileLayout(mediaQuery);
 
         console.log(`✅ Loaded ${imagesToShow.length} gallery images on index page`)
       }
@@ -2161,12 +2216,14 @@ async function loadGalleryForIndex() {
     const galleryGrid = document.getElementById("galleryGrid")
     const loadingText = document.querySelector(".gallery-loading")
 
-    if (galleryGrid && loadingText) {
-      loadingText.innerHTML = `
+    if (galleryGrid) {
+      if (loadingText) {
+        loadingText.innerHTML = `
         <div class="text-center py-4">
           <p class="text-muted">Unable to load gallery images at the moment.</p>
         </div>
-      `
+        `;
+      }
     }
   }
 }
@@ -2174,30 +2231,32 @@ async function loadGalleryForIndex() {
 // ==== FULL GALLERY (Gallery page) ====
 
 function setupGalleryFilters() {
-    const filterButtons = document.querySelectorAll('.gallery-filter-btn');
-    const galleryItems = document.querySelectorAll('.gallery-item');
+  const filterButtons = document.querySelectorAll('.gallery-filter-btn');
 
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter').toLowerCase().trim();
-            
-            // Update active button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter gallery items
-            galleryItems.forEach(item => {
-                const category = (item.getAttribute('data-category') || '').toLowerCase().trim();
-                if (filter === 'all' || category === filter) {
-                    item.style.display = 'block';
-                    item.classList.add('fade-in');
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
+  const applyFilter = (filter) => {
+    // update active button state
+    filterButtons.forEach(btn => {
+      const btnFilter = (btn.getAttribute('data-filter') || '').toLowerCase().trim();
+      btn.classList.toggle('active', btnFilter === filter);
     });
+
+    // live-select items every time (handles dynamically added cards)
+    document.querySelectorAll('.jg-item, .gallery-item').forEach(item => {
+      const category = (item.getAttribute('data-category') || '').toLowerCase().trim();
+      const show = filter === 'all' || category === filter;
+      item.style.display = show ? 'block' : 'none';
+      if (show) item.classList.add('fade-in');
+    });
+  };
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const filter = (this.getAttribute('data-filter') || 'all').toLowerCase().trim();
+      applyFilter(filter);
+    });
+  });
 }
+
 
 async function loadGalleryForGalleryPage() {
   const grid = document.getElementById("galleryGrid");
@@ -2232,15 +2291,18 @@ async function loadGalleryForGalleryPage() {
 
       // build card
       wrap.innerHTML = `
-        <a href="${item.image_url}" data-fancybox="gallery" data-caption="${item.title || ""}">
+        <a href="${item.video_url ? item.video_url : item.image_url}" 
+          data-fancybox="gallery" 
+          data-caption="${item.title || ""}"
+          ${item.video_url ? 'data-type="video"' : ''}>
           <article class="jg-card">
             <div class="jg-thumb">
-              <img
-                src="${item.image_url}"
-                alt="${item.title ? item.title.replace(/"/g, "&quot;") : "Gallery image"}"
-                loading="lazy"
-                onerror="this.onerror=null; this.src='/static/img/placeholder.svg'; this.closest('.jg-thumb').classList.add('error');"
-              />
+              ${item.video_url
+                ? `<video controls preload="metadata" style="width:100%; height:100%; object-fit:cover;" autoplay loop muted playsinline>
+                    <source src="${item.video_url}" type="video/mp4">
+                  </video>`
+                : `<img src="${item.image_url}" alt="${item.title}" loading="lazy" />`
+              }
             </div>
             <div class="jg-overlay">
               <h6 class="jg-title">${item.title || ""}</h6>
@@ -2270,34 +2332,33 @@ async function loadGalleryForGalleryPage() {
 
 function handleImageLoad(img) {
   try {
-    const aspectRatio = img.naturalWidth / img.naturalHeight
+    const aspectRatio = img.naturalWidth / img.naturalHeight;
 
     if (aspectRatio < 1.0) {
-      // Tall images - dramatic zoom out
-      const scale = Math.max(0.5, aspectRatio * 0.8)
-      img.style.transform = `scale(${scale})`
-      img.style.objectFit = "contain"
-      img.style.backgroundColor = "#f8f9fa"
+      const scale = Math.max(0.5, aspectRatio * 0.8);
+      img.style.transform = `scale(${scale})`;
+      img.style.objectFit = 'contain';
+      img.style.backgroundColor = '#f8f9fa';
     } else if (aspectRatio < 1.3) {
-      // Slightly wide images - minor zoom out
-      img.style.transform = "scale(0.9)"
-      img.style.objectFit = "cover"
+      img.style.transform = 'scale(0.9)';
+      img.style.objectFit = 'cover';
     } else {
-      // Wide images - normal size
-      img.style.transform = "scale(1)"
-      img.style.objectFit = "cover"
+      img.style.transform = 'scale(1)';
+      img.style.objectFit = 'cover';
     }
 
-    // Update hover effects to work with applied scale
-    const currentScale = Number.parseFloat(img.style.transform.match(/scale$$([^)]+)$$/)?.[1] || 1)
-    const hoverScale = currentScale * 1.05
+    // Correctly read current scale
+    const m = (img.style.transform || '').match(/scale\(([^)]+)\)/);
+    const currentScale = m ? parseFloat(m[1]) : 1;
+    const hoverScale = currentScale * 1.05;
 
-    img.onmouseover = () => (img.style.transform = `scale(${hoverScale})`)
-    img.onmouseout = () => (img.style.transform = `scale(${currentScale})`)
+    img.onmouseover = () => (img.style.transform = `scale(${hoverScale})`);
+    img.onmouseout  = () => (img.style.transform = `scale(${currentScale})`);
   } catch (error) {
-    console.error("Error in handleImageLoad:", error)
+    console.error('Error in handleImageLoad:', error);
   }
 }
+
 
 function getGridSpanClass(index, totalImages) {
   // Create dynamic layout patterns based on image position
@@ -2632,9 +2693,9 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 Taxi Booking System - Frontend JavaScript Initialized")
 
   // Initialize Lottie loader
-  hideLottieLoader();   // ✅ instead of initializeLottieLoader
+  hideLottieLoader();   // instead of initializeLottieLoader
 
-  // ✅ PRIORITY: Load dynamic car types first with immediate refresh
+  // PRIORITY: Load dynamic car types first with immediate refresh
   loadDynamicCarTypes().then(() => {
     console.log("🎯 Car types loaded, system ready for bookings")
   })
@@ -2979,6 +3040,50 @@ document.head.appendChild(styleSheet)
 // 18. EXPORT UTILITIES (Optional)
 // =====================================================
 
+// === GOOGLE MAPS INITIALIZATION ===
+window.initGoogle = function initGoogle() {
+  try {
+    setupPlacesAutocomplete();
+    console.log("✅ Google Maps initialized");
+  } catch (e) {
+    console.warn("Google Maps init failed:", e);
+  }
+};
+
+function setupPlacesAutocomplete() {
+  if (!window.google || !google.maps || !google.maps.places) return;
+
+  const commonOptions = {
+    componentRestrictions: { country: "in" },
+    fields: ["formatted_address", "geometry", "name"],
+    types: ["(regions)"], // cities/states only
+  };
+
+  const pickupEl = document.getElementById("pickupLocation");
+  const dropoffEl = document.getElementById("dropoffLocation");
+
+  if (pickupEl) {
+    const ac = new google.maps.places.Autocomplete(pickupEl, commonOptions);
+    ac.addListener("place_changed", () => {
+      const place = ac.getPlace();
+      if (place && place.formatted_address) {
+        pickupEl.value = place.formatted_address.replace(", India", "");
+      }
+    });
+  }
+
+  if (dropoffEl) {
+    const ac = new google.maps.places.Autocomplete(dropoffEl, commonOptions);
+    ac.addListener("place_changed", () => {
+      const place = ac.getPlace();
+      if (place && place.formatted_address) {
+        dropoffEl.value = place.formatted_address.replace(", India", "");
+      }
+    });
+  }
+}
+
+
 // Export utilities for potential external use
 window.TaxiBookingSystem = {
   // Core functions
@@ -2987,7 +3092,7 @@ window.TaxiBookingSystem = {
   validateBookingForm,
   submitBookingRequest,
 
-  // ✅ NEW: Dynamic car types functions
+  // Dynamic car types functions
   loadDynamicCarTypes,
   getCarTypeRates,
   updateCarTypePricing,
@@ -2996,7 +3101,7 @@ window.TaxiBookingSystem = {
   dynamicCarTypes: () => dynamicCarTypes,
   isCarTypesLoaded: () => isCarTypesLoaded,
 
-  // ✅ NEW: Enhanced route information functions
+  // Enhanced route information functions
   updateRouteInformation,
   calculateEstimatedDuration,
   formatDuration,
@@ -3005,12 +3110,12 @@ window.TaxiBookingSystem = {
   showEnhancedBookingSuccess,
   showCarSelectionNotification,
 
-  // 🆕 NEW: Route booking functions
+  // Route booking functions
   prefillBookingForm,
   showRoutePrefilledNotification,
   getURLParameters,
 
-  // 🆕 NEW: Our Cars booking functions
+  // Our Cars booking functions
   initializeOurCarsBookingButtons,
   showCarBookingNotification,
 

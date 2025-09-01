@@ -2010,7 +2010,6 @@ opacity: 1;
   background: var(--light-bg);
   border-radius: 10px;
   padding: 4px;
-  margin-bottom: 1rem;
 }
 
 .trip-type-option {
@@ -2326,6 +2325,22 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   }
 }
 
+/* Initially hide elements with .hidden */
+.hidden {
+  display: none !important;
+}
+
+/* Optional: style the minimum distance note */
+#roundTripMinDistanceNote {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffeeba;
+  padding: 10px;
+  margin: 6px 6px 1rem;
+  font-size: 0.9rem;
+  color: #856404;
+  border-radius: 8px;
+}
+
 /* =====================================================
  11. COMPACT MODALS & OVERLAYS - OPTIMIZED
  ======================================================*/
@@ -2576,11 +2591,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   min-width: 180px !important;
 } */
 
-.modal.round-trip-trip .car-option {
-  /* Smaller height/width for round-trip */
-  /* min-height: 250px !important; */
-  /* min-width: 250px !important; */
-}
+/* .modal.round-trip-trip .car-option {
+  Smaller height/width for round-trip
+  min-height: 250px !important;
+  min-width: 250px !important;
+} */
 
 .car-option:hover {
   transform: translateY(-3px) scale(1.02);
@@ -2715,7 +2730,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   display: flex;
   flex-direction: column;
   justify-content: center;  /* ✅ centers text block vertically with icon */
-  gap: 4px;
+  gap: 10px;
 }
 
 .selected-car-info .alert {
@@ -2949,6 +2964,21 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 /* =====================================================
  12. GALLERY & CONTENT PAGES
  =====================================================*/
+
+/* Gallery grid span helpers */
+#galleryGrid .grid-span-1 {
+  grid-row: span 1;
+  grid-column: span 1;
+}
+
+#galleryGrid .grid-span-2 {
+  grid-row: span 2; /* item will take up 2 rows */
+}
+
+#galleryGrid .grid-span-wide {
+  grid-column: span 2; /* item will take up 2 columns */
+}
+
 
 /* Gallery Cards Styling */
 .gallery-card {

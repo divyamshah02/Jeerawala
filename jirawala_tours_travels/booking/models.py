@@ -152,10 +152,15 @@ class Gallery(models.Model):
     title = models.CharField(max_length=200, help_text='Title for the gallery image')
     description = models.TextField(blank=True, null=True, help_text='Optional description for the image')
     
-    # Database BLOB storage for images
-    image_data = models.BinaryField(help_text='Binary image data')
-    image_filename = models.CharField(max_length=255, help_text='Original filename')
-    image_content_type = models.CharField(max_length=100, help_text='Image MIME type')
+    # Image BLOB storage
+    image_data = models.BinaryField(null=True, blank=True, help_text='Binary image data')
+    image_filename = models.CharField(max_length=255, blank=True, null=True, help_text='Original filename')
+    image_content_type = models.CharField(max_length=100, blank=True, null=True, help_text='Image MIME type')
+
+    # Video BLOB storage
+    video_data = models.BinaryField(blank=True, null=True, help_text='Binary video data')
+    video_filename = models.CharField(max_length=255, blank=True, null=True, help_text='Original video filename')
+    video_content_type = models.CharField(max_length=100, blank=True, null=True, help_text='Video MIME type')
     
     # Display order and status
     display_order = models.PositiveIntegerField(default=0, help_text='Order in which images appear (lower numbers first)')
@@ -188,11 +193,29 @@ class Gallery(models.Model):
     def set_image_from_file(self, uploaded_file):
         """Store uploaded file as BLOB in database"""
         if uploaded_file:
-            # Read file data
-            uploaded_file.seek(0)  # Reset file pointer
+            # Remove old video
+            self.video_data = None
+            self.video_filename = None
+            self.video_content_type = None
+            
+            # Save new image
+            uploaded_file.seek(0)
             self.image_data = uploaded_file.read()
             self.image_filename = uploaded_file.name
             self.image_content_type = uploaded_file.content_type or 'image/jpeg'
+
+    def set_video_from_file(self, uploaded_file):
+        if uploaded_file:
+            # Remove old image
+            self.image_data = None
+            self.image_filename = None
+            self.image_content_type = None
+            
+            # Save new video
+            uploaded_file.seek(0)
+            self.video_data = uploaded_file.read()
+            self.video_filename = uploaded_file.name
+            self.video_content_type = uploaded_file.content_type or 'video/mp4'
     
     def get_image_data_url(self):
         """Get base64 data URL for inline display"""

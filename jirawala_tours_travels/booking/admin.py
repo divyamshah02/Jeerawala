@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.contrib.admin import SimpleListFilter
@@ -9,10 +10,10 @@ import base64
 try:
     @admin.register(Gallery)
     class GalleryAdmin(admin.ModelAdmin):
-        list_display = ['title', 'description_short', 'display_order', 'is_active', 'image_preview', 'created_at']
+        list_display = ['title', 'description_short', 'display_order', 'is_active', 'image_preview', 'video_preview', 'created_at']
         list_filter = ['is_active', 'created_at']
         search_fields = ['title', 'description']
-        readonly_fields = ['created_at', 'updated_at', 'image_preview']
+        readonly_fields = ['created_at', 'updated_at', 'image_preview', 'video_preview']
         list_editable = ['display_order', 'is_active']
         ordering = ['display_order', '-created_at']
         
@@ -41,7 +42,13 @@ try:
                 help_text='Upload a new image to replace the current one. Images are stored in database.',
                 widget=forms.ClearableFileInput(attrs={'accept': 'image/*'})
             )
-            
+
+            form.base_fields['video_upload'] = forms.FileField(
+                required=False,
+                help_text='Upload a new video to replace the current one. Videos are stored in database.',
+                widget=forms.ClearableFileInput(attrs={'accept': 'video/*'})
+            )
+
             return form
         
         def description_short(self, obj):
@@ -65,6 +72,21 @@ try:
                     return f"Error loading image: {str(e)}"
             return "No image"
         image_preview.short_description = 'Current Image'
+
+        def video_preview(self, obj):
+            if obj and obj.pk and obj.video_data:
+                try:
+                    return mark_safe(
+                        f'<video width="150" height="100" controls>'
+                        f'<source src="/api/videos/gallery/{obj.id}/" type="{obj.video_content_type or "video/mp4"}">'
+                        f'Your browser does not support the video tag.'
+                        f'</video>'
+                    )
+                except Exception as e:
+                    return f"Error loading video: {str(e)}"
+            return "No video"
+        video_preview.short_description = 'Current Video'
+
         
         def save_model(self, request, obj, form, change):
             """Handle image upload when saving"""
@@ -72,6 +94,10 @@ try:
             if 'image_upload' in form.cleaned_data and form.cleaned_data['image_upload']:
                 uploaded_file = form.cleaned_data['image_upload']
                 obj.set_image_from_file(uploaded_file)
+
+            if 'video_upload' in form.cleaned_data and form.cleaned_data['video_upload']:
+                uploaded_file = form.cleaned_data['video_upload']
+                obj.set_video_from_file(uploaded_file)
             
             super().save_model(request, obj, form, change)
 except admin.sites.AlreadyRegistered:

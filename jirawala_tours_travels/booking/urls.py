@@ -11,7 +11,7 @@ from .views import (
     # Image serving views
     serve_car_image, serve_route_image, get_car_image_info, get_route_image_info,
     # Gallery views
-    serve_gallery_image, get_gallery_image_info, get_gallery_data_api,
+    serve_gallery_image, get_gallery_image_info, get_gallery_data_api, serve_gallery_video,
     # Tooltip
     get_available_cars_by_type,
 )
@@ -47,6 +47,8 @@ urlpatterns = [
     path('api/images/gallery/<int:gallery_id>/', serve_gallery_image, name='serve_gallery_image'),
     path('api/images/gallery/<int:gallery_id>/info/', get_gallery_image_info, name='gallery_image_info'),
     path('serve_gallery_image/<int:gallery_id>/', serve_gallery_image, name='serve_gallery_image_legacy'),
+    path('api/videos/gallery/<int:gallery_id>/', serve_gallery_video, name='serve_gallery_video'),
+
     
     # CUSTOM ADMIN URLS
     path('admin-panel/', custom_admin_login, name='custom_admin_login'),

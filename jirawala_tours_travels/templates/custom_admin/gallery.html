@@ -5,27 +5,34 @@
 {% block title %}Gallery Management - Admin Panel{% endblock %}
 
 {% block content %}
-<!-- Updated to match base template design with proper page header and styling -->
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h2 class="mb-1"><i class="fas fa-images me-2"></i>Gallery Management</h2>
-            <p class="text-muted mb-0">Manage your website gallery images</p>
+            <p class="text-muted mb-0">Manage your website's media</p>
         </div>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGalleryModal">
-            <i class="fas fa-plus me-2"></i>Add New Image
+            <i class="fas fa-plus me-2"></i>Add New Media
         </button>
     </div>
 </div>
 
-<!-- Updated gallery grid with proper card styling matching base template -->
 <div class="row" id="galleryGrid">
     {% for item in gallery_items %}
     <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
         <div class="card h-100">
             <div class="position-relative">
-                <!-- Fixed image URL to use correct API endpoint -->
-                <img src="/api/images/gallery/{{ item.id }}/" alt="{{ item.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                <div class="media-slot" data-id="{{ item.id }}" data-is-video="{{ item.is_video|yesno:'true,false' }}">
+                    {% if item.is_video %}
+                    <video controls class="card-img-top" style="height: 200px; object-fit: cover;">
+                        <source src="/api/videos/gallery/{{ item.id }}/" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% else %}
+                    <img src="/api/images/gallery/{{ item.id }}/" alt="{{ item.title }}" class="card-img-top"
+                        style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                </div>
                 <div class="position-absolute top-0 end-0 p-2">
                     <span class="badge {% if item.is_active %}bg-success{% else %}bg-secondary{% endif %}">
                         {% if item.is_active %}Active{% else %}Inactive{% endif %}
@@ -38,17 +45,16 @@
                 <div class="d-flex justify-content-between align-items-center mt-auto">
                     <small class="text-muted">Order: {{ item.display_order }}</small>
                     <div class="btn-group btn-group-sm">
-                        <!-- Fixed JavaScript errors by using data attributes instead of complex onclick -->
                         <button class="btn btn-outline-primary edit-gallery-btn" 
                                 data-id="{{ item.id }}" 
                                 data-title="{{ item.title }}" 
                                 data-description="{{ item.description|default:'' }}" 
                                 data-display-order="{{ item.display_order }}" 
-                                data-is-active="{{ item.is_active|yesno:'true,false' }}" 
+                                data-is-active="{{ item.is_active|yesno:'true,false' }}"
+                                data-is-video="{{ item.is_video|yesno:'true,false' }}"
                                 title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <!-- Fixed delete button with data attributes -->
                         <button class="btn btn-outline-danger delete-gallery-btn" 
                                 data-id="{{ item.id }}" 
                                 data-title="{{ item.title }}" 
@@ -61,7 +67,6 @@
         </div>
     </div>
     {% empty %}
-    <!-- Updated empty state with proper styling -->
     <div class="col-12">
         <div class="text-center py-5">
             <div class="stats-card">
@@ -77,13 +82,12 @@
     {% endfor %}
 </div>
 
-<!-- Updated modals with proper styling matching base template -->
 <!-- Add Gallery Modal -->
 <div class="modal fade" id="addGalleryModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add New Gallery Image</h5>
+                <h5 class="modal-title">Add New Gallery Media</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="addGalleryForm" enctype="multipart/form-data">
@@ -99,12 +103,18 @@
                     </div>
                     <div class="mb-3">
                         <label for="galleryImage" class="form-label">Image</label>
-                        <input type="file" class="form-control" id="galleryImage" name="image" accept="image/*" required>
-                        <!-- Added image preview functionality -->
-                        <div id="imagePreview" class="mt-2" style="display: none;">
-                            <img id="previewImg" src="/placeholder.svg" alt="Preview" class="img-thumbnail" style="max-height: 150px;">
-                        </div>
+                        <input type="file" class="form-control" id="galleryImage" name="image" accept="image/*">
+                        <small class="form-text text-muted">Supported: JPG, PNG, GIF</small>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label for="galleryVideo" class="form-label">Video</label>
+                        <input type="file" class="form-control" id="galleryVideo" name="video_file" accept="video/*">
+                        <small class="form-text text-muted">Supported: MP4</small>
+                    </div>
+
+                    <div id="mediaPreview" class="mt-2" style="display:none;"></div>
+
                     <div class="mb-3">
                         <label for="displayOrder" class="form-label">Display Order</label>
                         <input type="number" class="form-control" id="displayOrder" name="display_order" value="1" min="1">
@@ -116,7 +126,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Image</button>
+                    <button type="submit" class="btn btn-primary">Add Media</button>
                 </div>
             </form>
         </div>
@@ -128,7 +138,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Gallery Image</h5>
+                <h5 class="modal-title">Edit Gallery Media</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="editGalleryForm" enctype="multipart/form-data">
@@ -143,21 +153,19 @@
                         <label for="editGalleryDescription" class="form-label">Description</label>
                         <textarea class="form-control" id="editGalleryDescription" name="description" rows="3"></textarea>
                     </div>
-                    <!-- Added current image preview in edit mode -->
                     <div class="mb-3">
-                        <label class="form-label">Current Image</label>
-                        <div id="currentImagePreview">
-                            <!-- Fixed current image URL to use correct API endpoint -->
-                            <img id="currentImg" src="/placeholder.svg" alt="Current Image" class="img-thumbnail" style="max-height: 150px;">
-                        </div>
+                        <label class="form-label">Current Media</label>
+                        <div id="currentMediaPreview"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="editGalleryImage" class="form-label">New Image (leave empty to keep current)</label>
+                        <label for="editGalleryImage" class="form-label">New Image <span class="text-muted">(optional)</span></label>
                         <input type="file" class="form-control" id="editGalleryImage" name="image" accept="image/*">
-                        <!-- Added delete current image button -->
-                        <div class="mt-2">
-                            <small class="text-muted">Select a new image to replace the current one</small>
-                        </div>
+                        <div class="mt-2"><small class="text-muted">Select a new image to replace the current one</small></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editGalleryVideo" class="form-label">New Video <span class="text-muted">(optional)</span></label>
+                        <input type="file" class="form-control" id="editGalleryVideo" name="video_file" accept="video/*">
+                        <div class="mt-2"><small class="text-muted">Select a new video to replace the current one</small></div>
                     </div>
                     <div class="mb-3">
                         <label for="editDisplayOrder" class="form-label">Display Order</label>
@@ -170,7 +178,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Image</button>
+                    <button type="submit" class="btn btn-primary">Update Media</button>
                 </div>
             </form>
         </div>
@@ -180,202 +188,386 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Image preview functionality for add form
-    const galleryImage = document.getElementById('galleryImage');
-    const imagePreview = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('previewImg');
-    
-    if (galleryImage) {
-        galleryImage.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                imagePreview.style.display = 'none';
-            }
-        });
+// ---------- helpers ----------
+function renderMediaPreview(item, targetElement, size = "card") {
+    const bust = `?t=${Date.now()}`;
+    let html = "";
+
+    if (item.is_video) {
+        html = `
+            <video controls class="${size === 'card' ? 'card-img-top' : ''}"
+                style="${
+                    size === 'card'
+                    ? 'height:200px; object-fit:cover;'
+                    : size === 'modal'
+                    ? 'max-height:150px; width:100%; border-radius:5px;'
+                    : 'max-height:150px;'
+                }">
+                <source src="/api/videos/gallery/${item.id}/${bust}" type="video/mp4">
+            </video>`;
+    } else {
+        html = `
+            <img src="/api/images/gallery/${item.id}/${bust}" alt="${item.title}"
+                class="${size === 'card' ? 'card-img-top' : 'img-thumbnail'}"
+                style="${
+                    size === 'card'
+                    ? 'height:200px; object-fit:cover;'
+                    : size === 'modal'
+                    ? 'max-height:150px; width:100%; border-radius:5px;'
+                    : 'max-height:150px;'
+                }">`;
     }
-
-    document.querySelectorAll('.edit-gallery-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const title = this.dataset.title;
-            const description = this.dataset.description;
-            const displayOrder = this.dataset.displayOrder;
-            const isActive = this.dataset.isActive === 'true';
-            
-            editGalleryItem(id, title, description, displayOrder, isActive);
-        });
-    });
-
-    document.querySelectorAll('.delete-gallery-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const title = this.dataset.title;
-            
-            deleteGalleryItem(id, title);
-        });
-    });
-});
-
-// Add gallery item
-document.getElementById('addGalleryForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    formData.append('action', 'add_gallery_item');
-    
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
-    submitBtn.disabled = true;
-    
-    fetch('/admin-panel/gallery/', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            bootstrap.Modal.getInstance(document.getElementById('addGalleryModal')).hide();
-            this.reset();
-            document.getElementById('imagePreview').style.display = 'none';
-            showAlert(data.message, 'success');
-            // Reload page to show new item
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            showAlert(data.message || 'Error adding gallery item', 'danger');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error adding gallery item', 'danger');
-    })
-    .finally(() => {
-        // Reset button state
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    });
-});
-
-// Edit gallery item
-function editGalleryItem(id, title, description, displayOrder, isActive) {
-    document.getElementById('editGalleryId').value = id;
-    document.getElementById('editGalleryTitle').value = title;
-    document.getElementById('editGalleryDescription').value = description;
-    document.getElementById('editDisplayOrder').value = displayOrder;
-    document.getElementById('editIsActive').checked = isActive;
-    
-    const currentImg = document.getElementById('currentImg');
-    currentImg.src = '/api/images/gallery/' + id + '/';
-    
-    new bootstrap.Modal(document.getElementById('editGalleryModal')).show();
+    targetElement.innerHTML = html;
 }
 
-// Update gallery item
-document.getElementById('editGalleryForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    formData.append('action', 'edit_gallery_item');
-    
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
-    submitBtn.disabled = true;
-    
-    fetch('/admin-panel/gallery/', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            bootstrap.Modal.getInstance(document.getElementById('editGalleryModal')).hide();
-            showAlert(data.message, 'success');
-            // Reload page to show updated item
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            showAlert(data.message || 'Error updating gallery item', 'danger');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error updating gallery item', 'danger');
-    })
-    .finally(() => {
-        // Reset button state
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    });
-});
-
-// Delete gallery item with enhanced confirmation
-function deleteGalleryItem(id, title) {
-    if (confirm('Are you sure you want to delete "' + title + '"?\n\nThis action cannot be undone.')) {
-        const formData = new FormData();
-        formData.append('action', 'delete_gallery_item');
-        formData.append('gallery_id', id);
-        
-        fetch('/admin-panel/gallery/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showAlert(data.message, 'success');
-                // Reload page to remove deleted item
-                setTimeout(() => window.location.reload(), 1000);
-            } else {
-                showAlert(data.message || 'Error deleting gallery item', 'danger');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('Error deleting gallery item', 'danger');
-        });
-    }
-}
-
-// Utility function to show alerts
+// Robust alert icon selection
 function showAlert(message, type) {
+    const iconMap = {
+        success: 'check-circle',
+        danger: 'triangle-exclamation',
+        warning: 'triangle-exclamation',
+        info: 'circle-info'
+    };
+    const icon = iconMap[type] || iconMap.info;
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
     alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
     alertDiv.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-        ${message}
+        <i class="fas fa-${icon} me-2"></i>${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     document.body.appendChild(alertDiv);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.parentNode.removeChild(alertDiv);
-        }
-    }, 5000);
+    setTimeout(() => alertDiv.remove(), 5000);
 }
+
+// ---------- state ----------
+let editModal; // will be initialized after DOM is ready
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Create or get a single modal instance we reuse everywhere
+    const editModalEl = document.getElementById('editGalleryModal');
+    editModal = (bootstrap.Modal.getOrCreateInstance)
+        ? bootstrap.Modal.getOrCreateInstance(editModalEl)
+        : (bootstrap.Modal.getInstance(editModalEl) || new bootstrap.Modal(editModalEl));
+
+    // -------- Add modal live preview & mutual exclusion --------
+    const galleryImage = document.getElementById('galleryImage');
+    const galleryVideo = document.getElementById('galleryVideo');
+    const mediaPreview = document.getElementById('mediaPreview');
+
+    function showPreview(file) {
+        if (!file) { mediaPreview.style.display = 'none'; mediaPreview.innerHTML = ''; return; }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            if (file.type.startsWith('image/')) {
+                mediaPreview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-height:150px;">`;
+            } else if (file.type.startsWith('video/')) {
+                mediaPreview.innerHTML = `<video controls style="max-height:150px; width:100%; border-radius:5px;">
+                    <source src="${e.target.result}" type="${file.type}">
+                </video>`;
+            }
+            mediaPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    if (galleryImage) {
+        galleryImage.addEventListener('change', e => {
+            if (e.target.files.length) galleryVideo.value = "";
+            showPreview(e.target.files[0]);
+        });
+    }
+    if (galleryVideo) {
+        galleryVideo.addEventListener('change', e => {
+            if (e.target.files.length) galleryImage.value = "";
+            showPreview(e.target.files[0]);
+        });
+    }
+
+    // Reset Add modal
+    document.getElementById('addGalleryModal')?.addEventListener('hidden.bs.modal', function () {
+        document.getElementById('addGalleryForm').reset();
+        mediaPreview.style.display = 'none';
+        mediaPreview.innerHTML = '';
+    });
+
+    // Wire up existing edit/delete buttons
+    document.querySelectorAll('.edit-gallery-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            editGalleryItem(
+                this.dataset.id,
+                this.dataset.title,
+                this.dataset.description,
+                this.dataset.displayOrder,
+                this.dataset.isActive === 'true',
+                this.dataset.isVideo ? (this.dataset.isVideo === 'true') : undefined // optional hint
+            );
+        });
+    });
+
+    document.querySelectorAll('.delete-gallery-btn').forEach(button => {
+        button.addEventListener('click', () => deleteGalleryItem(button.dataset.id, button.dataset.title));
+    });
+});
+
+// ---------- Add ----------
+document.getElementById('addGalleryForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    formData.append('action', 'add_gallery_item');
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+    submitBtn.disabled = true;
+
+    fetch('/admin-panel/gallery/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data || !data.success) {
+            showAlert(data?.message || 'Error adding gallery item', 'danger');
+            return;
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById('addGalleryModal'))?.hide();
+        showAlert(data.message || 'Added', 'success');
+
+        // Inject new card (with media-slot)
+        const grid = document.getElementById('galleryGrid');
+        const newCol = document.createElement('div');
+        newCol.className = "col-md-6 col-lg-4 col-xl-3 mb-4";
+        newCol.innerHTML = `
+            <div class="card h-100">
+                <div class="position-relative">
+                    <div class="media-slot"></div>
+                    <div class="position-absolute top-0 end-0 p-2">
+                        <span class="badge ${data.item.is_active ? 'bg-success' : 'bg-secondary'}">
+                            ${data.item.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title mb-2">${data.item.title}</h6>
+                    <p class="card-text text-muted small flex-grow-1">${data.item.description || 'No description'}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <small class="text-muted">Order: ${data.item.display_order}</small>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary edit-gallery-btn"
+                                    data-id="${data.item.id}"
+                                    data-title="${data.item.title}"
+                                    data-description="${data.item.description || ''}"
+                                    data-display-order="${data.item.display_order}"
+                                    data-is-active="${data.item.is_active}"
+                                    data-is-video="${data.item.is_video}"
+                                    title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger delete-gallery-btn"
+                                    data-id="${data.item.id}"
+                                    data-title="${data.item.title}"
+                                    title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+        grid.prepend(newCol);
+
+        // Render media
+        renderMediaPreview(data.item, newCol.querySelector('.media-slot'), "card");
+
+        // Bind new buttons
+        const newBtn = newCol.querySelector('.edit-gallery-btn');
+        newBtn.dataset.isVideo = String(!!data.item.is_video);
+        newBtn.addEventListener('click', function () {
+            editGalleryItem(
+                this.dataset.id,
+                this.dataset.title,
+                this.dataset.description,
+                this.dataset.displayOrder,
+                this.dataset.isActive === 'true',
+                this.dataset.isVideo === 'true'
+            );
+        });
+
+        newCol.querySelector('.delete-gallery-btn').addEventListener('click', () => {
+            deleteGalleryItem(data.item.id, data.item.title);
+        });
+
+        // Reset form
+        this.reset();
+        document.getElementById('mediaPreview').innerHTML = '';
+        document.getElementById('mediaPreview').style.display = 'none';
+    })
+    .catch(() => showAlert('Error adding gallery item', 'danger'))
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+// ---------- Edit (open) ----------
+function editGalleryItem(id, title, description, displayOrder, isActive, isVideoHint) {
+    document.getElementById('editGalleryId').value = id;
+    document.getElementById('editGalleryTitle').value = title;
+    document.getElementById('editGalleryDescription').value = description || '';
+    document.getElementById('editDisplayOrder').value = displayOrder || 1;
+    document.getElementById('editIsActive').checked = !!isActive;
+
+    const currentMediaPreview = document.getElementById('currentMediaPreview');
+    currentMediaPreview.innerHTML = "";
+
+    // Determine type WITHOUT hitting the server
+    const btn = document.querySelector(`.edit-gallery-btn[data-id="${id}"]`);
+    const isVideo = btn ? (btn.dataset.isVideo === "true") : false;
+
+
+    const bust = `?t=${Date.now()}`;
+    if (isVideo) {
+        currentMediaPreview.innerHTML = `
+            <video controls style="max-height:150px; width:100%; border-radius:5px;">
+                <source src="/api/videos/gallery/${id}/${bust}" type="video/mp4">
+            </video>`;
+    } else {
+        currentMediaPreview.innerHTML = `
+            <img src="/api/images/gallery/${id}/${bust}" class="img-thumbnail" style="max-height:150px;">`;
+    }
+
+    // Clear chosen files in edit modal
+    document.getElementById('editGalleryImage').value = "";
+    document.getElementById('editGalleryVideo').value = "";
+
+    editModal.show();
+}
+
+// Live preview in Edit modal
+const editImage = document.getElementById('editGalleryImage');
+const editVideo = document.getElementById('editGalleryVideo');
+const currentMediaPreview = document.getElementById('currentMediaPreview');
+
+function showEditPreview(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        if (file.type.startsWith('image/')) {
+            currentMediaPreview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-height:150px;">`;
+        } else if (file.type.startsWith('video/')) {
+            currentMediaPreview.innerHTML = `<video controls style="max-height:150px; width:100%; border-radius:5px;">
+                <source src="${e.target.result}" type="${file.type}">
+            </video>`;
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+editImage.addEventListener('change', function () {
+    if (this.files.length > 0) {
+        editVideo.value = "";
+        showEditPreview(this.files[0]);
+    }
+});
+editVideo.addEventListener('change', function () {
+    if (this.files.length > 0) {
+        editImage.value = "";
+        showEditPreview(this.files[0]);
+    }
+});
+
+// ---------- Edit (submit) ----------
+document.getElementById('editGalleryForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    formData.append('action', 'edit_gallery_item');
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+    submitBtn.disabled = true;
+
+    fetch('/admin-panel/gallery/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+        .then(r => r.json())
+        // ---------- Edit (submit) ----------
+        .then(data => {
+            if (data && data.success) {
+                showAlert(data.message || 'Gallery item updated successfully', 'success');
+
+                if (data.item) {
+                    // Update modal preview
+                    renderMediaPreview(data.item, document.getElementById('currentMediaPreview'), "modal");
+
+                    // Update card preview + attributes
+                    const btn = document.querySelector(`.edit-gallery-btn[data-id="${data.item.id}"]`);
+                    const card = btn?.closest('.card');
+                    if (card) {
+                        // update data attributes
+                        btn.dataset.isVideo = String(!!data.item.is_video);
+                        const slot = card.querySelector('.media-slot');
+                        if (slot) {
+                            slot.dataset.isVideo = String(!!data.item.is_video);   // 🔑 FIX HERE
+                            renderMediaPreview(data.item, slot, "card");
+                        }
+                    }
+                }
+
+                editModal.hide();
+                document.getElementById('editGalleryImage').value = "";
+                document.getElementById('editGalleryVideo').value = "";
+            }
+        })
+
+    .catch(() => showAlert('Error updating gallery item', 'danger'))
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+// ---------- Delete ----------
+function deleteGalleryItem(id, title) {
+    if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis action cannot be undone.`)) return;
+
+    const formData = new FormData();
+    formData.append('action', 'delete_gallery_item');
+    formData.append('gallery_id', id);
+
+    fetch('/admin-panel/gallery/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data && data.success) {
+            showAlert(data.message || 'Deleted', 'success');
+            setTimeout(() => window.location.reload(), 600);
+        } else {
+            showAlert(data?.message || 'Error deleting gallery item', 'danger');
+        }
+    })
+    .catch(() => showAlert('Error deleting gallery item', 'danger'));
+}
+
 </script>
 {% endblock %}
