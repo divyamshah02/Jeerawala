@@ -97,7 +97,7 @@
         </div>
     </nav>
 
-    
+
 
     <!-- Hero Section -->
     <section id="home" class="hero-section">
@@ -480,7 +480,7 @@
                                     <input type="text" name="dropoffLocation" class="form-control" id="dropoffLocation" required aria-label="Drop-off Location">
                                 </div>
                             </div>
-    
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="pickupDate" class="form-label">
@@ -489,7 +489,7 @@
                                     </label>
                                     <div class="enhanced-datetime-wrapper">
                                         <div class="datetime-input-wrapper">
-    
+
                                             <input type="datetime-local" name="pickupDate"
                                                 class="form-control datetime-input" id="pickupDate" required
                                                 aria-label="Pick-up Date and Time">
@@ -497,7 +497,7 @@
                                                 <i class="bi bi-clock"></i>
                                             </div>
                                         </div>
-    
+
                                         <div class="datetime-quick-select" id="pickupQuickSelect">
                                             <button type="button" class="quick-select-btn" data-hours="24">Tomorrow</button>
                                         </div>
@@ -514,7 +514,7 @@
                                     </label>
                                     <div class="enhanced-datetime-wrapper">
                                         <div class="datetime-input-wrapper">
-    
+
                                             <input type="datetime-local" name="dropoffDate"
                                                 class="form-control datetime-input" id="dropoffDate" required
                                                 aria-label="Drop-off Date and Time">
@@ -522,7 +522,7 @@
                                                 <i class="bi bi-clock"></i>
                                             </div>
                                         </div>
-    
+
                                         <div class="datetime-quick-select" id="dropoffQuickSelect">
                                             <button type="button" class="quick-select-btn dropoff-quick" data-days="1">+1
                                                 Day</button>
@@ -768,7 +768,7 @@
                                 </div>
                                 <div class="contact-info">
                                     <h6>Visit Us</h6>
-                                    <p>123 Travel Lane, Ahmedabad<br>Gujarat, India - 380001</p>
+                                    <p>Pushpak corner, 131, Naroda Rd, opposite Navyug School Road, near Dhanushdhari circle, Krishnanagar, Ahmedabad, Gujarat 382345</p>
                                 </div>
                             </div>
                             <div class="contact-item">
@@ -788,7 +788,7 @@
                                 </div>
                                 <div class="contact-info">
                                     <h6>Email Us</h6>
-                                    <p><a href="mailto:info@jirawala.com">jirawalatravels099@gmail.com</a><br>                                    
+                                    <p><a href="mailto:info@jirawala.com">jirawalatravels099@gmail.com</a><br>
                                     </p>
                                 </div>
                             </div>
@@ -1044,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tripTypeButtons.forEach(button => {
         button.addEventListener('click', function() {
             const tripType = this.getAttribute('data-trip');
-            
+
             if (tripType === 'one-way') {
                 // ✅ ONE-WAY: Show time selection
                 if (pickupDateLabel) pickupDateLabel.textContent = 'Pick-up Date & Time';
@@ -1053,7 +1053,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (dropoffDateHelpText) dropoffDateHelpText.textContent = 'Select your return date and time';
                 if (pickupQuickSelect) pickupQuickSelect.style.display = 'flex';
                 if (dropoffQuickSelect) dropoffQuickSelect.style.display = 'flex';
-                
+
             } else if (tripType === 'round-trip') {
                 // ✅ ROUND-TRIP: Hide time selection
                 if (pickupDateLabel) pickupDateLabel.textContent = 'Pick-up Date';
