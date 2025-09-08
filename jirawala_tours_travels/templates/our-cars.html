@@ -121,7 +121,7 @@
             <!-- Filter Section -->
             <div class="text-center mb-5">
                 <h2 class="enhanced-section-title">Choose Your Ride</h2>
-                <p class="enhanced-section-subtitle" id="car-count">
+                <p class="enhanced-section-subtitle" id="car-count" style="display: None;">
                     {% if cars %}
                     {{ cars|length }} premium vehicles available for your comfort and convenience
                     {% else %}
@@ -142,10 +142,10 @@
             <div class="row" id="cars-grid">
                 {% for car in cars %}
                 <div class="col-md-4 col-sm-6 col-12">
-                    <div class="enhanced-car-card compact-card" 
-                        data-car-type="{{ car.car_type.name|lower }}" 
+                    <div class="enhanced-car-card compact-card"
+                        data-car-type="{{ car.car_type.name|lower }}"
                         data-car-id="{{ car.id }}">
-                        
+
                         <!-- Car Image -->
                         <div class="enhanced-car-image compact-image">
                             <img src="{% if car.image %}{{ car.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
