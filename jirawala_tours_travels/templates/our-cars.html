@@ -139,128 +139,56 @@
             </div>
 
             <!-- Enhanced Cars Grid -->
-            <div class="enhanced-cars-grid compact-grid" id="cars-grid">
+            <div class="row" id="cars-grid">
                 {% for car in cars %}
-                <div class="enhanced-car-card compact-card" data-car-type="{{ car.car_type.name|lower }}"
-                    data-car-id="{{ car.id }}">
-                    <!-- Car Image with localStorage Integration - REDUCED HEIGHT -->
-                    <div class="enhanced-car-image compact-image">
-                        <img src="{% if car.image %}{{ car.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
-                            alt="{{ car.name }}" class="service-image frontend-route-image" data-route-id="{{ car.id }}"
-                            data-fallback-src="{% static 'img/placeholder.svg' %}">
-                        <div class="enhanced-image-overlay"></div>
-                    </div>
-
-                    <!-- Car Details - MADE MORE COMPACT -->
-                    <div class="enhanced-car-content compact-content">
-                        <!-- Header - REDUCED SPACING -->
-                        <div class="enhanced-car-header compact-header">
-                            <div class="enhanced-car-title-section">
-                                <h3 class="enhanced-car-name compact-name">{{ car.name }}</h3>
-                                <span class="enhanced-car-type-badge">{{ car.car_type.name }}</span>
-                            </div>
+                <div class="col-md-4 col-sm-6 col-12">
+                    <div class="enhanced-car-card compact-card" 
+                        data-car-type="{{ car.car_type.name|lower }}" 
+                        data-car-id="{{ car.id }}">
+                        
+                        <!-- Car Image -->
+                        <div class="enhanced-car-image compact-image">
+                            <img src="{% if car.image %}{{ car.image }}{% else %}{% static 'img/placeholder.svg' %}{% endif %}"
+                                alt="{{ car.name }}"
+                                class="service-image frontend-route-image"
+                                data-route-id="{{ car.id }}"
+                                data-fallback-src="{% static 'img/placeholder.svg' %}">
+                            <div class="enhanced-image-overlay"></div>
                         </div>
 
-                        <!-- Price and Book Button -->
-                        <div class="enhanced-price-booking compact-booking">
-                            <div class="enhanced-price">
-                                {% if car.car_type.rate_per_km %}
-                                <span class="price-amount">₹{{ car.car_type.rate_per_km }}</span>
-                                <span class="price-unit">per km</span>
-                                {% else %}
-                                <span class="price-amount">₹15</span>
-                                <span class="price-unit">per km</span>
-                                {% endif %}
+                        <!-- Car Details -->
+                        <div class="enhanced-car-content compact-content">
+                            <div class="enhanced-car-header compact-header">
+                                <div class="enhanced-car-title-section">
+                                    <h3 class="enhanced-car-name compact-name">{{ car.name }}</h3>
+                                    <span class="enhanced-car-type-badge">{{ car.car_type.name }}</span>
+                                </div>
                             </div>
-                            <button class="enhanced-book-btn car-book-now-btn"
-                                data-car-type="{{ car.car_type.name|lower }}" data-car-name="{{ car.name }}"
-                                data-car-id="{{ car.id }}">
-                                Book Now
-                            </button>
+                            <div class="enhanced-price-booking compact-booking">
+                                <div class="enhanced-price">
+                                    {% if car.car_type.rate_per_km %}
+                                    <span class="price-amount">₹{{ car.car_type.rate_per_km }}</span>
+                                    <span class="price-unit">per km</span>
+                                    {% else %}
+                                    <span class="price-amount">₹15</span>
+                                    <span class="price-unit">per km</span>
+                                    {% endif %}
+                                </div>
+                                <button class="enhanced-book-btn car-book-now-btn"
+                                        data-car-type="{{ car.car_type.name|lower }}"
+                                        data-car-name="{{ car.name }}"
+                                        data-car-id="{{ car.id }}">
+                                    Book Now
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Hover Effect Overlay -->
-                    <div class="enhanced-hover-overlay"></div>
-                </div>
-                {% empty %}
-                <!-- Fallback cars if no dynamic cars available -->
-                <div class="enhanced-car-card compact-card" data-car-type="hatchback" data-car-id="fallback-1">
-                    <div class="enhanced-car-image compact-image">
-                        <img src="{% static 'img/car-hatchback.png' %}" alt="Hatchback"
-                            class="car-img frontend-car-image" data-car-id="fallback-1"
-                            data-fallback-src="{% static 'img/car-hatchback.png' %}">
-                        <div class="enhanced-image-overlay"></div>
+                        <div class="enhanced-hover-overlay"></div>
                     </div>
-                    <div class="enhanced-car-content compact-content">
-                        <div class="enhanced-car-header compact-header">
-                            <div class="enhanced-car-title-section">
-                                <h3 class="enhanced-car-name compact-name">Hatchback</h3>
-                                <span class="enhanced-car-type-badge">Hatchback</span>
-                            </div>
-                        </div>
-                        <div class="enhanced-price-booking compact-booking">
-                            <div class="enhanced-price">
-                                <span class="price-amount">₹12</span>
-                                <span class="price-unit">per km</span>
-                            </div>
-                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="hatchback">Book
-                                Now</button>
-                        </div>
-                    </div>
-                    <div class="enhanced-hover-overlay"></div>
-                </div>
-
-                <!-- Add more fallback cars for Sedan and SUV -->
-                <div class="enhanced-car-card compact-card" data-car-type="sedan" data-car-id="fallback-2">
-                    <div class="enhanced-car-image compact-image">
-                        <img src="{% static 'img/car-sedan.png' %}" alt="Sedan" class="car-img frontend-car-image"
-                            data-car-id="fallback-2" data-fallback-src="{% static 'img/car-sedan.png' %}">
-                        <div class="enhanced-image-overlay"></div>
-                    </div>
-                    <div class="enhanced-car-content compact-content">
-                        <div class="enhanced-car-header compact-header">
-                            <div class="enhanced-car-title-section">
-                                <h3 class="enhanced-car-name compact-name">Sedan</h3>
-                                <span class="enhanced-car-type-badge">Sedan</span>
-                            </div>
-                        </div>
-                        <div class="enhanced-price-booking compact-booking">
-                            <div class="enhanced-price">
-                                <span class="price-amount">₹15</span>
-                                <span class="price-unit">per km</span>
-                            </div>
-                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="sedan">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="enhanced-hover-overlay"></div>
-                </div>
-
-                <div class="enhanced-car-card compact-card" data-car-type="suv" data-car-id="fallback-3">
-                    <div class="enhanced-car-image compact-image">
-                        <img src="{% static 'img/car-suv.png' %}" alt="SUV" class="car-img frontend-car-image"
-                            data-car-id="fallback-3" data-fallback-src="{% static 'img/car-suv.png' %}">
-                        <div class="enhanced-image-overlay"></div>
-                    </div>
-                    <div class="enhanced-car-content compact-content">
-                        <div class="enhanced-car-header compact-header">
-                            <div class="enhanced-car-title-section">
-                                <h3 class="enhanced-car-name compact-name">SUV</h3>
-                                <span class="enhanced-car-type-badge">SUV</span>
-                            </div>
-                        </div>
-                        <div class="enhanced-price-booking compact-booking">
-                            <div class="enhanced-price">
-                                <span class="price-amount">₹18</span>
-                                <span class="price-unit">per km</span>
-                            </div>
-                            <button class="enhanced-book-btn car-book-now-btn" data-car-type="suv">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="enhanced-hover-overlay"></div>
                 </div>
                 {% endfor %}
             </div>
+
         </div>
     </section>
 
@@ -694,24 +622,35 @@
                         let visibleCount = 0;
 
                         // Filter car items
+                    //     carCards.forEach(item => {
+                    //         const carType = item.getAttribute('data-car-type');
+                    //        const shouldShow = filterValue === 'all' || carType === filterValue;
+
+                    //        if (shouldShow) {
+                    //            item.style.display = 'block';
+                    //            item.style.opacity = '1';
+                    //            item.style.transform = 'scale(1)';
+                    //            visibleCount++;
+                    //        } else {
+                    //            item.style.opacity = '0';
+                    //            item.style.transform = 'scale(0.8)';
+                    //            setTimeout(() => {
+                    //                item.style.display = 'none';
+                    //            }, 300);
+                    //        }
+                    //    });
+
                         carCards.forEach(item => {
+                            const parentCol = item.closest('.col-md-4');  // get the column wrapper
                             const carType = item.getAttribute('data-car-type');
                             const shouldShow = filterValue === 'all' || carType === filterValue;
 
                             if (shouldShow) {
-                                item.style.display = 'block';
-                                item.style.opacity = '1';
-                                item.style.transform = 'scale(1)';
-                                visibleCount++;
+                                parentCol.style.display = 'block';
                             } else {
-                                item.style.opacity = '0';
-                                item.style.transform = 'scale(0.8)';
-                                setTimeout(() => {
-                                    item.style.display = 'none';
-                                }, 300);
+                                parentCol.style.display = 'none';
                             }
                         });
-
                         console.log(`✅ Filtered: ${visibleCount} cars visible for filter "${filterValue}"`);
 
                         // Update car count
