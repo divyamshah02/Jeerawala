@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Inquiry, CarType, Car, BookingStatusHistory
 from decimal import Decimal, ROUND_HALF_UP
-
+from .send_email import send_booking_email
 
 class InquirySerializer(serializers.ModelSerializer):
     car_type_name = serializers.CharField(source='car_type.name', read_only=True)
@@ -120,6 +120,20 @@ class BookingCreateSerializer(serializers.Serializer):
             is_active=True
         )
         
+        send_booking_email(
+                gmail_user="jirawalataxi@gmail.com",
+                gmail_password="wmwc owcv fhbu rcgk",  # use App Password, not Gmail password
+                name=validated_data['name'],
+                email=validated_data['email'],
+                number=validated_data['phone'],
+                origin=validated_data['pickupLocation'],
+                destination=validated_data['dropoffLocation'],
+                datetime_=validated_data['pickupDate'],
+                return_datetime=validated_data.get('dropoffDate'),
+                car_type=car_type,
+                trip_type=validated_data['tripType'],
+            )
+
         # Create initial status history using ORM
         BookingStatusHistory.objects.create(
             inquiry=inquiry,
